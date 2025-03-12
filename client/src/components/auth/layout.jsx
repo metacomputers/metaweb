@@ -5,7 +5,7 @@ function AuthLayout() {
   return (
     <div className="flex flex-col min-h-screen">
   
-  <header className="bg-gray-900 text-white p-5">
+  <header className="bg-black text-white p-5">
     <div className="container mx-auto flex justify-between items-center">
       <div className="logo">
         <img src="path-to-logo.png" alt="Meta Computers Logo" className="h-10" />
@@ -32,7 +32,7 @@ function AuthLayout() {
   </div>
 
   
-  <footer className="bg-gray-900 text-white p-5 text-center">
+  <footer className="bg-black text-white p-5 text-center">
     <div className="container mx-auto">
       <p>&copy; 2024 Meta Computers. All rights reserved.</p>
       <p>
