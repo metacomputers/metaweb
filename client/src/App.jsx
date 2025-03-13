@@ -10,6 +10,10 @@ import AdminFeatures from './pages/admin-view/features';
 import AdminOrders from './pages/admin-view/orders';
 import AdminProducts from './pages/admin-view/products';
 import ShoppingLayout from './pages/shopping-view/layout';
+import ShoppingHome from './components/shopping-view/home';
+import ShoppingListing from './components/shopping-view/listing';
+import ShoppingAccount from './components/shopping-view/account';
+import ShoppingCheckout from './components/shopping-view/checkout';
 
 function App() {
 
@@ -36,10 +40,14 @@ function App() {
         </Route >
 
                 
-        <Route path="/shop" element={<ShoppingLayout/>}/>
-            
+        <Route path="/shop" element={<ShoppingLayout/>}>
 
-        
+            <Route path="home" element={<ShoppingHome/>}/>
+            <Route path="listing" element={<ShoppingListing/>}/>
+            <Route path="checkout" element={<ShoppingCheckout/>}/>
+            <Route path="account" element={<ShoppingAccount/>}/>
+
+        </Route >
 
 
         
