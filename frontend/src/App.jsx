@@ -1,18 +1,23 @@
-import{Outlet} from 'react-router-dom'
-import Navigation from './pages/Auth/Navigation.jsx';
-import {ToastContainer} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/login/Login.jsx";
+import Registration from "./pages/register/Registration.jsx";
+import User from './pages/users/User.jsx';
+import UserList from "./components/displayUser.jsx";
 
-function App() {
-  return (
-    <>
-      <ToastContainer/>
-      <Navigation />
-      <main className="py-3">
-        <Outlet/>
-      </main>
-    </>
-  );
-}
+const App = () => {
+    return (
+        // <BrowserRouter>
+        //     <Routes>
+        //         {/* Authentication Routes */}
+        //         <Route path="/" element={<Login />} />
+        //         <Route path="/register" element={<Registration />} />
+        //         <Route path="/users" element={<User />} />
+        //     </Routes>
+        // </BrowserRouter>
+        <div>
+            <UserList/>
+        </div>
+    );
+};
 
-export default App
+export default App;
