@@ -56,7 +56,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
       { ...req.fields },
       { new: true }
     );
-    await product.save(); //saving product
+    await product.save(); //saving 
     res.json(product);
   } catch (error) {
     console.error(error);
@@ -129,70 +129,6 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
-//Add review controller
-// const addProductReview = asyncHandler(async (req, res) => {
-//   try {
-//     const { rating, comment } = req.body;
-//     const product = await Product.findById(req.params.id);
-
-//     if (product) {
-//       const alreadyReviewed = product.reviews.find(
-//         (r) => r.user.toString() == req.user.id.toString()
-//       );
-
-//       if (alreadyReviewed) {
-//         res.status(400);
-//         throw new Error("Product already reviewed!!");
-//       }
-
-//       const review = {
-//         name: String,
-//         rating: Number(rating),
-//         comment,
-//         user: req.user._id,
-//       };
-
-//       product.review.push(review);
-//       product.numReviews = product.reviews.length;
-
-//       product.rating =
-//         product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-//         product.reviews.length;
-
-//       await product.save();
-//       res.status(201).json({ message: "Review Added!!" });
-//     } else {
-//       res.status(404);
-//       throw new Error("Product not found");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(400).json(error.message);
-//   }
-// });
-
-//Controller for top products
-const fetchTopProducts = asyncHandler(async (req, res) => {
-  try {
-    const products = await Product.find().sort({ rating: -1 }).limit(5); 
-    res.json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(400).json(error.message);
-  }
-});
-
-//Fetch new product
-const fetchNewProducts = asyncHandler(async (req, res) => {
-  try {
-    const products = await Product.find().sort({ _id: -1 }).limit(5); //most recently added products in descending order
-    res.json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(400).json(error.message);
-  }
-});
-
 //
 export {
   addProduct,
@@ -201,7 +137,4 @@ export {
   fetchProducts,
   fetchProductById,
   fetchAllProducts,
-  //addProductReview,
-  fetchTopProducts,
-  fetchNewProducts,
 };
