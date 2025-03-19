@@ -174,7 +174,7 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
 //Controller for top products
 const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().sort({ rating: -1 }).limit(5);
+    const products = await Product.find().sort({ rating: -1 }).limit(5); 
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -185,7 +185,7 @@ const fetchTopProducts = asyncHandler(async (req, res) => {
 //Fetch new product
 const fetchNewProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().sort({ _id: -1 }).limit(5);
+    const products = await Product.find().sort({ _id: -1 }).limit(5); //most recently added products in descending order
     res.json(products);
   } catch (error) {
     console.error(error);
