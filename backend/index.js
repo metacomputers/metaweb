@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 //Utils
 import connectDB from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
+import deliveryRoutes from "./routes/deliveryRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/products", productRoutes);
+app.use("/api/delivery", deliveryRoutes);
 app.use("/api/upload", uploadRoutes);
 
 const __dirname = path.resolve();
