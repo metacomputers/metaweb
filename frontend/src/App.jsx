@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
 // import User from './pages/users/User.jsx';
-import UserList from "./components/displayUser.jsx";
+import UserList from "./components/UserList.jsx";
 
 const App = () => {
   return (

@@ -14,28 +14,28 @@ import {
   getUserById,
   updateUserById,
 } from "../controllers/userController.js";
-import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
+import { authorizeAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();
 
 router
   .route("/")
   .post(createUser) //create a user
-  .get(authenticate, authorizeAdmin, getAllUsers); //get all users
+  .get(getAllUsers); //get all users
 
 router.post("/auth", loginUser); //login
 router.post("/logout", logOutCurrentUser); //logout
 
 router
   .route("/profile")
-  .get(authenticate, getCurrentUserProfile) //user profile
-  .put(authenticate, updateCurrentUserProfile); //update user profile
+  .get(getCurrentUserProfile) //user profile
+  .put(updateCurrentUserProfile); //update user profile
 
 //admin routes
 router
   .route("/:id")
-  .delete(authenticate, authorizeAdmin, deleteUserById)
-  .get(authenticate, authorizeAdmin, getUserById)
-  .put(authenticate, authorizeAdmin, updateUserById);
+  .delete(deleteUserById)
+  .get(getUserById)
+  .put(updateUserById);
 
 export default router;
