@@ -1,41 +1,34 @@
-//creating a user
-//delete a user
-//update a user
-
 import express from "express";
 import {
+  fetchUsers,
   createUser,
-  loginUser,
-  logOutCurrentUser,
-  getAllUsers,
-  getCurrentUserProfile,
-  updateCurrentUserProfile,
-  deleteUserById,
-  getUserById,
-  updateUserById,
+  fetchUser,
+  updateUser,
+  deleteUser,
 } from "../controllers/userController.js";
-import { authorizeAdmin } from "../middlewares/auth.js";
+// import { authorizeAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();
 
+// {baseUrl}/api/v1/users
 router
   .route("/")
-  .post(createUser) //create a user
-  .get(getAllUsers); //get all users
+  .get(fetchUsers) // Get users
+  .post(createUser); // Create single user
 
-router.post("/auth", loginUser); //login
-router.post("/logout", logOutCurrentUser); //logout
-
+// {baseUrl}/api/v1/users/{username}
 router
-  .route("/profile")
-  .get(getCurrentUserProfile) //user profile
-  .put(updateCurrentUserProfile); //update user profile
+.route("/:username")
+.get(fetchUser) // Get single user
+.put(updateUser) // Update single user
+.delete(deleteUser); // Delete single user
 
-//admin routes
-router
-  .route("/:id")
-  .delete(deleteUserById)
-  .get(getUserById)
-  .put(updateUserById);
+
+// router.post("/auth", loginUser); //login
+// router.post("/logout", logOutCurrentUser); //logout
+
+// router
+//   .route("/profile")
+//   .get(getCurrentUserProfile); //user profile
 
 export default router;

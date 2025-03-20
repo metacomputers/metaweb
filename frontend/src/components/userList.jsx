@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { fetchAllUsers } from "../api/apiUsers";
+import { fetchUsers, deleteUser, updateUser } from "../api/apiUsers";
 import EditUserModal from "./userEditModal";
 import Loader from "./loader";
 
@@ -11,15 +10,14 @@ const UserList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {    
-    fetchUsers();
+    loadUsers();
   }, []);
   
-  const fetchUsers = async () => {
+  const loadUsers = async () => {
     try {
-      const data = await fetchAllUsers();
+      const data = await fetchUsers();
       setUsers(data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
+    } catch {
       alert("Failed to fetch users!");
     } finally {
       setLoading(false);
@@ -30,39 +28,39 @@ const UserList = () => {
     return <div><Loader/></div>;
   }
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await axios.delete(`http://localhost:5001/api/users/${id}`); // No tokens required
-        //fetchUsers();
-        alert("User deleted Successfully");
-      } catch {
-        alert("Error deleting user");
-      }
-    }
-  };
-
   const handleEdit = async (user) => {
-    
     setSelectedUser(user);
     setIsModalOpen(true);
-
-    // try {
-    //   await axios.put(`http://localhost:5001/api/users/${id}`, updatedData);
-    //   alert("User updated successfully!");
-    // } catch  {
-    //   alert("Failed to update user");
-    // }
   };
 
-  const handleUpdate = async (id, updatedData) => {
+  const handleUpdate = async (username, updatedData) => {
     try {
-      await axios.put(`http://localhost:5001/api/users/${id}`, updatedData);
+      await updateUser(username, updatedData)
+      
+      // Update the user list
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.username === username ? { ...user, ...updatedData } : user
+        )
+      );
+
       alert("User updated successfully!");
       //fetchUsers(); // Refresh the user list after update
       setIsModalOpen(false); // Close the modal
     } catch {
       alert("Failed to update user");
+    }
+  };
+
+  const handleDelete = async (username) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        await deleteUser(username);
+        setUsers(users.filter(user => user.username !== username));
+        alert("User deleted Successfully");
+      } catch {
+        alert("Error deleting user");
+      }
     }
   };
 
@@ -73,8 +71,10 @@ const UserList = () => {
         <thead className="bg-gray-100">
           <tr>
             <th className="border border-gray-300 px-4 py-2">Username</th>
+            <th className="border border-gray-300 px-4 py-2">First Name</th> 
+            <th className="border border-gray-300 px-4 py-2">Last Name</th> 
             <th className="border border-gray-300 px-4 py-2">Email</th> 
-            <th className="border border-gray-300 px-4 py-2">Admin</th>
+            <th className="border border-gray-300 px-4 py-2">Role</th>
             <th className="border border-gray-300 px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -86,10 +86,16 @@ const UserList = () => {
                   {user.username}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
+                  {user.firstName}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.lastName}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
                   {user.email}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
-                  {user.isAdmin ? "Yes" : "No"}
+                  {user.role}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
                   <button 
@@ -98,7 +104,7 @@ const UserList = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(user._id)}
+                    onClick={() => handleDelete(user.username)}
                     className="bg-red-500 text-white px-3 py-1 rounded"
                   >
                     Delete

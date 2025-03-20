@@ -7,6 +7,17 @@ const userSchema = mongoose.Schema({
     username : {
         type : String,
         required : true,
+        unique : true,
+    },
+
+    firstName : {
+        type : String,
+        required : true,
+    },
+
+    lastName : {
+        type : String,
+        required : true,
     },
 
     email : {
@@ -15,15 +26,14 @@ const userSchema = mongoose.Schema({
         unique : true,
     },
 
-    password : {
+    role : {
         type : String,
         required : true,
     },
 
-    isAdmin : {
-        type : Boolean,
+    password : {
+        type : String,
         required : true,
-        default : false,
     },
 
     }, 
@@ -32,6 +42,6 @@ const userSchema = mongoose.Schema({
 
 
 //creating a model based onthe schema
-const User = mongoose.model ('User' , userSchema)
+const User = mongoose.model('User' , userSchema, 'users')
 
 export default User;

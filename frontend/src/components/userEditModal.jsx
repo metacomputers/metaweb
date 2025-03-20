@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
-const EditUserModal = ({ user, onClose }) => {
+const EditUserModal = ({ user, onUpdate, onClose }) => {
   const [formData, setFormData] = useState({
-    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
-    isAdmin: user.isAdmin,
+    role: user.role,
   });
 
   const handleChange = (e) => {
@@ -18,7 +19,16 @@ const EditUserModal = ({ user, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Updated User Data:", formData);
-    onClose(); // Close modal after submitting
+
+    const updatedUser = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      role: formData.role,
+    };
+
+    onUpdate(user.username, updatedUser);
+    onClose();
   };
 
   return (
@@ -26,16 +36,32 @@ const EditUserModal = ({ user, onClose }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Edit User</h2>
         <form onSubmit={handleSubmit}>
+
+          {/* First Name */}
           <div className="mb-3">
-            <label className="block text-sm font-medium">Username</label>
+            <label className="block text-sm font-medium">First Name</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
               className="w-full border rounded p-2"
             />
           </div>
+          
+          {/* Last Name */}          
+          <div className="mb-3">
+            <label className="block text-sm font-medium">Last Name</label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full border rounded p-2"
+            />
+          </div>
+
+          {/* Email */}      
           <div className="mb-3">
             <label className="block text-sm font-medium">Email</label>
             <input
@@ -46,16 +72,23 @@ const EditUserModal = ({ user, onClose }) => {
               className="w-full border rounded p-2"
             />
           </div>
-          <div className="mb-3 flex items-center">
-            <input
-              type="checkbox"
-              name="isAdmin"
-              checked={formData.isAdmin}
+
+          {/* Role Selection Dropdown */}
+          <div className="mb-3">
+            <label className="block text-sm font-medium">Role</label>
+            <select
+              name="role"
+              value={formData.role}
               onChange={handleChange}
-              className="mr-2"
-            />
-            <label className="text-sm font-medium">Admin</label>
+              className="w-full border rounded p-2 bg-white"
+            >
+              <option value="">Select Role</option>
+              <option value="admin">Admin</option>
+              <option value="customer">Customer</option>
+              <option value="technician">Technician</option>
+            </select>
           </div>
+
           <div className="flex justify-end space-x-3">
             <button
               type="button"
