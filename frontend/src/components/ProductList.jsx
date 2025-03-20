@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllProducts } from "../api/productApi";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -19,7 +19,7 @@ const ProductList = () => {
       return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`http://localhost:5002/api/products/${id}`, {
         method: "DELETE",
       });
 
@@ -40,6 +40,8 @@ const ProductList = () => {
   // };
 
   return (
+
+
     <div className="container mx-auto px-4 py-8">
       <button
         className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
@@ -51,6 +53,15 @@ const ProductList = () => {
         Product List
       </h2>
 
+      <div>
+        <input
+          type="text"
+          name="category"
+          required
+          className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
+        />
+      </div>
+
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
         {products.length > 0 ? (
           products.map((product) => (
@@ -59,12 +70,14 @@ const ProductList = () => {
               className="bg-white shadow-lg rounded-lg overflow-hidden p-4 transform transition duration-300 hover:scale-105"
             >
               <img
-                src={`http://localhost:5000/${product.image}`}
+                src={`/uploads/${product.imageName}`}
                 alt={product.name}
                 className="w-full h-48 object-cover rounded-lg"
               />
               <h3 className="text-xl font-semibold mt-3">{product.name}</h3>
-              <p className="text-gray-600 text-sm mt-1">{product.description}</p>
+              <p className="text-gray-600 text-sm mt-1">
+                {product.description}
+              </p>
               <p className="mt-2 font-bold text-blue-600 text-lg">
                 ${product.price}
               </p>

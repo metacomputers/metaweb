@@ -19,7 +19,7 @@ const UpdateProduct = () => {
     }, [id]);
 
     const fetchProductById = async () => {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`http://localhost:5002/api/products/${id}`);
         const data = await response.json();
         setProduct(data);
     };
