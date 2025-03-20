@@ -15,7 +15,7 @@ const AddProduct = () => {
       const imageData = new FormData();
       imageData.append("image", file);
 
-      const response = await fetch("http://localhost:5002/api/upload", {
+      const response = await fetch("http://localhost:5000/api/upload", {
         method: "POST",
         body: imageData,
       });
@@ -27,7 +27,7 @@ const AddProduct = () => {
 
       await axios({
         method: "POST",
-        url: "http://localhost:5002/api/products",
+        url: "http://localhost:5000/api/products",
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -75,16 +75,23 @@ const AddProduct = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-300">Category</label>
-            <input
-              type="text"
+            <select
               name="category"
               required
               className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
+            >
+              <option value="">Select Category</option>
+              <option value="Laptop-Gaming">Laptop-Gaming</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Hardware">Hardware</option>
+              <option value="Software">Software</option>
+            </select>
           </div>
+
           <div className="mb-4">
-            <label className="block text-gray-300">Quantity</label>
+            <label className="block text-gray-300">Quantity Adding To Stock</label>
             <input
               type="number"
               name="quantity"
