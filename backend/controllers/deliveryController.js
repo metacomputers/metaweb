@@ -29,7 +29,21 @@ const addDelivery = asyncHandler(async (req, res) => {
 
 const updateDeliveryDetails = asyncHandler(async (req, res) => {
   try {
-    //Validations
+    const delivery = await DeliveryData.findById(req.params.id);
+    
+    if (!delivery) {
+      return res.status(404).json({ error: "Delivery not found" });
+    }
+
+    // Allow status update without requiring all fields
+    if (req.fields.status) {
+      delivery.status = req.fields.status;
+      const updatedDelivery = await delivery.save();
+      res.json(updatedDelivery);
+      return;
+    }
+
+    // For full updates, keep existing validation
     const { orderNo, deliveryDate, deliveryPrice, totalPrice } = req.fields;
 
     //Validations
@@ -44,16 +58,16 @@ const updateDeliveryDetails = asyncHandler(async (req, res) => {
         return res.json({ error: "Total Price is required" });
     }
 
-    const delivery = await DeliveryData.findByIdAndUpdate(
-      req.params.id,
-      { ...req.fields },
-      { new: true }
-    );
-    await delivery.save(); //saving
-    res.json(delivery);
+    delivery.orderNo = orderNo;
+    delivery.deliveryDate = deliveryDate;
+    delivery.deliveryPrice = deliveryPrice;
+    delivery.totalPrice = totalPrice;
+    
+    const updatedDelivery = await delivery.save();
+    res.json(updatedDelivery);
   } catch (error) {
     console.error(error);
-    res.status(400).json(error.message);
+    res.status(400).json({ error: error.message });
   }
 });
 

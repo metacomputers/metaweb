@@ -12,7 +12,6 @@
   "dependencies": {
     "@paypal/react-paypal-js": "^8.8.2",
     "@reduxjs/toolkit": "^2.6.1",
-    "@tailwindcss/vite": "^4.0.14",
     "apexcharts": "^4.5.0",
     "axios": "^1.8.3",
     "flowbite": "^3.1.2",
@@ -26,18 +25,20 @@
     "react-router-dom": "^7.3.0",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
-    "slick-carousel": "^1.8.1",
-    "tailwindcss": "^4.0.14"
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.17",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
     "vite": "^6.2.0"
   }
 }
