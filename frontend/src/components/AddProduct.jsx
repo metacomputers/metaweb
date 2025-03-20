@@ -1,13 +1,14 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { IoMdArrowBack } from "react-icons/io";
 
 const AddProduct = () => {
   const navigate = useNavigate();
 
   const onFormSubmit = async (evt) => {
     try {
-      evt.preventDefault(); //prevents default behaviour of the form
+      evt.preventDefault();
 
       const formData = new FormData(evt.target);
       const file = formData.get("image");
@@ -42,88 +43,109 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen flex items-center justify-center px-4 py-8">
-      <div className="bg-gray-900 shadow-md rounded-lg p-6 w-full max-w-lg">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">
-          Add New Product
-        </h2>
-        <form onSubmit={onFormSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-300">Product Name</label>
-            <input
-              type="text"
-              name="name"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-300">Description</label>
-            <textarea
-              name="description"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            ></textarea>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-300">Price</label>
-            <input
-              type="number"
-              name="price"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
-          </div>
-          <div className="mb-4">
-            <select
-              name="category"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            >
-              <option value="">Select Category</option>
-              <option value="Laptop-Gaming">Laptop-Gaming</option>
-              <option value="Laptop">Laptop</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Monitor">Monitor</option>
-              <option value="Hardware">Hardware</option>
-              <option value="Software">Software</option>
-            </select>
-          </div>
+    <div className="bg-gray-100 min-h-screen">
+      <header className="bg-black shadow p-4 flex justify-between items-center">
+        <button
+          onClick={() => navigate("/")}
+          className="text-amber-50 hover:text-blue-400 transition"
+        >
+          <IoMdArrowBack />
+        </button>
+        <h1 className="text-xl font-semibold text-white">Add New Product</h1>
+        <div></div>
+      </header>
+      <div className="container mx-auto p-4">
+        <div className="bg-white rounded-lg shadow p-6 max-w-lg mx-auto mt-8">
+          <form onSubmit={onFormSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Product Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                name="description"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              ></textarea>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Price
+              </label>
+              <input
+                type="number"
+                name="price"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
 
-          <div className="mb-4">
-            <label className="block text-gray-300">Quantity Adding To Stock</label>
-            <input
-              type="number"
-              name="quantity"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-300">Brand</label>
-            <input
-              type="text"
-              name="brand"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-300">Image</label>
-            <input
-              type="file"
-              name="image"
-              required
-              className="mt-1 w-full p-2 border rounded-md bg-gray-800 text-white"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition w-full"
-          >
-            Add Product
-          </button>
-        </form>
+              <select
+                name="category"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select Category</option>
+                <option value="Laptop-Gaming">Laptop-Gaming</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Monitor">Monitor</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Quantity Adding To Stock
+              </label>
+              <input
+                type="number"
+                name="quantity"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Brand
+              </label>
+              <input
+                type="text"
+                name="brand"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Image
+              </label>
+              <input
+                type="file"
+                name="image"
+                required
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Add Product
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

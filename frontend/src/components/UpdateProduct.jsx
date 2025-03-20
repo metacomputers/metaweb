@@ -1,9 +1,11 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 
 const UpdateProduct = () => {
 
+    const navigate = useNavigate();
     const { id } = useParams();
 
     const [product, setProduct] = useState({
@@ -17,7 +19,7 @@ const UpdateProduct = () => {
 
     useEffect(() => {
         fetchProductById();
-    },[id]);
+    }, [id]);
 
     const fetchProductById = async () => {
         try {
@@ -56,7 +58,8 @@ const UpdateProduct = () => {
             });
 
             if (response.ok) {
-                alert("Product updated successfully!!")
+                alert("Product updated successfully!!");
+                navigate("/");
             } else {
                 console.error("Failed to update the product..");
                 alert("Failed to update the product..");
@@ -67,6 +70,7 @@ const UpdateProduct = () => {
             console.error("Error while updating..", error)
             alert("Error while updating..");
         }
+       
     }
 
     return (
@@ -144,6 +148,7 @@ const UpdateProduct = () => {
                 <button
                     type="submit"
                     className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+                    onClick={"/"}
                 >
                     Update Product
                 </button>
