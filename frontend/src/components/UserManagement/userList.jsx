@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchUsers, deleteUser, updateUser } from "../api/apiUsers";
+import { fetchUsers, deleteUser, updateUser } from "../../api/apiUsers";
 import EditUserModal from "./userEditModal";
-import Loader from "./loader";
+import Loader from "../Common/loader";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -45,7 +45,6 @@ const UserList = () => {
       );
 
       alert("User updated successfully!");
-      //fetchUsers(); // Refresh the user list after update
       setIsModalOpen(false); // Close the modal
     } catch {
       alert("Failed to update user");

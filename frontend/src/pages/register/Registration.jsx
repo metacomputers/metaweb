@@ -1,32 +1,36 @@
 import React from "react";
-import axios from "axios";
+import { addUser } from "../../api/apiUsers";
 
 const Registration = () => {
   const onFormSubmit = async (evt) => {
     try {
       evt.preventDefault();
-      const username = evt.target.fullName.value;
+      const firstName = evt.target.firstName.value;
+      const lastName = evt.target.lastName.value;
+      const username = evt.target.username.value;
       const email = evt.target.email.value;
       const password = evt.target.password.value;
-      const isAdmin = false;
 
       const data = {
+        firstName,
+        lastName,
         username,
         email,
         password,
-        isAdmin,
+        role: "Customer"
       };
 
       console.log(data);
-      await axios({
-        method: "POST",
-        url: import.meta.env.VITE_REGISTER_URL, // Change this to your registration API endpoint
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        data: JSON.stringify(data),
-      });
+      await addUser(data);
+      // await axios({
+      //   method: "POST",
+      //   url: import.meta.env.VITE_REGISTER_URL, // Change this to your registration API endpoint
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   data: JSON.stringify(data),
+      // });
 
       evt.target.reset();
     } catch (error) {
@@ -44,13 +48,39 @@ const Registration = () => {
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700">
-            Full Name
+            Username
           </label>
           <input
-            name="fullName"
+            name="username"
             required
             type="text"
-            placeholder="Enter your full name"
+            placeholder="Enter your username"
+            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700">
+            First Name
+          </label>
+          <input
+            name="firstName"
+            required
+            type="text"
+            placeholder="Enter your first name"
+            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700">
+            Last Name
+          </label>
+          <input
+            name="lastName"
+            required
+            type="text"
+            placeholder="Enter your last name"
             className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>

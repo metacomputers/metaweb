@@ -6,9 +6,7 @@ import bcrypt from "bcryptjs";
 const fetchUsers = asyncHandler(async( req, res) => {
     const users = await User.find({});
 
-    if (!users.length) {
-        return res.status(404).json({ message: "No users found" });
-    }
+    if (!users.length) return res.status(404).json({ message: "No users found" });
 
     res.status(200).json(users.map(user => ({
         username: user.username,
@@ -59,71 +57,61 @@ const createUser = asyncHandler(async(req, res) =>{
 const fetchUser = asyncHandler(async (req, res) =>{
     const user = await User.findOne({ username : req.params.username });
 
-    if (user){
-        res.json({
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            role: user.role
-        })
-    } else {
-        res.status(404);
-        throw new Error ("User not Found");
-    }
+    if (!user) res.status(404).json({ message: "User not found." });
+
+    res.json({
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role
+    })
 });
 
 const updateUser = asyncHandler (async (req, res) => {
     const user = await User.findOne({ username : req.params.username });
 
-    if(user) {
-        const {firstName, lastName, email, role, password} = req.body;
+    if(!user) return res.status(404).json({ message: "User not found." });
 
-        user.firstName = firstName || user.firstName;
-        user.lastName = lastName || user.lastName;
-        user.email = email || user.email;
-        user.role = role || user.role;
+    const {firstName, lastName, email, role, password} = req.body;
 
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(req.body.password, salt);
-            user.password = hashedPassword;
-        }
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.email = email || user.email;
+    user.role = role || user.role;
 
-        const updateUser = await user.save();
-
-        res.json ({
-            _id : updateUser._id,
-            username : updateUser.username,
-            firstName : updateUser.firstName,
-            lastName : updateUser.lastName,
-            email : updateUser.email,
-            role : updateUser.role
-        });
-    } else {
-        res.status(404);
-        throw new Error ("User Not Found");
+    if (password) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        user.password = hashedPassword;
     }
+
+    const updateUser = await user.save();
+
+    res.json ({
+        _id : updateUser._id,
+        username : updateUser.username,
+        firstName : updateUser.firstName,
+        lastName : updateUser.lastName,
+        email : updateUser.email,
+        role : updateUser.role
+    });
+    
 });
 
 //deleting a single user
 const deleteUser = asyncHandler (async (req, res) => {
     const user = await User.findOne({ username : req.params.username })
 
-    if (user) {
-        if (user.isAdmin){
-            res.staus (400);
-            throw new Error("Cannot delete admin user");
-        }
+    if(!user) return res.status(404).json({ message: "User not found." });
 
-        await User.deleteOne({_id: user._id})                        //mongoose method to delete a single user
-        res.json({message : "User Removed"});
+    if (user.role?.toLowerCase() === "admin") {
+        return res.status(400).json({ message: "Cannot delete an admin user." });
+    }    
 
-    } else {
-        res.status(404)
-        throw new Error ("User not Found")
+    await User.deleteOne({username: user.username}) 
 
-    }
+    return res.json({message : "User Removed"});    
 });
 
 
