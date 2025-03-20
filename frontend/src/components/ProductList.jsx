@@ -34,10 +34,10 @@ const ProductList = () => {
     }
   };
 
-  const handleUpdate = (id) => {
-    console.log("Update product with ID:", id);
-    // update functionality here
-  };
+  // const handleUpdate = (id) => {
+  //   console.log("Update product with ID:", id);
+  //   // update functionality here
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -78,7 +78,7 @@ const ProductList = () => {
                 </button>
                 <button
                   className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition"
-                  onClick={() => handleUpdate(product._id)}
+                  onClick={() => navi(`/updateproduct/${product._id}`)}
                 >
                   Update
                 </button>
