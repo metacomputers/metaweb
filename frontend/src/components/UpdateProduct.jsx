@@ -68,99 +68,155 @@ const UpdateProduct = () => {
     };
 
     return (
-        <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
-                    Update Product
+        <div className="bg-gradient-to-r from-gray-100 to-gray-200 min-h-screen flex flex-col">
+            {/* Header */}
+            <header className="bg-black text-white py-4">
+                <h2 className="text-3xl font-semibold text-center tracking-tight">
+                    Update Product Details
                 </h2>
+            </header>
+            <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl">
 
-                <form onSubmit={updateProduct} className="space-y-4">
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Product Name
-                        </label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={product.name}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
+                    <form onSubmit={updateProduct} className="space-y-6">
+                        <div>
+                            <label
+                                htmlFor="name"
+                                className="block text-sm font-semibold text-gray-700"
+                            >
+                                Product Name
+                            </label>
+                            <div className="mt-1">
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    value={product.name}
+                                    onChange={changedFields}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                />
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Description
-                        </label>
-                        <textarea
-                            name="description"
-                            value={product.description}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
+                        <div>
+                            <label
+                                htmlFor="description"
+                                className="block text-sm font-semibold text-gray-700"
+                            >
+                                Description
+                            </label>
+                            <div className="mt-1">
+                                <textarea
+                                    name="description"
+                                    id="description"
+                                    value={product.description}
+                                    onChange={changedFields}
+                                    rows={8}
+                                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                                />
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Brand
-                        </label>
-                        <input
-                            type="text"
-                            name="brand"
-                            value={product.brand}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            <div>
+                                <label
+                                    htmlFor="brand"
+                                    className="block text-sm font-semibold text-gray-700"
+                                >
+                                    Brand
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="brand"
+                                        id="brand"
+                                        value={product.brand}
+                                        onChange={changedFields}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                    />
+                                </div>
+                            </div>
 
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Category
-                        </label>
-                        <input
-                            type="text"
-                            name="category"
-                            value={product.category}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
+                            <div>
+                                <label
+                                    htmlFor="category"
+                                    className="block text-sm font-semibold text-gray-700"
+                                >
+                                    Category
+                                </label>
+                                <div className="mt-1">
+                                    <select
+                                        name="category"
+                                        id="category"
+                                        value={product.category}
+                                        onChange={changedFields}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                    >
+                                        <option value="">Select Category</option>
+                                        <option value="Laptop-Gaming">Laptop-Gaming</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="Accessories">Accessories</option>
+                                        <option value="Monitor">Monitor</option>
+                                        <option value="Hardware">Hardware</option>
+                                        <option value="Software">Software</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Price
-                        </label>
-                        <input
-                            type="number"
-                            name="price"
-                            value={product.price}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
 
-                    <div>
-                        <label className="block text-gray-700 text-sm font-medium">
-                            Quantity in stock:
-                        </label>
-                        <input
-                            type="text"
-                            name="quantity"
-                            value={product.quantity}
-                            onChange={changedFields}
-                            className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        />
-                    </div>
+                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            <div>
+                                <label
+                                    htmlFor="price"
+                                    className="block text-sm font-semibold text-gray-700"
+                                >
+                                    Price
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        id="price"
+                                        value={product.price}
+                                        onChange={changedFields}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                    />
+                                </div>
+                            </div>
 
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                        Update Product
-                    </button>
-                </form>
-            </div>
-        </div>
+                            <div>
+                                <label
+                                    htmlFor="quantity"
+                                    className="block text-sm font-semibold text-gray-700"
+                                >
+                                    Quantity in stock:
+                                </label>
+                                <div className="mt-1">
+                                    <input
+                                        type="text"
+                                        name="quantity"
+                                        id="quantity"
+                                        value={product.quantity}
+                                        onChange={changedFields}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button
+                                type="submit"
+                                className="w-full py-3 px-4 rounded-md shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                Update Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div >
+        </div >
     );
 };
 

@@ -56,45 +56,48 @@ const AddProduct = () => {
       </header>
       <div className="container mx-auto p-4">
         <div className="bg-white rounded-lg shadow p-6 max-w-lg mx-auto mt-8">
-          <form onSubmit={onFormSubmit} className="space-y-4">
+          <form onSubmit={onFormSubmit} className="space-y-6"> {/* increased space-y-4 to space-y-6 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Product Name
               </label>
               <input
                 type="text"
                 name="name"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Description
               </label>
               <textarea
                 name="description"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                rows={4} // added rows for text area
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               ></textarea>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Price
               </label>
               <input
                 type="number"
                 name="price"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               />
             </div>
             <div>
-
+              <label className="block text-sm font-semibold text-gray-700">
+                Category
+              </label>
               <select
                 name="category"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               >
                 <option value="">Select Category</option>
                 <option value="Laptop-Gaming">Laptop-Gaming</option>
@@ -106,44 +109,46 @@ const AddProduct = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Quantity Adding To Stock
               </label>
               <input
                 type="number"
                 name="quantity"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Brand
               </label>
               <input
                 type="text"
                 name="brand"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-semibold text-gray-700">
                 Image
               </label>
               <input
                 type="file"
                 name="image"
                 required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
               />
             </div>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Add Product
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="w-full py-3 px-4 rounded-md shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" // added py-3, shadow-md, changed bg color and focus color.
+              >
+                Add Product
+              </button>
+            </div>
           </form>
         </div>
       </div>

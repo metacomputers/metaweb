@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "/meta_full.png";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import { FiPlus } from "react-icons/fi";
 
-const ProductDashboard = () => {
+const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -29,6 +28,7 @@ const ProductDashboard = () => {
 
       if (response.ok) {
         setProducts(products.filter((product) => product._id !== id));
+        console.log("Product deleted successfully");
       } else {
         console.error("Failed to delete product");
       }
@@ -42,59 +42,87 @@ const ProductDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-black text-white p-6 space-y-6">
-        <img src={logo} alt="Company Logo" className="h-12 mx-auto" />
-        <button
-          className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 w-full"
-          onClick={() => navigate("/addproduct")}
-        >
-          <FiPlus className="mr-2" /> Add New Product
-        </button>
-      </aside>
+    <div className="bg-gray-100 min-h-screen">
+      {/* Header */}
+      <header className="bg-black text-white py-4 shadow-md">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center justify-center">
+            <div>
+              <img src={logo} alt="Company Logo" className="h-15 mr-2" />
+            </div>
+            <div className="flex-grow text-center">
+              <h1 className="text-3xl font-semibold">Product Dashboard</h1>
+            </div>
+          </div>
+          <button
+            className="bg-blend-normal text-white py-2 px-4 rounded-md hover:bg-gray-700 transition"
+            onClick={() => navigate("/addproduct")}
+          >
+            + Add New Product
+          </button>
+        </div>
+      </header>
 
-      <div className="flex-1 p-6">
-        {/* Header */}
-        <header className="bg-white text-black py-6 px-6 rounded-lg shadow-md text-center text-xl font-bold w-full">
-          Product Dashboard
-        </header>
 
-        {/* Search Bar */}
-        <div className="mt-6">
+      <div className="container mx-auto px-4 py-8">
+        {/* Search Bar*/}
+        <div className="mb-6">
           <input
             type="text"
+            name="brand"
             placeholder="Search by product name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            required
             className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
         </div>
 
         {/* Product Grid */}
-        <div className="mt-6 grid grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <div key={product._id} className="bg-white shadow-md rounded-lg overflow-hidden p-4 transition transform duration-300 hover:shadow-lg">
-                <img src={`/uploads/${product.imageName}`} alt={product.name} className="w-full h-32 object-cover rounded-md" />
-                <div className="mt-2">
-                  <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mt-1">{product.description}</p>
-                  <p className="mt-2 font-bold text-blue-600 text-base">LKR.{product.price}.00</p>
+              <div
+                key={product._id}
+                className="bg-white shadow-md rounded-lg overflow-hidden p-4 transition transform duration-300 hover:shadow-lg"
+              >
+                <img
+                  src={`/uploads/${product.imageName}`}
+                  alt={product.name}
+                  className="w-full h-48 object-cover rounded-md"
+                />
+                <div className="mt-3">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {product.description}
+                  </p>
+                  <p className="mt-2 font-bold text-blue-600 text-base">
+                    LKR.{product.price}.00
+                  </p>
                   <p className="text-gray-500 text-xs">Brand: {product.brand}</p>
                   <div className="mt-4 flex justify-between">
-                    <button className="bg-red-500 text-black py-1 px-2 rounded-md hover:bg-red-600 transition text-lg" onClick={() => handleDelete(product._id)}>
-                      <MdDeleteForever />
+                    <button
+                      className="text-red-500 hover:text-red-600 transition-colors"
+                      onClick={() => handleDelete(product._id)}
+                    >
+                      <MdDeleteForever className="text-2xl" />
                     </button>
-                    <button className="bg-green-500 text-black py-1 px-2 rounded-md hover:bg-green-600 transition text-lg" onClick={() => navigate(`/updateproduct/${product._id}`)}>
-                      <FaEdit />
+                    <button
+                      className="text-green-500 hover:text-green-600 transition-colors"
+                      onClick={() => navigate(`/updateproduct/${product._id}`)}
+                    >
+                      <FaEdit className="text-2xl" />
                     </button>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-600 col-span-3">No products found</p>
+            <p className="text-center text-gray-600 col-span-3">
+              No products found
+            </p>
           )}
         </div>
       </div>
@@ -102,4 +130,4 @@ const ProductDashboard = () => {
   );
 };
 
-export default ProductDashboard;
+export default ProductList;
