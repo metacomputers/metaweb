@@ -194,7 +194,7 @@ const UpdateProduct = () => {
                                 </label>
                                 <div className="mt-1">
                                     <input
-                                        type="text"
+                                        type="number"
                                         name="quantity"
                                         id="quantity"
                                         value={product.quantity}
@@ -210,7 +210,7 @@ const UpdateProduct = () => {
                                 type="submit"
                                 className="w-full py-3 px-4 rounded-md shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
-                                Update Product
+                                Save Changes
                             </button>
                         </div>
                     </form>
