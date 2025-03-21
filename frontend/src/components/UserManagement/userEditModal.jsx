@@ -47,7 +47,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Edit User</h2>
         <form onSubmit={handleSubmit}>
@@ -105,9 +105,9 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               required
             >
               <option value="">Select Role</option>
-              <option value="admin">Admin</option>
-              <option value="customer">Customer</option>
-              <option value="technician">Technician</option>
+              <option value="Admin">Admin</option>
+              <option value="Customer">Customer</option>
+              <option value="Technician">Technician</option>
             </select>
             {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
           </div>
@@ -115,7 +115,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
           <div className="flex justify-end space-x-3">
             <button
               type="button"
-              className="bg-gray-400 text-white px-4 py-2 rounded"
+              className="bg-green-400 text-white px-4 py-2 rounded"
               onClick={onClose}
             >
               Cancel

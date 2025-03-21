@@ -15,7 +15,7 @@ const App = () => {
     //     </Routes>
     // </BrowserRouter>
     <div>
-      <Registration />
+      <UserList/>
     </div>
   );
 };

@@ -22,16 +22,7 @@ const Registration = () => {
 
       console.log(data);
       await addUser(data);
-      // await axios({
-      //   method: "POST",
-      //   url: import.meta.env.VITE_REGISTER_URL, // Change this to your registration API endpoint
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Accept: "application/json",
-      //   },
-      //   data: JSON.stringify(data),
-      // });
-
+      
       evt.target.reset();
     } catch (error) {
       console.error(`Error registering user`, error.message);
