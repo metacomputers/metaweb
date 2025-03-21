@@ -104,7 +104,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               className={`w-full border rounded p-2 bg-white ${errors.role ? "border-red-500" : ""}`}
               required
             >
-              <option value="">Select Role</option>
+              {!formData.role && <option value="">Select Role</option>}
               <option value="Admin">Admin</option>
               <option value="Customer">Customer</option>
               <option value="Technician">Technician</option>
