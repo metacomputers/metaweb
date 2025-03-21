@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AddUserModal from "./addUserModal";
 
-const UserTools = ({onUserCreate}) => {
+const UserTools = ({loadUsers, setSearchText}) => {
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
 
@@ -16,6 +16,7 @@ const UserTools = ({onUserCreate}) => {
         <input
         type="text"
         placeholder="Search Users..."
+        onChange={(e) => setSearchText(e.target.value)}
         className="w-96 px-4 py-2 border rounded-lg outline-none"
         />
     </div>
@@ -23,7 +24,7 @@ const UserTools = ({onUserCreate}) => {
     {isAddUserModalOpen && (
         <AddUserModal
           isAdmin={true}
-          onSubmit={() => onUserCreate()}
+          loadUsers={() => loadUsers()}
           onClose={() => setIsAddUserModalOpen(false)}
         />
       )}

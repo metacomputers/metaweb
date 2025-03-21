@@ -1,7 +1,7 @@
 import React from "react";
 import { addUser } from "../../api/apiUsers";
 
-const AddUserModal = ({isAdmin = false, onSubmit, onClose}) => {
+const AddUserModal = ({isAdmin = false, loadUsers, onClose}) => {
   const onFormSubmit = async (evt) => {
     try {
       evt.preventDefault();
@@ -22,7 +22,7 @@ const AddUserModal = ({isAdmin = false, onSubmit, onClose}) => {
       };
 
       await addUser(newUser);
-      onSubmit();
+      await loadUsers();
       onClose();
       
       evt.target.reset();

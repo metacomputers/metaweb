@@ -12,6 +12,7 @@ const UserList = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     loadUsers();
@@ -27,6 +28,12 @@ const UserList = () => {
       setLoading(false);
     }
   };
+
+  const filteredUsers = users.filter((user) =>
+    Object.values(user).some((value) =>
+      value.toString().toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
   
 
   if (loading) {
@@ -92,7 +99,7 @@ const UserList = () => {
         </div>
       </header>
 
-      <UserTools onUserCreate={loadUsers}/>
+      <UserTools loadUsers={loadUsers} setSearchText={setSearchText} />
 
       {/* <h2 className="text-2xl font-bold mb-4 text-center">User List</h2> */}
       <div className="overflow-x-auto mt-8">
@@ -108,7 +115,7 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => {
+            {filteredUsers.map((user) => {
               return (
                 <tr key={user.username} className="hover:bg-gray-50 text-center">
                   <td className="border border-gray-300 px-4 py-2">{user.username}</td>
