@@ -10,7 +10,11 @@ const Consult = () => {
             const mobile = evt.target.mobile.value;
             const issueCategory = evt.target.category.value
             const detailsOfIssue = evt.target.description.value;
-
+            
+            if(!/^070\d{7}$/.test()){
+                alert("Phone Numnber Not In Valid Format")
+                return
+            }
             const data = {
                 customerName,
                 mobile,

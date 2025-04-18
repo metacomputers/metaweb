@@ -10,7 +10,10 @@ const Repair = () => {
             const mobile = evt.target.mobile.value;
             const device = evt.target.deviceName.value
             const issueDescription = evt.target.issue.value;
-
+            if(!/^070\d{7}$/.test()){
+                alert("Phone Numnber Not In Valid Format")
+                return
+            }
             const data = {
                 customerName,
                 mobile,
