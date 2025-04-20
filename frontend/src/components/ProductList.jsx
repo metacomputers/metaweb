@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllProducts } from "../api/productApi";
 import { useNavigate } from "react-router-dom";
-import logo from "/meta_full.png";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import AdminLayout from "./common/AdminPanel";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -43,35 +43,23 @@ const ProductList = () => {
   );
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Header */}
-      <header className="bg-black text-white py-4 shadow-md">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center justify-center">
-            <div>
-              <img src={logo} alt="Company Logo" className="h-15 mr-2" />
-            </div>
-            <div className="flex-grow text-center">
-              <h1 className="text-3xl font-semibold">Product Dashboard</h1>
-            </div>
-          </div>
-          <button
-            className="bg-blend-normal text-white py-2 px-4 rounded-md hover:bg-gray-700 transition"
+    
+    <div className="bg-gray-100 min-h-screen"> 
+      
+      <div className="container mx-auto px-4 py-4">
+      
+        {/* Search Bar*/}
+        <div className="mb-6">
+        <button
+            className="bg-blend-normal text-black py-2 px-4 rounded-md hover:bg-gray-700 transition"
             onClick={() => navigate("/addproduct")}
           >
             + Add New Product
           </button>
-        </div>
-      </header>
-
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Search Bar*/}
-        <div className="mb-6">
           <input
             type="text"
             name="brand"
-            placeholder="Search by product name"
+            placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             required
@@ -119,6 +107,9 @@ const ProductList = () => {
                   </div>
                 </div>
               </div>
+
+
+
             ))
           ) : (
             <p className="text-center text-gray-600 col-span-3">
@@ -126,7 +117,9 @@ const ProductList = () => {
             </p>
           )}
         </div>
+
       </div>
+      
     </div>
   );
 };

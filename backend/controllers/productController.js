@@ -2,27 +2,27 @@ import { Error } from "mongoose";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
 
+//Add product controller
 const addProduct = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.fields;
 
     //Validations
-    switch (true) {
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
-      case !description:
-        return res.json({ error: "Description is required" });
-      case !category:
-        return res.json({ error: "Category is required" });
-      case !quantity:
-        return res.json({ error: "Quantity is required" });
-    }
+    if (!name)
+      return res.status(400).json({ error: "Product name is required" });
+    if (!brand) return res.status(400).json({ error: "Brand is required" });
+    if (!price || isNaN(price) || price <= 0)
+      return res.status(400).json({ error: "Valid price is required" });
+    if (!description || description.length < 10)
+      return res
+        .status(400)
+        .json({ error: "Description must be at least 10 characters" });
+    if (!category)
+      return res.status(400).json({ error: "Category is required" });
+    if (!quantity || isNaN(quantity) || quantity < 1)
+      return res.status(400).json({ error: "Quantity must be at least 1" });
 
-    const product = new Product({ ...req.fields }); //Creating product
+    const product = new Product({ ...req.fields }); //Creating product instance
     await product.save(); //saving product
     res.json(product); //showing product to the user
   } catch (error) {
@@ -31,28 +31,28 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 });
 
+//Update product details function
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.fields;
 
     //Validations
-    switch (true) {
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
-      case !description:
-        return res.json({ error: "Description is required" });
-      case !category:
-        return res.json({ error: "Category is required" });
-      case !quantity:
-        return res.json({ error: "Quantity is required" });
-    }
+    if (!name)
+      return res.status(400).json({ error: "Product name is required" });
+    if (!brand) return res.status(400).json({ error: "Brand is required" });
+    if (!price || isNaN(price) || price <= 0)
+      return res.status(400).json({ error: "Valid price is required" });
+    if (!description || description.length < 10)
+      return res
+        .status(400)
+        .json({ error: "Description must be at least 10 characters" });
+    if (!category)
+      return res.status(400).json({ error: "Category is required" });
+    if (!quantity || isNaN(quantity) || quantity < 1)
+      return res.status(400).json({ error: "Quantity must be at least 1" });
 
     const product = await Product.findByIdAndUpdate(
-      req.params.id,
+      req.params.id, //Retrieving ProductID from URL
       { ...req.fields },
       { new: true }
     );
@@ -64,6 +64,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
   }
 });
 
+//Delete Product function
 const removeProduct = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -78,12 +79,9 @@ const removeProduct = asyncHandler(async (req, res) => {
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
     const pageSize = 6; //Num of products in a page
-    const keyword = req.query.keyword
-      ? { name: { $regex: req.query.keyword, $options: "i" } }
-      : {};
 
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword }).limit(pageSize);
+    const count = await Product.countDocuments();
+    const products = await Product.find().limit(pageSize);
 
     res.json({
       products,
@@ -117,10 +115,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
 //Fetch all products for admin dashboard
 const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({})
-      //.populate("category")
-      .limit(12)
-      .sort({ createdAt: -1 });
+    const products = await Product.find({}).limit(12).sort({ createdAt: -1 });
 
     res.json(products);
   } catch (error) {

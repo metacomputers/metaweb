@@ -56,7 +56,7 @@ const AddProduct = () => {
       </header>
       <div className="container mx-auto p-4">
         <div className="bg-white rounded-lg shadow p-6 max-w-lg mx-auto mt-8">
-          <form onSubmit={onFormSubmit} className="space-y-6"> {/* increased space-y-4 to space-y-6 */}
+          <form onSubmit={onFormSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700">
                 Product Name
@@ -65,7 +65,7 @@ const AddProduct = () => {
                 type="text"
                 name="name"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               />
             </div>
             <div>
@@ -75,8 +75,8 @@ const AddProduct = () => {
               <textarea
                 name="description"
                 required
-                rows={4} // added rows for text area
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                rows={4}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               ></textarea>
             </div>
             <div>
@@ -87,7 +87,7 @@ const AddProduct = () => {
                 type="number"
                 name="price"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               />
             </div>
             <div>
@@ -97,7 +97,7 @@ const AddProduct = () => {
               <select
                 name="category"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               >
                 <option value="">Select Category</option>
                 <option value="Laptop-Gaming">Laptop-Gaming</option>
@@ -116,7 +116,7 @@ const AddProduct = () => {
                 type="number"
                 name="quantity"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ const AddProduct = () => {
                 type="text"
                 name="brand"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               />
             </div>
             <div>
@@ -138,7 +138,7 @@ const AddProduct = () => {
                 type="file"
                 name="image"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3" // added p-3 and changed focus color
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
               />
             </div>
             <div>
