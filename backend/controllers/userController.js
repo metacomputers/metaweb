@@ -1,145 +1,159 @@
 import User from "../models/userModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
+import generateToken from "../utils/createToken.js";
 
 //read - all users
-const fetchUsers = asyncHandler(async( req, res) => {
-    const users = await User.find({});
+const fetchUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
 
-    if (!users.length) return res.status(404).json({ message: "No users found" });
+  if (!users.length) return res.status(404).json({ message: "No users found" });
 
-    res.status(200).json(users.map(user => ({
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role
-    })));
+  res.status(200).json(
+    users.map((user) => ({
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    }))
+  );
 });
 
+const createUser = asyncHandler(async (req, res) => {
+  const { username, firstName, lastName, email, role, password } = req.body;
 
-const createUser = asyncHandler(async(req, res) =>{
-    const {username, firstName, lastName, email, role, password} = req.body;
+  // Validate all required fields
+  if (!username || !firstName || !lastName || !email || !role || !password) {
+    return res
+      .status(400)
+      .json({ message: "All required fields must be filled" });
+  }
 
-    // Validate all required fields
-    if (!username || !firstName || !lastName || !email || !role || !password) {
-        return res.status(400).json({ message: "All required fields must be filled" });
-    }
+  // Check if user already exists (by username or email)
+  const userExists = await User.findOne({ $or: [{ username }, { email }] });
+  if (userExists) {
+    return res
+      .status(400)
+      .json({ message: "User with this username or email already exists" });
+  }
 
-    // Check if user already exists (by username or email)
-    const userExists = await User.findOne({ $or: [{ username }, { email }] });
-    if (userExists) {
-        return res.status(400).json({ message: "User with this username or email already exists" });
-    }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  //creating a user
+  const newUser = new User({
+    username,
+    firstName,
+    lastName,
+    email,
+    role,
+    password: hashedPassword,
+  });
 
-    //creating a user
-    const newUser = new User({username, firstName, lastName, email, role, password : hashedPassword});
-
-    try {
-        await newUser.save();
-        return res.status(201).json({
-            _id: newUser._id,
-            username: newUser.username,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            role: newUser.role,
-        });
-    } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error" });
-    }
+  try {
+    await newUser.save();
+    return res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      role: newUser.role,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 //read - single user
-const fetchUser = asyncHandler(async (req, res) =>{
-    const user = await User.findOne({ username : req.params.username });
+const fetchUser = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.username });
 
-    if (!user) res.status(404).json({ message: "User not found." });
+  if (!user) return res.status(404).json({ message: "User not found." });
 
-    res.json({
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role
-    })
+  res.json({
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    role: user.role,
+  });
 });
 
-const updateUser = asyncHandler (async (req, res) => {
-    const user = await User.findOne({ username : req.params.username });
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.username });
 
-    if(!user) return res.status(404).json({ message: "User not found." });
+  if (!user) return res.status(404).json({ message: "User not found." });
 
-    const {firstName, lastName, email, role, password} = req.body;
+  const { firstName, lastName, email, role, password } = req.body;
 
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
-    user.email = email || user.email;
-    user.role = role || user.role;
+  user.firstName = firstName || user.firstName;
+  user.lastName = lastName || user.lastName;
+  user.email = email || user.email;
+  user.role = role || user.role;
 
-    if (password) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        user.password = hashedPassword;
-    }
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    user.password = hashedPassword;
+  }
 
-    const updateUser = await user.save();
+  const updateUser = await user.save();
 
-    res.json ({
-        _id : updateUser._id,
-        username : updateUser.username,
-        firstName : updateUser.firstName,
-        lastName : updateUser.lastName,
-        email : updateUser.email,
-        role : updateUser.role
-    });
-    
+  res.json({
+    _id: updateUser._id,
+    username: updateUser.username,
+    firstName: updateUser.firstName,
+    lastName: updateUser.lastName,
+    email: updateUser.email,
+    role: updateUser.role,
+  });
 });
 
 //deleting a single user
-const deleteUser = asyncHandler (async (req, res) => {
-    const user = await User.findOne({ username : req.params.username })
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.username });
 
-    if(!user) return res.status(404).json({ message: "User not found." });
+  if (!user) return res.status(404).json({ message: "User not found." });
 
-    if (user.role?.toLowerCase() === "admin") {
-        return res.status(400).json({ message: "Cannot delete an admin user." });
-    }    
+  if (user.role?.toLowerCase() === "admin") {
+    return res.status(400).json({ message: "Cannot delete an admin user." });
+  }
 
-    await User.deleteOne({username: user.username}) 
+  await User.deleteOne({ username: user.username });
 
-    return res.json({message : "User Removed"});    
+  return res.json({ message: "User Removed" });
 });
 
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
-// const loginUser = asyncHandler(async (req, res) => {
-//     const {email, password} = req.body
+  const existingUser = await User.findOne({ email });
 
-//     const existingUser = await User.findOne({email})
+  if (existingUser) {
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
 
-//     if (existingUser){
-//         const isPasswordValid = await bcrypt.compare(
-//             password, 
-//             existingUser.password)
+    if (isPasswordValid) {
+      // Call createToken function here
+      generateToken(res, existingUser._id);
 
-//         if(isPasswordValid){
-//             createToken(res, existingUser._id)
+      res.status(201).json({
+        _id: existingUser._id,
+        username: existingUser.username,
+        email: existingUser.email,
+        isAdmin: existingUser.isAdmin,
+      });
 
-//             res.status(201). json({
-//                 _id : existingUser._id, 
-//                 username : existingUser.username, 
-//                 email :existingUser.email, 
-//                 isAdmin : existingUser.isAdmin,
-//             });
+      return; // Exit after sending the response
+    }
+  }
 
-//             return //exit the fuctiom after sending the response
-//         }
-//     }
-
-// })
+  res.status(400).json({ message: "Invalid email or password" });
+});
 
 // const logOutCurrentUser = asyncHandler(async (req, res) => {
 //     res.cookie('jwt' , '', {
@@ -162,33 +176,4 @@ const deleteUser = asyncHandler (async (req, res) => {
 //     }
 // });
 
-
-// //update user
-// const updateCurrentUserProfile = asyncHandler (async (req, res) => {
-//     const user = await User.findById(req.user._id)
-
-//     if (user) {
-//         user.username = req.body.username || user.username;                         //assign the new username or the exisitinhg user name if user didnt update it
-//         user.email = req.body.email || user.email;
-
-//         if (req.body.password) {
-//             const salt = await bcrypt.genSalt(10);
-//             const hashedPassword = await bcrypt.hash(req.body.password, salt);
-//             user.password = hashedPassword;
-//         }
-
-//         const updatedUser = await user.save();
-
-//         res.json ({
-//             _id : updatedUser._id,
-//             username : updatedUser.username,
-//             email : updatedUser.email,
-//             isAdmin : updatedUser.isAdmin,
-//         })
-//     } else {
-//         res.status(404);
-//         throw new Error ("User not Found");
-//     }
-// });
-
-export {fetchUsers, createUser , fetchUser, updateUser, deleteUser};
+export { fetchUsers, createUser, fetchUser, updateUser, deleteUser, loginUser };

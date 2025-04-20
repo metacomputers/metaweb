@@ -47,7 +47,20 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.5)", // 50% transparent black
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backdropFilter: "blur(4px)", // Adds blur effect
+      zIndex: 50, // Ensures it's on top
+    }}
+    >
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">Edit User</h2>
         <form onSubmit={handleSubmit}>

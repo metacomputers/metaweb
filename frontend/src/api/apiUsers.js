@@ -41,3 +41,21 @@ export const deleteUser = async (username) => {
     return null;
   }
 };
+
+export const loginUser = async (email, password) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth`, { email, password }, {
+      withCredentials: true, // include if you're using cookies/session
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error.response?.data?.message || "Login failed";
+  }
+};
+
+axios.get('http://localhost:5001/api/users/profile', {
+  withCredentials: true,
+});
+
+axios.get('http://localhost:5001/api/test-cookie', { withCredentials: true });

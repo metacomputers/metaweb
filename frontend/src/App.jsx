@@ -1,22 +1,26 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
-// import User from './pages/users/User.jsx';
+import AdminLayout from "./components/Common/adminPanel.jsx";
 import UserList from "./components/UserManagement/userList.jsx";
+import Profile from "./components/UserManagement/userProfile.jsx";
 
 const App = () => {
   return (
-    // <BrowserRouter>
-    //     <Routes>
-    //         {/* Authentication Routes */}
-    //         <Route path="/" element={<Login />} />
-    //         <Route path="/register" element={<Registration />} />
-    //         <Route path="/users" element={<User />} />
-    //     </Routes>
-    // </BrowserRouter>
-    <div>
-      <UserList/>
-    </div>
+
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Registration />} />
+        <Route path="/profile" element={<Profile/>}/>
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="users" element={<UserList />} />
+          {/* You can add more nested admin routes here, like: */}
+          {/* <Route path="add-product" element={<AddProduct />} /> */}
+        </Route>
+      </Routes>
   );
 };
 

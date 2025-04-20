@@ -1,42 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error] = useState("");
+  const navigate = useNavigate();
+
   const onFormSubmit = async (evt) => {
+    evt.preventDefault();
+
+    const email = evt.target.email.value;
+    const password = evt.target.password.value;
+
+    console.log("Entered Credentials:");
+    console.log("Email:", email);
+    console.log("Password:", password);
+
     try {
-      evt.preventDefault();
-
-      const email = evt.target.email.value;
-      const password = evt.target.password.value;
-
-      const data = {
-        email,
-        password,
-      };
-
-      // Sending POST request to login
+      // Send POST request to the backend with email and password
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/users/auth`,
-        data,
+        { email, password },
         {
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
           },
         }
       );
 
-      console.log("Login Successful:", response.data);
-
-      // Save user details in local storage
+      // Save the response (which should contain token and role) in localStorage
       localStorage.setItem("userInfo", JSON.stringify(response.data));
 
-      // TODO: Redirect to dashboard or home
+      // Redirect user based on their role
+      if (response.data.role === "admin") {
+        navigate("/admin/dashboard"); // Redirect admin to admin dashboard
+      } else {
+        navigate("/dashboard"); // Redirect regular user to normal dashboard
+      }
     } catch (error) {
       console.error("Error logging in:", error.response?.data || error.message);
     }
   };
-
+  
   return (
     <main className="flex flex-col justify-center items-center gap-10 min-h-screen p-5">
       <form
@@ -44,6 +51,7 @@ const Login = () => {
         className="flex flex-col justify-center items-center gap-6 shadow-xl rounded-md p-6 w-full max-w-md"
       >
         <h3 className="text-xl font-semibold">Login to Your Account</h3>
+        {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700">
@@ -53,6 +61,8 @@ const Login = () => {
             name="email"
             required
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
@@ -66,6 +76,8 @@ const Login = () => {
             name="password"
             required
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
@@ -79,7 +91,12 @@ const Login = () => {
         </button>
 
         {/* Sign Up Link */}
-        <p className="text-sm text-gray-600">Don't have an account? Sign Up </p>
+        <p className="text-sm text-gray-600">
+          Don't have an account?{" "}
+          <a href="/register" className="text-blue-600">
+            Sign Up
+          </a>
+        </p>
       </form>
     </main>
   );

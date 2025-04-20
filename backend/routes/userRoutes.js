@@ -5,6 +5,7 @@ import {
   fetchUser,
   updateUser,
   deleteUser,
+  loginUser
 } from "../controllers/userController.js";
 // import { authorizeAdmin } from "../middlewares/auth.js";
 
@@ -24,7 +25,7 @@ router
 .delete(deleteUser); // Delete single user
 
 
-// router.post("/auth", loginUser); //login
+router.post("/auth", loginUser); //login
 // router.post("/logout", logOutCurrentUser); //logout
 
 // router

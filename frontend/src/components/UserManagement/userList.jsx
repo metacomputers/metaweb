@@ -4,7 +4,9 @@ import UserTools from "./userTools";
 import EditUserModal from "./userEditModal";
 import Loader from "../Common/loader";
 import ConfirmationModal from "../Common/confirmationModal";
-import logo from "/meta_full.png";
+import { Pencil, Trash2 } from "lucide-react";
+// import logo from "/meta_full.png";
+import AdminLayout from "../Common/adminPanel";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -87,17 +89,18 @@ const UserList = () => {
   };
 
   return (
+    // <AdminLayout>
     <div className="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow-md mt-24">
 
       {/* Header */}
-      <header className="bg-black text-white py-4 shadow-md w-full fixed top-0 left-0">
+      {/* <header className="bg-black text-white py-4 shadow-md w-full fixed top-0 left-0">
         <div className="px-6 flex justify-between items-center">
           <div className="flex items-center">
             <img src={logo} alt="Company Logo" className="h-10 mr-2" />
             <h1 className="text-3xl font-semibold text-center justify-center justify-between">User Management Dashboard</h1>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <UserTools loadUsers={loadUsers} setSearchText={setSearchText} />
 
@@ -111,7 +114,8 @@ const UserList = () => {
               <th className="border border-gray-300 px-4 py-2">Last Name</th>
               <th className="border border-gray-300 px-4 py-2">Email</th>
               <th className="border border-gray-300 px-4 py-2">Role</th>
-              <th className="border border-gray-300 px-4 py-2">Actions</th>
+              <th className="border border-gray-300 px-4 py-2">Edit</th>
+              <th className="border border-gray-300 px-4 py-2">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -127,12 +131,14 @@ const UserList = () => {
                     <button
                       onClick={() => openEditModal(user)}
                       className="font-semibold bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
-                      Edit
+                      <Pencil className="w-5 h-5" />
                     </button>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
                     <button
                       onClick={() => openDeleteModal(user)}
                       className="font-semibold bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                      Delete
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   </td>
                 </tr>
@@ -161,7 +167,8 @@ const UserList = () => {
       />
 
     </div>
-  );
+    // </AdminLayout>
+    );
 };
 
 export default UserList;
