@@ -18,8 +18,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // 👈 Update this to match your frontend
-    credentials: true, // 👈 Important to allow cookies to be sent
+    origin: "http://localhost:5173",
+    credentials: true, // Important to allow cookies to be sent
   })
 );
 
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get('/api/test-cookie', (req, res) => {
-    console.log(req.cookies); // 👀 see if "jwt" appears here
+    console.log(req.cookies); // see if "jwt" appears here
     res.send('Cookies checked!');
   });
 

@@ -7,22 +7,22 @@ import {
   deleteUser,
   loginUser
 } from "../controllers/userController.js";
-// import { authorizeAdmin } from "../middlewares/auth.js";
+import { authorizeAdmin, authenticate } from "../middlewares/auth.js";
 
 const router = express.Router();
 
 // {baseUrl}/api/v1/users
 router
   .route("/")
-  .get(fetchUsers) // Get users
-  .post(createUser); // Create single user
+  .get(authenticate,fetchUsers) // Get users
+  .post(authenticate,createUser); // Create single user
 
 // {baseUrl}/api/v1/users/{username}
 router
-.route("/:username")
-.get(fetchUser) // Get single user
-.put(updateUser) // Update single user
-.delete(deleteUser); // Delete single user
+.route("/:id")
+.get(authenticate,fetchUser) // Get single user
+.put(authenticate,updateUser) // Update single user
+.delete(authenticate, deleteUser); // Delete single user
 
 
 router.post("/auth", loginUser); //login

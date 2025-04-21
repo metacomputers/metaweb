@@ -42,9 +42,9 @@ export const deleteUser = async (username) => {
   }
 };
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (email, password, role) => {
   try {
-    const response = await axios.post(`${API_URL}/auth`, { email, password }, {
+    const response = await axios.post(`${API_URL}/auth`, { email, password, role }, {
       withCredentials: true, // include if you're using cookies/session
     });
     return response.data;
@@ -54,8 +54,8 @@ export const loginUser = async (email, password) => {
   }
 };
 
-axios.get('http://localhost:5001/api/users/profile', {
+axios.get('http://localhost:5001/api/users/${_id}', {
   withCredentials: true,
 });
 
-axios.get('http://localhost:5001/api/test-cookie', { withCredentials: true });
+// axios.get('http://localhost:5001/api/test-cookie', { withCredentials: true });

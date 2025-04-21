@@ -68,7 +68,7 @@ const createUser = asyncHandler(async (req, res) => {
 
 //read - single user
 const fetchUser = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+  const user = await User.findById(req.params.id);
 
   if (!user) return res.status(404).json({ message: "User not found." });
 
@@ -82,7 +82,7 @@ const fetchUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+  const user = await User.findById(req.params.id);
 
   if (!user) return res.status(404).json({ message: "User not found." });
 
@@ -113,7 +113,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //deleting a single user
 const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+  const user = await User.findById(req.params.id);
 
   if (!user) return res.status(404).json({ message: "User not found." });
 
@@ -127,32 +127,29 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-  if (existingUser) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
+    if (existingUser) {
+        const isPasswordValid = await bcrypt.compare(password, existingUser.password);
 
-    if (isPasswordValid) {
-      // Call createToken function here
-      generateToken(res, existingUser._id);
+        if (isPasswordValid) {
+            // Call createToken function here
+            generateToken(res, existingUser._id);
 
-      res.status(201).json({
-        _id: existingUser._id,
-        username: existingUser.username,
-        email: existingUser.email,
-        isAdmin: existingUser.isAdmin,
-      });
+            res.status(200).json({
+                _id: existingUser._id,
+                username: existingUser.username,
+                email: existingUser.email,
+                role : existingUser.role
+            });
 
-      return; // Exit after sending the response
+            return; // Exit after sending the response
+        }
     }
-  }
 
-  res.status(400).json({ message: "Invalid email or password" });
+    res.status(400).json({ message: "Invalid email or password" });
 });
 
 // const logOutCurrentUser = asyncHandler(async (req, res) => {

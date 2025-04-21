@@ -11,12 +11,8 @@ const Login = () => {
   const onFormSubmit = async (evt) => {
     evt.preventDefault();
 
-    const email = evt.target.email.value;
-    const password = evt.target.password.value;
-
-    console.log("Entered Credentials:");
-    console.log("Email:", email);
-    console.log("Password:", password);
+    // const email = evt.target.email.value;
+    // const password = evt.target.password.value;
 
     try {
       // Send POST request to the backend with email and password
@@ -33,17 +29,18 @@ const Login = () => {
       // Save the response (which should contain token and role) in localStorage
       localStorage.setItem("userInfo", JSON.stringify(response.data));
 
+      //TODO : Add all the roles
       // Redirect user based on their role
-      if (response.data.role === "admin") {
-        navigate("/admin/dashboard"); // Redirect admin to admin dashboard
+      if (response.data.role === "Admin") {
+        navigate("/admin"); // Redirect admin to admin dashboard
       } else {
-        navigate("/dashboard"); // Redirect regular user to normal dashboard
+        navigate("/home"); // Redirect regular user to normal dashboard
       }
     } catch (error) {
       console.error("Error logging in:", error.response?.data || error.message);
     }
   };
-  
+
   return (
     <main className="flex flex-col justify-center items-center gap-10 min-h-screen p-5">
       <form
