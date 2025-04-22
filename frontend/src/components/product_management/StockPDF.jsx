@@ -97,7 +97,7 @@
 //                 pdf.text(product.category || "N/A", 105, y);
 //                 pdf.text(product.quantity?.toString() || "N/A", 75, y);
                 
-
+                
 
 
 //             });
