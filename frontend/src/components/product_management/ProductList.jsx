@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import AdminLayout from "../common/AdminPanel";
+import StockPDF from "./StockPDF";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -50,12 +51,14 @@ const ProductList = () => {
       
         {/* Search Bar*/}
         <div className="mb-6">
+        <StockPDF allProducts = {products} />
         <button
             className="bg-blend-normal text-black py-2 px-4 rounded-md hover:bg-gray-700 transition"
             onClick={() => navigate("/addproduct")}
           >
             + Add New Product
           </button>
+          
           <input
             type="text"
             name="brand"
