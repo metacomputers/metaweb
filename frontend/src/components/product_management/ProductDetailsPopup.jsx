@@ -54,7 +54,7 @@ const ProductDetailsPopup = ({ product, onClose, onAddToCart }) => {
                             <p className="text-3xl font-bold text-purple-400 mb-1">
                                 LKR. {product.price.toLocaleString()}.00
                             </p>
-                            <p className="text-green-400 text-sm">In Stock</p>
+                            <p className="text-green-400 text-sm">{product.quantity} - In Stock</p>
                         </div>
 
                         <div className="mb-6">

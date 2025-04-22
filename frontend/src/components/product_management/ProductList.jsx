@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllProducts } from "../api/productApi";
+import { fetchAllProducts } from "../../api/productApi";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import AdminLayout from "./common/AdminPanel";
+import AdminLayout from "../common/AdminPanel";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);

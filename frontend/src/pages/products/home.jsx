@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllProducts } from "../api/productApi";
+import { fetchAllProducts } from "../../api/productApi";
 
-import ProductDetailsPopup from "../components/ProductDetailsPopup";
-import Header from "../components/common/Header";
-import Footer from "../components/common/Footer";
+import ProductDetailsPopup from "../../components/product_management/ProductDetailsPopup";
+import Header from "../../components/common/Header"
+import Footer from "../../components/common/Footer";
 
-const Home = () => {
+const ProductPage = () => {
     const [products, setProducts] = useState([]);
 
     const [brandFilter, setBrandFilter] = useState("");
@@ -270,9 +270,9 @@ const Home = () => {
                                         </button> */}
                                     </div>
                                 </div>
-                            ))}                            
+                            ))}
                         </div>
-                           
+
                         {filteredProducts.length === 0 && (
                             <div className="bg-gray-800 border border-gray-700 rounded-xl p-10 text-center shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -288,10 +288,10 @@ const Home = () => {
                                 </button>
                             </div>
                         )}
-                        
+
                     </>
                 )}
-                
+
             </div>
 
             {/* Product Details Popup */}
@@ -302,9 +302,9 @@ const Home = () => {
                     onAddToCart={handleAddToCart}
                 />
             )}
-            <Footer/>
+            <Footer />
         </div>
     );
 };
 
-export default Home;
+export default ProductPage;
