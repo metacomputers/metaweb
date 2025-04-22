@@ -16,7 +16,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src="../../../public/meta_full.png" 
+              src="meta_full.png" 
               alt="Company Logo" 
               className="h-20 w-auto mr-3"
             />
