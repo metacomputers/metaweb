@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "concurrently": "^9.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -22,8 +21,15 @@
     "express-async-handler": "^1.2.0",
     "express-formidable": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "lucide-react": "^0.483.0",
     "mongoose": "^8.12.1",
     "multer": "^1.4.5-lts.1",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
