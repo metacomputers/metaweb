@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error] = useState("");
+  const [error, setError ] = useState("");
   const navigate = useNavigate();
 
   const onFormSubmit = async (evt) => {
@@ -47,6 +47,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error logging in:", error.response?.data || error.message);
+
+      setError("Invalid email or password.");
     }
   };
 
@@ -60,6 +62,7 @@ const Login = () => {
         {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full">
+          
           <label className="block text-sm font-medium text-gray-700">
             Email
           </label>

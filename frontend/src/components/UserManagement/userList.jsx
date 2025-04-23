@@ -5,7 +5,8 @@ import EditUserModal from "./userEditModal";
 import Loader from "../Common/loader";
 import ConfirmationModal from "../Common/confirmationModal";
 import { Pencil, Trash2 } from "lucide-react";
-// import logo from "/meta_full.png";
+import { FaDownload } from "react-icons/fa";
+import UserReportPopup from "./UserReportModal";
 import AdminLayout from "../Common/adminPanel";
 
 const UserList = () => {
@@ -15,6 +16,7 @@ const UserList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+  const [showUserReport, setShowUserReport] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -50,14 +52,12 @@ const UserList = () => {
     setIsEditModalOpen(true);
   };
 
-  // Open modal & set userId to delete
   const openDeleteModal = (user) => {
     console.log("Selected user for deletion:", user);
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };
 
-  // Close modal
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedUser(null);
@@ -67,7 +67,6 @@ const UserList = () => {
     try {
       await updateUser(id, updatedData);
 
-      // Update the user list
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user._id === id ? { ...user, ...updatedData } : user
@@ -82,42 +81,31 @@ const UserList = () => {
 
   const handleDelete = async (id) => {
     try {
-      // Clean console logging when attempting deletion
       console.log(`Attempting to delete user with ID: ${id}`);
 
       await deleteUser(id);
 
-      // Log success
       console.log(`User ${id} deleted successfully`);
 
-      // Update UI
       setUsers(users.filter((user) => user._id !== id));
       closeDeleteModal();
     } catch (error) {
-      // Clean console log for the error
       console.log(`Delete operation failed: ${error.message}`);
 
-      // Show error to user
       alert(error.message);
       closeDeleteModal();
     }
   };
-  return (
-    // <AdminLayout>
-    <div className="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow-md mt-24">
-      {/* Header */}
-      {/* <header className="bg-black text-white py-4 shadow-md w-full fixed top-0 left-0">
-        <div className="px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src={logo} alt="Company Logo" className="h-10 mr-2" />
-            <h1 className="text-3xl font-semibold text-center justify-center justify-between">User Management Dashboard</h1>
-          </div>
-        </div>
-      </header> */}
 
+  const handleDownloadReport = (user) => {
+    setSelectedUser(user);
+    setShowUserReport(true);
+  };
+
+  return (
+    <div className="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow-md mt-24">
       <UserTools loadUsers={loadUsers} setSearchText={setSearchText} />
 
-      {/* <h2 className="text-2xl font-bold mb-4 text-center">User List</h2> */}
       <div className="overflow-x-auto mt-8">
         <table className="w-full border-collapse border border-gray-300 shadow-lg rounded-lg">
           <thead className="bg-gray-100">
@@ -129,49 +117,56 @@ const UserList = () => {
               <th className="border border-gray-300 px-4 py-2">Role</th>
               <th className="border border-gray-300 px-4 py-2">Edit</th>
               <th className="border border-gray-300 px-4 py-2">Delete</th>
+              <th className="border border-gray-300 px-4 py-2">Download Report</th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => {
-              return (
-                <tr
-                  key={user.username}
-                  className="hover:bg-gray-50 text-center"
-                >
-                  <td className="border border-gray-300 px-4 py-2">
-                    {user.username}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {user.firstName}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {user.lastName}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {user.email}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {user.role}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
-                    <button
-                      onClick={() => openEditModal(user)}
-                      className="font-semibold bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <button
-                      onClick={() => openDeleteModal(user)}
-                      className="font-semibold bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {filteredUsers.map((user) => (
+              <tr
+                key={user.username}
+                className="hover:bg-gray-50 text-center"
+              >
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.username}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.firstName}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.lastName}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.email}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {user.role}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
+                  <button
+                    onClick={() => openEditModal(user)}
+                    className="font-semibold bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                  >
+                    <Pencil className="w-5 h-5" />
+                  </button>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <button
+                    onClick={() => openDeleteModal(user)}
+                    className="font-semibold bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <button 
+                    onClick={() => handleDownloadReport(user)} 
+                    className="font-semibold bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition"
+                  >
+                    <FaDownload className="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -184,7 +179,6 @@ const UserList = () => {
         />
       )}
 
-      {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         id={selectedUser?._id}
@@ -193,8 +187,15 @@ const UserList = () => {
         title={"Confirm Deletion"}
         description={`Are you sure you want delete "${selectedUser?.username}"?`}
       />
+      
+      {showUserReport && (
+        <UserReportPopup
+          showReport={showUserReport}
+          setShowReport={setShowUserReport}
+          userDetails={selectedUser}
+        />
+      )}
     </div>
-    // </AdminLayout>
   );
 };
 
