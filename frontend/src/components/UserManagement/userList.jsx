@@ -78,10 +78,10 @@ const UserList = () => {
     }
   };
 
-  const handleDelete = async (username) => {
+  const handleDelete = async (id) => {
     try {
-      await deleteUser(username);
-      setUsers(users.filter(user => user.username !== username));
+      await deleteUser(id);
+      setUsers(users.filter(user => user._id !== id));
       closeDeleteModal();
     } catch {
       console.log("Error deleting user");

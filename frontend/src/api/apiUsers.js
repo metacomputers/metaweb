@@ -14,7 +14,9 @@ export const addUser = async (newUser) => {
 
 export const fetchUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}`);
+    const response = await axios.get(`${API_URL}`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -24,7 +26,10 @@ export const fetchUsers = async () => {
 
 export const updateUser = async (username, updatedUser) => {
   try {
-    const response = await axios.put(`${API_URL}/${username}`, updatedUser);
+    const response = await axios.put(`${API_URL}/${username}`, updatedUser, {
+      withCredentials: true,
+    });
+
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -32,9 +37,9 @@ export const updateUser = async (username, updatedUser) => {
   }
 };
 
-export const deleteUser = async (username) => {
+export const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/${username}`);
+    const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting user:", error);
@@ -42,20 +47,18 @@ export const deleteUser = async (username) => {
   }
 };
 
-export const loginUser = async (email, password, role) => {
+export const loginUser = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth`, { email, password, role }, {
-      withCredentials: true, // include if you're using cookies/session
-    });
+    const response = await axios.post(
+      `${API_URL}/auth`,
+      { email, password },
+      {
+        withCredentials: true, // include if you're using cookies/session
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
     throw error.response?.data?.message || "Login failed";
   }
 };
-
-axios.get('http://localhost:5001/api/users/${_id}', {
-  withCredentials: true,
-});
-
-// axios.get('http://localhost:5001/api/test-cookie', { withCredentials: true });

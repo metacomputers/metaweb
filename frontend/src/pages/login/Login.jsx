@@ -11,11 +11,9 @@ const Login = () => {
   const onFormSubmit = async (evt) => {
     evt.preventDefault();
 
-    // const email = evt.target.email.value;
-    // const password = evt.target.password.value;
-
     try {
-      // Send POST request to the backend with email and password
+      console.log("Sending login request with:", { email, password });
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/users/auth`,
         { email, password },
@@ -23,18 +21,26 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
+
+      console.log("Login response data:", response.data);
 
       // Save the response (which should contain token and role) in localStorage
       localStorage.setItem("userInfo", JSON.stringify(response.data));
 
+      const userRole = response.data.role;
+      console.log("User role from response:", userRole);
+
       //TODO : Add all the roles
       // Redirect user based on their role
-      if (response.data.role === "Admin") {
-        navigate("/admin"); // Redirect admin to admin dashboard
+      if (userRole && userRole.toLowerCase() === "admin") {
+        console.log("Redirecting to admin page");
+        navigate("/admin");
       } else {
-        navigate("/home"); // Redirect regular user to normal dashboard
+        console.log("Redirecting to home page");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Error logging in:", error.response?.data || error.message);

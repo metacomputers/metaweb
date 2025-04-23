@@ -14,15 +14,15 @@ const router = express.Router();
 // {baseUrl}/api/v1/users
 router
   .route("/")
-  .get(authenticate,fetchUsers) // Get users
-  .post(authenticate,createUser); // Create single user
+  .get(authenticate, fetchUsers) // Get users
+  .post(createUser); // Create single user
 
 // {baseUrl}/api/v1/users/{username}
 router
 .route("/:id")
-.get(authenticate,fetchUser) // Get single user
-.put(authenticate,updateUser) // Update single user
-.delete(authenticate, deleteUser); // Delete single user
+.get(fetchUser) // Get single user
+.put(updateUser) // Update single user
+.delete(deleteUser); // Delete single user
 
 
 router.post("/auth", loginUser); //login

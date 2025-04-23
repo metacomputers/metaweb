@@ -121,7 +121,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Cannot delete an admin user." });
   }
 
-  await User.deleteOne({ username: user.username });
+  await User.deleteOne({ _id: user._id });
 
   return res.json({ message: "User Removed" });
 });

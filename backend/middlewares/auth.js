@@ -8,7 +8,7 @@ const authenticate = asyncHandler(async( req, res, next) =>{
 
     //read JWT from the 'jwt' cookie
     token = req.cookies.jwt;
-
+   
     if (token){
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -27,7 +27,7 @@ const authenticate = asyncHandler(async( req, res, next) =>{
 });
 
 const authorizeAdmin = (req, res, next) =>{
-    if( req.user && req.user.isAdmin){
+    if (req.user && req.user.role && req.user.role.toLowerCase() === "Admin") {
         next()
     } else {
         res.status(401).send ("Not authorized as an admin")
