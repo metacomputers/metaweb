@@ -24,9 +24,9 @@ export const fetchUsers = async () => {
   }
 };
 
-export const updateUser = async (username, updatedUser) => {
+export const updateUser = async (id, updatedUser) => {
   try {
-    const response = await axios.put(`${API_URL}/${username}`, updatedUser, {
+    const response = await axios.put(`${API_URL}/${id}`, updatedUser, {
       withCredentials: true,
     });
 
@@ -42,8 +42,10 @@ export const deleteUser = async (id) => {
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting user:", error);
-    return null;
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw error;
   }
 };
 

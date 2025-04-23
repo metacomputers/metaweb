@@ -41,7 +41,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
       role: formData.role,
     };
 
-    onUpdate(user.username, updatedUser);
+    onUpdate(user._id, updatedUser);
 
     onClose();
   };

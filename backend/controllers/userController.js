@@ -11,6 +11,7 @@ const fetchUsers = asyncHandler(async (req, res) => {
 
   res.status(200).json(
     users.map((user) => ({
+      _id: user._id,
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -117,7 +118,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   if (!user) return res.status(404).json({ message: "User not found." });
 
-  if (user.role?.toLowerCase() === "admin") {
+  if (user.role?.toLowerCase() === "admin" || user.role === "Admin") {
     return res.status(400).json({ message: "Cannot delete an admin user." });
   }
 
@@ -127,29 +128,43 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-        const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+  if (existingUser) {
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
 
-        if (isPasswordValid) {
-            // Call createToken function here
-            generateToken(res, existingUser._id);
+    if (isPasswordValid) {
+      // Call createToken function here
+      generateToken(res, existingUser._id);
 
-            res.status(200).json({
-                _id: existingUser._id,
-                username: existingUser.username,
-                email: existingUser.email,
-                role : existingUser.role
-            });
+      // console.log("User data to be sent:", {
+      //   _id: existingUser._id,
+      //   username: existingUser.username,
+      //   firstName: existingUser.firstName, // Include firstName
+      //   lastName: existingUser.lastName,
+      //   email: existingUser.email,
+      //   role: existingUser.role,
+      // });
 
-            return; // Exit after sending the response
-        }
+      res.status(200).json({
+        _id: existingUser._id,
+        username: existingUser.username,
+        firstName: existingUser.firstName, // Include firstName
+        lastName: existingUser.lastName,
+        email: existingUser.email,
+        role: existingUser.role,
+      });
+
+      return; // Exit after sending the response
     }
+  }
 
-    res.status(400).json({ message: "Invalid email or password" });
+  res.status(400).json({ message: "Invalid email or password" });
 });
 
 // const logOutCurrentUser = asyncHandler(async (req, res) => {

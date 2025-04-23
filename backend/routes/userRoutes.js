@@ -5,7 +5,7 @@ import {
   fetchUser,
   updateUser,
   deleteUser,
-  loginUser
+  loginUser,
 } from "../controllers/userController.js";
 import { authorizeAdmin, authenticate } from "../middlewares/auth.js";
 
@@ -19,11 +19,10 @@ router
 
 // {baseUrl}/api/v1/users/{username}
 router
-.route("/:id")
-.get(fetchUser) // Get single user
-.put(updateUser) // Update single user
-.delete(deleteUser); // Delete single user
-
+  .route("/:id")
+  .get(fetchUser) // Get single user
+  .put(updateUser) // Update single user
+  .delete(deleteUser); // Delete single user
 
 router.post("/auth", loginUser); //login
 // router.post("/logout", logOutCurrentUser); //logout

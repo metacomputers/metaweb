@@ -36,13 +36,14 @@ const UserList = () => {
       value.toString().toLowerCase().includes(searchText.toLowerCase())
     )
   );
-  
 
   if (loading) {
-    return <div><Loader/></div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
-
-
 
   const openEditModal = async (user) => {
     setSelectedUser(user);
@@ -51,6 +52,7 @@ const UserList = () => {
 
   // Open modal & set userId to delete
   const openDeleteModal = (user) => {
+    console.log("Selected user for deletion:", user);
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };
@@ -61,14 +63,14 @@ const UserList = () => {
     setSelectedUser(null);
   };
 
-  const handleUpdate = async (username, updatedData) => {
+  const handleUpdate = async (id, updatedData) => {
     try {
-      await updateUser(username, updatedData)
+      await updateUser(id, updatedData);
 
       // Update the user list
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.username === username ? { ...user, ...updatedData } : user
+          user._id === id ? { ...user, ...updatedData } : user
         )
       );
 
@@ -80,18 +82,29 @@ const UserList = () => {
 
   const handleDelete = async (id) => {
     try {
+      // Clean console logging when attempting deletion
+      console.log(`Attempting to delete user with ID: ${id}`);
+
       await deleteUser(id);
-      setUsers(users.filter(user => user._id !== id));
+
+      // Log success
+      console.log(`User ${id} deleted successfully`);
+
+      // Update UI
+      setUsers(users.filter((user) => user._id !== id));
       closeDeleteModal();
-    } catch {
-      console.log("Error deleting user");
+    } catch (error) {
+      // Clean console log for the error
+      console.log(`Delete operation failed: ${error.message}`);
+
+      // Show error to user
+      alert(error.message);
+      closeDeleteModal();
     }
   };
-
   return (
     // <AdminLayout>
     <div className="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow-md mt-24">
-
       {/* Header */}
       {/* <header className="bg-black text-white py-4 shadow-md w-full fixed top-0 left-0">
         <div className="px-6 flex justify-between items-center">
@@ -121,23 +134,38 @@ const UserList = () => {
           <tbody>
             {filteredUsers.map((user) => {
               return (
-                <tr key={user.username} className="hover:bg-gray-50 text-center">
-                  <td className="border border-gray-300 px-4 py-2">{user.username}</td>
-                  <td className="border border-gray-300 px-4 py-2">{user.firstName}</td>
-                  <td className="border border-gray-300 px-4 py-2">{user.lastName}</td>
-                  <td className="border border-gray-300 px-4 py-2">{user.email}</td>
-                  <td className="border border-gray-300 px-4 py-2">{user.role}</td>
+                <tr
+                  key={user.username}
+                  className="hover:bg-gray-50 text-center"
+                >
+                  <td className="border border-gray-300 px-4 py-2">
+                    {user.username}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {user.firstName}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {user.lastName}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {user.email}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {user.role}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
                     <button
                       onClick={() => openEditModal(user)}
-                      className="font-semibold bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                      className="font-semibold bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                    >
                       <Pencil className="w-5 h-5" />
                     </button>
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     <button
                       onClick={() => openDeleteModal(user)}
-                      className="font-semibold bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                      className="font-semibold bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                    >
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </td>
@@ -146,7 +174,7 @@ const UserList = () => {
             })}
           </tbody>
         </table>
-        </div>
+      </div>
 
       {isEditModalOpen && (
         <EditUserModal
@@ -159,16 +187,15 @@ const UserList = () => {
       {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
-        id={selectedUser?.username}
+        id={selectedUser?._id}
         onClose={closeDeleteModal}
         onConfirm={handleDelete}
         title={"Confirm Deletion"}
         description={`Are you sure you want delete "${selectedUser?.username}"?`}
       />
-
     </div>
     // </AdminLayout>
-    );
+  );
 };
 
 export default UserList;

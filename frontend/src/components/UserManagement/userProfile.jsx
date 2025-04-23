@@ -1,23 +1,25 @@
-// src/pages/UserProfile.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User } from "lucide-react";
 import EditUserModal from "./userEditModal";
 
 const Profile = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const user = {
-    username: "sinethma123",
-    firstName: "Sinethma",
-    lastName: "De Silva",
-    contact: "+39 123 456 789",
-    billingAddress: "No. 25, Colombo, Sri Lanka",
-    shippingAddress: "No. 78, Milan, Italy",
-    orders: [
-      { id: "#1001", status: "Delivered", date: "2025-04-10" },
-      { id: "#1002", status: "Processing", date: "2025-04-15" },
-    ],
-  };
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("userInfo"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
@@ -27,6 +29,7 @@ const Profile = () => {
           <div className="w-28 h-28 flex items-center justify-center rounded-full border-4 border-purple-600 bg-gray-800 mb-2">
             <User size={48} className="text-purple-500" />
           </div>
+
           <h2 className="text-2xl font-semibold">{user.username}</h2>
         </div>
 
@@ -54,8 +57,8 @@ const Profile = () => {
           </div>
         </div>
 
-         {/* Edit Profile Button */}
-         <div className="text-center mb-8">
+        {/* Edit Profile Button */}
+        <div className="text-center mb-8">
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition"
@@ -68,25 +71,29 @@ const Profile = () => {
         <div>
           <h3 className="text-xl font-semibold mb-4">Order History</h3>
           <div className="space-y-4">
-            {user.orders.map((order, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg p-4">
-                <p>
-                  <span className="text-gray-400">Order ID:</span> {order.id}
-                </p>
-                <p>
-                  <span className="text-gray-400">Status:</span> {order.status}
-                </p>
-                <p>
-                  <span className="text-gray-400">Date:</span> {order.date}
-                </p>
-              </div>
-            ))}
+            {user.orders?.length > 0 ? (
+              user.orders.map((order, index) => (
+                <div key={index} className="bg-gray-800 rounded-lg p-4">
+                  <p>
+                    <span className="text-gray-400">Order ID:</span> {order.id}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Status:</span> {order.status}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Date:</span> {order.date}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No orders found.</p>
+            )}
           </div>
         </div>
       </div>
-      {/* Edit Modal */}
 
-      {isModalOpen && <EditUserModal onClose={() => setIsModalOpen(false)} />}
+      {/* Edit Modal */}
+      {isModalOpen && <EditUserModal onClose={() => setIsModalOpen(false)} user={user} />}
     </div>
   );
 };

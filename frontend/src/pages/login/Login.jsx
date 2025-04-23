@@ -33,6 +33,9 @@ const Login = () => {
       const userRole = response.data.role;
       console.log("User role from response:", userRole);
 
+      const userFirstName = response.data.firstName;
+      console.log("First name from response:", userFirstName);
+
       //TODO : Add all the roles
       // Redirect user based on their role
       if (userRole && userRole.toLowerCase() === "admin") {
