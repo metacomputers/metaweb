@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   LayoutDashboard,
   PlusSquare,
@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   Truck,
   LogOut,
+  DollarSign,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -17,7 +18,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     // Example: clear auth tokens or user data
-    localStorage.removeItem("token"); // If you’re using JWTs
+    localStorage.removeItem("token"); // If you're using JWTs
     navigate("/login"); 
   };
 
@@ -29,13 +30,13 @@ const Sidebar = () => {
     { name: "Delivery", icon: <Truck size={20} />, path: "/admin/delivery" },
     { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/repairs" },
     { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/consultations" },
+    { name: "Financial Insights", icon: <DollarSign size={20} />, path: "/admin/financials" },
   ];
 
   return (
-    <aside className="w-64 h-screen bg-gray-100 p-5 shadow-md flex flex-col justify-between">
+    <aside className="w-64 h-screen bg-gray-100 p-5 shadow-md flex flex-col justify-between overflow-y-auto">
       <div>
         <div className="flex items-center gap-3 mb-8">
-          {/* <img src="/meta.png" alt="Meta Logo" className="w-8 h-8" /> */}
           <h2 className="text-2xl font-bold text-black">Admin Panel</h2>
         </div>
 
@@ -54,7 +55,6 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      {/* Updated Logout Section */}
       <div className="mt-8">
         <hr className="border-gray-700 my-4" />
         <div
@@ -91,14 +91,14 @@ const Header = () => {
   );
 };
 
-const AdminLayout = () => {
+const AdminLayout = ({ children }) => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 overflow-hidden">
         <Header />
         <main className="flex-1 overflow-auto p-6 bg-gray-50">
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>
