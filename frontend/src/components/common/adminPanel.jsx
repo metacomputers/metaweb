@@ -10,14 +10,14 @@ import {
   ShoppingCart,
   Truck,
   LogOut,
+  DollarSign, // Added for financial section
 } from "lucide-react";
 
 const Sidebar = () => {
   const navigate = useNavigate(); 
 
   const handleLogout = () => {
-    // Example: clear auth tokens or user data
-    localStorage.removeItem("token"); // If you’re using JWTs
+    localStorage.removeItem("token");
     navigate("/login"); 
   };
 
@@ -29,13 +29,14 @@ const Sidebar = () => {
     { name: "Delivery", icon: <Truck size={20} />, path: "/admin/delivery" },
     { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/repairs" },
     { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/consultations" },
+    { name: "Financial Insights", icon: <DollarSign size={20} />, path: "/admin/financials" }, // New financial section
   ];
 
   return (
     <aside className="w-64 h-screen bg-gray-100 p-5 shadow-md flex flex-col justify-between">
+      {/* Rest of the sidebar code remains the same */}
       <div>
         <div className="flex items-center gap-3 mb-8">
-          {/* <img src="/meta.png" alt="Meta Logo" className="w-8 h-8" /> */}
           <h2 className="text-2xl font-bold text-black">Admin Panel</h2>
         </div>
 
@@ -54,7 +55,6 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      {/* Updated Logout Section */}
       <div className="mt-8">
         <hr className="border-gray-700 my-4" />
         <div
@@ -68,6 +68,8 @@ const Sidebar = () => {
     </aside>
   );
 };
+
+// Header and AdminLayout components remain unchanged
 
 const Header = () => {
   const navigate = useNavigate();

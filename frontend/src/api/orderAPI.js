@@ -23,3 +23,34 @@ export const getUserOrders = async () => {
     throw error;
   }
 };
+
+// Update order delivery status
+export const updateOrderStatus = async (orderId, deliveryStatus) => {
+  try {
+    const response = await axios.put(`${API_URL}/admin/orders/${orderId}`, { 
+      deliveryStatus: deliveryStatus.toLowerCase() 
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    throw error;
+  }
+};
+
+// Delete an order
+export const deleteOrder = async (orderId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/admin/orders/${orderId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    throw error;
+  }
+};
+
+export default {
+  getAllOrders,
+  getUserOrders,
+  updateOrderStatus,
+  deleteOrder
+};
