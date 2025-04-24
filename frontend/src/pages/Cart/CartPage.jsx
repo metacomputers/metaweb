@@ -177,8 +177,8 @@ const CartPage = () => {
       
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex items-center justify-center mb-10">
-          <FaShoppingCart className="text-3xl mr-3 text-purple-500" />
-          <h1 className="text-4xl font-bold text-white">
+          <FaShoppingCart className="text-3xl mr-3 text-purple-500 mt-25" />
+          <h1 className="text-4xl font-bold text-white mt-25">
             Your Cart
           </h1>
         </div>

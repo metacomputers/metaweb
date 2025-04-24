@@ -47,10 +47,3 @@ export const deleteOrder = async (orderId) => {
     throw error;
   }
 };
-
-export default {
-  getAllOrders,
-  getUserOrders,
-  updateOrderStatus,
-  deleteOrder
-};
