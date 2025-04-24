@@ -1,13 +1,36 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaShoppingCart, FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("userInfo"));
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const logoutHandler = async () => {
+    try {
+      // Call backend logout endpoint
+      const response = await fetch("/api/users/logout", {
+        method: "POST",
+        credentials: "include", // Important for cookies
+      });
+
+      if (response.ok) {
+        // Clear user from localStorage
+        localStorage.removeItem("userInfo");
+        
+        // Redirect to home page
+        navigate("/");
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -63,18 +86,24 @@ const Header = () => {
               <>
                 <Link
                   to="/profile"
-                  className="text-white hover:text-purple-400 transition duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-white hover:text-purple-400 transition duration-300 flex items-center"
                 >
-                  <FaUser />
+                  <FaUser className="mr-2" />
+                  <span>{user.firstName}</span>
                 </Link>
+                <button
+                  onClick={logoutHandler}
+                  className="text-white hover:text-purple-400 transition duration-300 flex items-center"
+                >
+                  <FaSignOutAlt className="mr-2" />
+                  <span>Logout</span>
+                </button>
               </>
             ) : (
               <>
                 <Link
                   to="/login"
                   className="text-white hover:text-purple-400 transition duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>Login / Register</span>
                 </Link>
@@ -117,25 +146,52 @@ const Header = () => {
               >
                 About Us
               </Link>
-              <div className="pt-4 border-t border-gray-700 flex justify-between items-center">
-                <Link
-                  to="/login"
-                  className="flex items-center text-white hover:text-purple-400 transition duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <FaUser className="mr-2" />
-                  <span>Login / Register</span>
-                </Link>
-                <Link
-                  to="/cart"
-                  className="relative flex items-center text-white hover:text-purple-400 transition duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <FaShoppingCart className="text-xl" />
-                  <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    0
-                  </span>
-                </Link>
+              <div className="pt-4 border-t border-gray-700">
+                {user ? (
+                  <div className="flex justify-between">
+                    <Link
+                      to="/profile"
+                      className="flex items-center text-white hover:text-purple-400 transition duration-300"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <FaUser className="mr-2" />
+                      <span>{user.firstName}</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logoutHandler();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="flex items-center text-white hover:text-purple-400 transition duration-300"
+                    >
+                      <FaSignOutAlt className="mr-2" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <Link
+                      to="/login"
+                      className="flex items-center text-white hover:text-purple-400 transition duration-300"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <FaUser className="mr-2" />
+                      <span>Login / Register</span>
+                    </Link>
+                  </div>
+                )}
+                <div className="mt-4 flex justify-end">
+                  <Link
+                    to="/cart"
+                    className="relative flex items-center text-white hover:text-purple-400 transition duration-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FaShoppingCart className="text-xl" />
+                    <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      0
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

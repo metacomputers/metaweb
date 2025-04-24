@@ -6,6 +6,7 @@ import {
   updateUser,
   deleteUser,
   loginUser,
+  logoutUser
 } from "../controllers/userController.js";
 import { authorizeAdmin, authenticate } from "../middlewares/auth.js";
 
@@ -25,7 +26,7 @@ router
   .delete(deleteUser); // Delete single user
 
 router.post("/auth", loginUser); //login
-// router.post("/logout", logOutCurrentUser); //logout
+router.post('/logout', logoutUser);
 
 // router
 //   .route("/profile")

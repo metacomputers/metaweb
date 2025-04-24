@@ -1,6 +1,7 @@
 // src/components/adminPanel.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom"; // ← Add this at the top with other imports
+import { logoutUser } from "../../api/apiUsers"
 import { Link, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -16,10 +17,19 @@ import {
 const Sidebar = () => {
   const navigate = useNavigate(); // ← Needed for programmatic navigation
 
-  const handleLogout = () => {
-    // Example: clear auth tokens or user data
-    localStorage.removeItem("token"); // If you’re using JWTs
-    navigate("/login"); // Redirect to login page
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      localStorage.removeItem("userInfo");
+      
+      // For admin panel, you might want to redirect to login page
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Still clear localStorage even if the API call fails
+      localStorage.removeItem("userInfo");
+      navigate('/login');
+    }
   };
 
   const navItems = [

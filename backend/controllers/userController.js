@@ -169,25 +169,14 @@ const loginUser = asyncHandler(async (req, res) => {
   res.status(400).json({ message: "Invalid email or password" });
 });
 
-// const logOutCurrentUser = asyncHandler(async (req, res) => {
-//     res.cookie('jwt' , '', {
-//         httpOnly : true,
-//         expires : new Date(0),
-//     })
+const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+    sameSite: 'strict',
+    path: '/'
+  });
 
-//     res.status(200). json({message : "Logged Out Successfully"});
-// });
-
-// //getting a specific user
-// const getUserById = asyncHandler(async (req, res) => {
-//     const user = await User.findById(req.params.username).select('-password')
-
-//     if (user){
-//         res.json(user)    //show the user
-//     } else {
-//         res.status(404);
-//         throw new Error ("User not Found");
-//     }
-// });
-
-export { fetchUsers, createUser, fetchUser, updateUser, deleteUser, loginUser };
+  res.status(200).json({ message: "Logged out successfully" });
+});
+export { fetchUsers, createUser, fetchUser, updateUser, deleteUser, loginUser, logoutUser };

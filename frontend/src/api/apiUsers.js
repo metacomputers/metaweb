@@ -64,3 +64,23 @@ export const loginUser = async (email, password) => {
     throw error.response?.data?.message || "Login failed";
   }
 };
+
+export const logoutUser = async () => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/logout`,
+      {},
+      {
+        withCredentials: true, // important for clearing cookies
+      }
+    );
+    
+    // Clear any localStorage data
+    localStorage.removeItem("userInfo");
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error logging out:", error);
+    throw error.response?.data?.message || "Logout failed";
+  }
+};
