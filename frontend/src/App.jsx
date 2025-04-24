@@ -15,25 +15,29 @@ function App() {
   return (
     <Router>
       <Header />
-      <main className="min-h-screen"> 
+      <main className="min-h-screen">
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="user/orders" element={<UserOrdersPage />} />
-          <Route path="/admin/orders" element={<AdminOrdersPage />} />
-         
-          
-          <Route path="/admin" element={<AdminLayout />} />
-          <Route path="/admin/products" element={<ProductList />} />
-          <Route path="/admin/add-product" element={<ProductList />} />
-          <Route path="/updateproduct/:id" element={<UpdateProduct />} />
           <Route path="/products" element={<ProductPage />} />
+          <Route path="user/orders" element={<UserOrdersPage />} />
           
+          {/* Admin routes - properly nested */}
+          <Route path="/admin" element={<AdminLayout />}>
+            
+            <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="products" element={<ProductList />} />
+            <Route path="add-product" element={<AddProduct />} />
+          </Route>
+          
+          {/* Route outside of admin layout */}
+          <Route path="/updateproduct/:id" element={<UpdateProduct />} />
         </Routes>
       </main>
-      <Footer /> 
+      <Footer />
     </Router>
   );
 }
 
-export default App
+export default App;

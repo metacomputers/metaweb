@@ -15,7 +15,7 @@ import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
 dotenv.config();
-const port = process.env.PORT || 5000;
+const port =  5000;
 
 //DB Connection
 connectDB();
