@@ -131,5 +131,4 @@ export {
   getUserOrders,
   updateDeliveryStatus,
   deleteOrder
-
 };

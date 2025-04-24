@@ -1,0 +1,35 @@
+import express from "express";
+import {
+  fetchUsers,
+  createUser,
+  fetchUser,
+  updateUser,
+  deleteUser,
+  loginUser,
+  logoutUser
+} from "../controllers/userController.js";
+import { authorizeAdmin, authenticate } from "../middlewares/auth.js";
+
+const router = express.Router();
+
+// {baseUrl}/api/v1/users
+router
+  .route("/")
+  .get(authenticate, fetchUsers) // Get users
+  .post(createUser); // Create single user
+
+// {baseUrl}/api/v1/users/{username}
+router
+  .route("/:id")
+  .get(fetchUser) // Get single user
+  .put(updateUser) // Update single user
+  .delete(deleteUser); // Delete single user
+
+router.post("/auth", loginUser); //login
+router.post('/logout', logoutUser);
+
+// router
+//   .route("/profile")
+//   .get(getCurrentUserProfile); //user profile
+
+export default router;
