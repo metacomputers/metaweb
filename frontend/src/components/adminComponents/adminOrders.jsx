@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Package, Trash2, Search, Filter } from 'lucide-react';
-import { getAllOrders, updateOrderStatus, deleteOrder } from '../../api/orderAPI';
+import { getAllOrders, updateOrderStatus, deleteOrder } from '../../api/orderAPI.js';
 import { toast, Toaster } from 'react-hot-toast';
-import AdminLayout from "../../components/common/AdminPanel.jsx";
+import AdminLayout from "../common/AdminPanel.jsx";
 
 const Orders = () => {
   // Use a single state object to reduce re-renders
