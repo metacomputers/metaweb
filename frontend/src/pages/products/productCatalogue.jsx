@@ -58,16 +58,14 @@ const ProductPage = () => {
         setShowPopup(false);
     };
 
-    const handleAddToCart = async (product) => {
-        // Add to cart logic here
-        console.log("Adding to cart:", product);
-        // You can implement your add to cart API call here
+    const handleAddToCart = async (product, quantity) => {
         try {
-            // Example: await addToCart(product._id, 1);
-            alert(`${product.name} added to cart!`);
+            await addToCart(product._id, quantity);
+            toast.success(`${product.name} added to cart!`);
+            setShowPopup(false);
         } catch (error) {
             console.error("Error adding to cart:", error);
-            alert("Failed to add product to cart");
+            toast.error("Failed to add product to cart");
         }
     };
 
