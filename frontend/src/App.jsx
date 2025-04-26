@@ -10,32 +10,63 @@ import UpdateProduct from "./components/product_management/UpdateProduct.jsx";
 import ProductPage from "./pages/products/productCatalogue.jsx";
 import AdminLayout from "./components/common/AdminPanel.jsx";
 import AdminOrdersPage from './components/adminComponents/adminOrders.jsx';
+import Login from "./pages/login/Login.jsx";
+import Registration from "./pages/register/Registration.jsx";
+import AdminOnlyRoute from './components/AdminOnlyRoute';
+
+// Layout component for non-admin routes
+const MainLayout = ({ children }) => {
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen">
+        {children}
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 function App() {
   return (
     <Router>
-      <Header />
-      <main className="min-h-screen">
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/products" element={<ProductPage />} />
-          <Route path="user/orders" element={<UserOrdersPage />} />
-          
-          {/* Admin routes - properly nested */}
-          <Route path="/admin" element={<AdminLayout />}>
-            
-            <Route path="orders" element={<AdminOrdersPage />} />
-            <Route path="products" element={<ProductList />} />
-            <Route path="add-product" element={<AddProduct />} />
-          </Route>
-          
-          {/* Route outside of admin layout */}
-          <Route path="/updateproduct/:id" element={<UpdateProduct />} />
-        </Routes>
-      </main>
-      <Footer />
+      <Routes>
+        {/* Public routes with header and footer */}
+        <Route path="/" element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        } />
+        <Route path="/cart" element={
+          <MainLayout>
+            <CartPage />
+          </MainLayout>
+        } />
+        <Route path="/products" element={
+          <MainLayout>
+            <ProductPage />
+          </MainLayout>
+        } />
+        <Route path="/user/orders" element={
+          <MainLayout>
+            <UserOrdersPage />
+          </MainLayout>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Registration />} />
+        
+        {/* Admin routes - without header and footer */}
+        <Route path="/admin" element={
+          <AdminOnlyRoute>
+            <AdminLayout />
+          </AdminOnlyRoute>
+        }>
+          <Route path="orders" element={<AdminOrdersPage />} />
+          <Route path="products" element={<ProductList />} />
+          <Route path="add-product" element={<AddProduct />} />
+          <Route path="updateproduct/:id" element={<UpdateProduct />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }

@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError ] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const onFormSubmit = async (evt) => {
     evt.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      console.log("Sending login request with:", { email, password });
-
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/users/auth`,
+        "/api/users/auth",
         { email, password },
         {
           headers: {
@@ -25,88 +27,113 @@ const Login = () => {
         }
       );
 
-      console.log("Login response data:", response.data);
-
-      // Save the response (which should contain token and role) in localStorage
+      // Save user info in localStorage
       localStorage.setItem("userInfo", JSON.stringify(response.data));
 
-      const userRole = response.data.role;
-      console.log("User role from response:", userRole);
-
-      const userFirstName = response.data.firstName;
-      console.log("First name from response:", userFirstName);
-
-      //TODO : Add all the roles
-      // Redirect user based on their role
-      if (userRole && userRole.toLowerCase() === "admin") {
-        console.log("Redirecting to admin page");
+      // Redirect based on role
+      const userRole = response.data.role?.toLowerCase();
+      if (userRole === "admin") {
         navigate("/admin");
       } else {
-        console.log("Redirecting to home page");
-        navigate("/home");
+        navigate("/");
       }
     } catch (error) {
-      console.error("Error logging in:", error.response?.data || error.message);
-
-      setError("Invalid email or password.");
+      console.error("Login error:", error);
+      const errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <main className="flex flex-col justify-center items-center gap-10 min-h-screen p-5">
-      <form
-        onSubmit={onFormSubmit}
-        className="flex flex-col justify-center items-center gap-6 shadow-xl rounded-md p-6 w-full max-w-md"
-      >
-        <h3 className="text-xl font-semibold">Login to Your Account</h3>
-        {error && <p className="text-red-500">{error}</p>}
-
-        <div className="w-full">
-          
-          <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            name="email"
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+    <main className="flex flex-col justify-center items-center gap-10 min-h-screen p-5 bg-gray-50">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
+          <p className="text-gray-600 mt-2">Please sign in to your account</p>
         </div>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            name="password"
-            required
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 w-full"
+        <form
+          onSubmit={onFormSubmit}
+          className="bg-white shadow-xl rounded-lg p-8 space-y-6"
         >
-          Login
-        </button>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
 
-        {/* Sign Up Link */}
-        <p className="text-sm text-gray-600">
-          Don't have an account?{" "}
-          <a href="/register" className="text-blue-600">
-            Sign Up
-          </a>
-        </p>
-      </form>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+            <input
+              name="email"
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              name="password"
+              required
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                Remember me
+              </label>
+            </div>
+            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex justify-center items-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              "Sign in"
+            )}
+          </button>
+
+          <p className="text-center text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-blue-600 hover:text-blue-500 font-medium">
+              Sign up
+            </Link>
+          </p>
+        </form>
+      </div>
     </main>
   );
 };

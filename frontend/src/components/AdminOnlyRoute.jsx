@@ -1,15 +1,16 @@
-// src/components/AdminOnlyRoute.jsx
+
 import React from "react";
 import { Navigate } from "react-router-dom";
 
 const AdminOnlyRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  if (!user || user.isAdmin !== true) {
-    return <Navigate to="/" replace />;
+  if (!userInfo || userInfo.role?.toLowerCase() !== "admin") {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
 };
 
 export default AdminOnlyRoute;
+

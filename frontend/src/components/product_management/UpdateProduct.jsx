@@ -56,7 +56,7 @@ const UpdateProduct = () => {
 
             if (response.ok) {
                 alert("Product updated successfully!!");
-                navigate("/");
+                navigate("/admin/products");
             } else {
                 console.error("Failed to update the product..");
                 alert("Failed to update the product..");

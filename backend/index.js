@@ -13,6 +13,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 const port =  5000;
@@ -23,15 +24,32 @@ connectDB();
 const app = express(); //Express initialization
 
 //Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Set-Cookie']
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.get('/api/test-cookie', (req, res) => {
+    console.log(req.cookies); // see if "jwt" appears here
+    res.send('Cookies checked!');
+  });
 
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/users", userRoutes);
+
+
 
 
 const __dirname = path.resolve();

@@ -6,21 +6,15 @@ import Order from "../models/orderModel.js";
 const addToCart = async (req, res) => {
   try {
     const { productId, qty } = req.body;
-   // const userId = req.user.id; // user authentication
-   
-
-   const userId = "67d80d7b797a66a6f91baa8c" //Dummy user id
+    const userId = req.user._id; // Get user ID from JWT token
 
     const product = await Product.findById(productId);
-   
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    //Search for a cart with the user id
-    // Tempory bypassing user
-    //let cart = await Cart.findOne({ user: userId });
-    let cart = await Cart.findOne();
+    // Search for a cart with the user id
+    let cart = await Cart.findOne({ user: userId });
 
-    //If no cart found, create a new cart
+    // If no cart found, create a new cart
     if (!cart) {
       cart = new Cart({
         user: userId,
@@ -34,7 +28,8 @@ const addToCart = async (req, res) => {
           },
         ],
       });
-    } else { // If cart exists, check if the product is already in the cart
+    } else {
+      // If cart exists, check if the product is already in the cart
       const existingProduct = cart.cartItems.find(
         (item) => item.product.toString() === productId
       );
@@ -42,7 +37,7 @@ const addToCart = async (req, res) => {
       if (existingProduct) {
         existingProduct.qty += qty;
       } else {
-        cart.cartItems.push({ //If not, push same to array
+        cart.cartItems.push({
           product: productId,
           name: product.name,
           qty,
@@ -52,9 +47,8 @@ const addToCart = async (req, res) => {
       }
     }
 
-    await cart.save(); // Save the cart to the database
+    await cart.save();
     res.json({ message: "Product added to cart", cart });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -64,11 +58,10 @@ const addToCart = async (req, res) => {
 //fetching cart items
 const getCartItems = async (req, res) => {
   try {
-    const userId = "67d80d7b797a66a6f91baa8c" //Dummy user id
+    const userId = req.user._id; // Get user ID from JWT token
 
-    // Find the user's cart by userId (tempory bypassing user)
-    //const cart = await Cart.findOne({ user: userId }).populate('cartItems.product', 'name price image'); // Populate product details
-    const cart = await Cart.findOne().populate('cartItems.product', 'name price image'); // Populate product details
+    // Find the user's cart by userId
+    const cart = await Cart.findOne({ user: userId }).populate('cartItems.product', 'name price image');
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
@@ -90,13 +83,9 @@ const getCartItems = async (req, res) => {
 const updateCartItem = async (req, res) => {
     try {
       const { productId, qty } = req.body;
-
-     
-      //const userId = req.user.id;
-      const userId = "67d80d7b797a66a6f91baa8c" //Dummy user id
+      const userId = req.user._id; // Get user ID from JWT token
   
-      //const cart = await Cart.findOne({ user: userId });
-      const cart = await Cart.findOne();
+      const cart = await Cart.findOne({ user: userId });
       if (!cart) return res.status(404).json({ message: "Cart not found" });
   
       const productInCart = cart.cartItems.find(
@@ -126,11 +115,9 @@ const updateCartItem = async (req, res) => {
   const removeFromCart = async (req, res) => {
     try {
       const { productId } = req.body;
-      //const userId = req.user.id;
-      const userId = "67d80d7b797a66a6f91baa8c" //Dummy user id
+      const userId = req.user._id; // Get user ID from JWT token
   
-     // const cart = await Cart.findOne({ user: userId });
-     const cart = await Cart.findOne();
+     const cart = await Cart.findOne({ user: userId });
       if (!cart) return res.status(404).json({ message: "Cart not found" });
       
       
@@ -150,12 +137,9 @@ const updateCartItem = async (req, res) => {
   const checkoutCart = async (req, res) => {
     try {
       const { mobileNo, deliveryAddress, district, deliveryMethod, paymentMethod, invoiceNumber } = req.body;
-
-      //const userId = req.user.id;
-      const userId = "67d80d7b797a66a6f91baa8c" //Dummy user id
+      const userId = req.user._id; // Get user ID from JWT token
   
-      //const cart = await Cart.findOne({ user: userId });
-      const cart = await Cart.findOne();
+      const cart = await Cart.findOne({ user: userId });
       if (!cart || cart.cartItems.length === 0)
         return res.status(400).json({ message: "Cart is empty" });
 
@@ -201,13 +185,10 @@ const updateCartItem = async (req, res) => {
     try {
       const { searchTerm } = req.query; // Get the search term from query parameters
       
-      //const userId = req.user.id;
-      // Dummy userId for testing purposes
-      const userId = "67d80d7b797a66a6f91baa8c"; 
+      const userId = req.user._id; // Get user ID from JWT token
   
       // Find the cart for the user
-      //const cart = await Cart.findOne({ user: userId });
-      const cart = await Cart.findOne();
+      const cart = await Cart.findOne({ user: userId });
   
       if (!cart || cart.cartItems.length === 0) {
         return res.status(404).json({ message: "Cart is empty or not found" });

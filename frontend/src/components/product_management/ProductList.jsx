@@ -100,7 +100,7 @@ const ProductList = () => {
                     </button>
                     <button
                       className="text-green-500 hover:text-green-600 transition-colors"
-                      onClick={() => navigate(`/updateproduct/${product._id}`)}
+                      onClick={() => navigate(`/admin/updateproduct/${product._id}`)}
                     >
                       <FaEdit className="text-2xl" />
                     </button>

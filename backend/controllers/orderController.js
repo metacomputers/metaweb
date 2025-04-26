@@ -1,11 +1,26 @@
 import Order from '../models/orderModel.js';
+import asyncHandler from '../middlewares/asyncHandler.js';
 
 // Get all orders (admin endpoint)
-const getAllOrders = async (req, res) => {
+const getAllOrders = asyncHandler(async (req, res) => {
   try {
+    // Check if user is admin
+    if (req.user.role.toLowerCase() !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to access all orders'
+      });
+    }
+
     const orders = await Order.find({})
+      .populate({
+        path: 'user',
+        select: 'firstName lastName email username'
+      })
       .populate('orderItems.product', 'name price image')
       .sort({ createdAt: -1 });
+    
+    
     
     res.status(200).json({
       success: true,
@@ -13,19 +28,19 @@ const getAllOrders = async (req, res) => {
       data: orders
     });
   } catch (error) {
-    console.error('Error fetching all orders:', error);
+    console.error('Error in getAllOrders:', error);
     res.status(500).json({
       success: false,
       error: 'Server Error',
       message: error.message
     });
   }
-};
+});
 
-// Get orders for a specific user
-const getUserOrders = async (req, res) => {
+// Get orders for the logged-in user
+const getUserOrders = asyncHandler(async (req, res) => {
   try {
-    const userId = "67d80d7b797a66a6f91baa8c"; // Replace with actual user ID from auth
+    const userId = req.user._id; // Get user ID from authenticated user
     
     const orders = await Order.find({ user: userId })
       .populate('orderItems.product', 'name price image')
@@ -44,11 +59,19 @@ const getUserOrders = async (req, res) => {
       message: error.message
     });
   }
-};
+});
 
-// Update order delivery status
-const updateDeliveryStatus = async (req, res) => {
+// Update order delivery status (admin only)
+const updateDeliveryStatus = asyncHandler(async (req, res) => {
   try {
+    // Check if user is admin
+    if (req.user.role.toLowerCase() !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update order status'
+      });
+    }
+
     const { deliveryStatus } = req.body;
     
     // Validate the status is one of the allowed values
@@ -96,11 +119,19 @@ const updateDeliveryStatus = async (req, res) => {
       message: error.message
     });
   }
-};
+});
 
-// Delete an order
-const deleteOrder = async (req, res) => {
+// Delete an order (admin only)
+const deleteOrder = asyncHandler(async (req, res) => {
   try {
+    // Check if user is admin
+    if (req.user.role.toLowerCase() !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete orders'
+      });
+    }
+
     const order = await Order.findById(req.params.id);
     
     if (!order) {
@@ -124,7 +155,7 @@ const deleteOrder = async (req, res) => {
       message: error.message
     });
   }
-};
+});
 
 export {
   getAllOrders,
