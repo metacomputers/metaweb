@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   Truck,
   LogOut,
+  Package,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -35,6 +36,7 @@ const Sidebar = () => {
   const navItems = [
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin" },
     { name: "Users", icon: <Users size={20} />, path: "/admin/users" },
+    { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
     { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
     { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
     { name: "Delivery", icon: <Truck size={20} />, path: "/admin/delivery" },
@@ -81,22 +83,18 @@ const Sidebar = () => {
 };
 
 const Header = () => {
-  const navigate = useNavigate();
-
-  const goToProfile = () => {
-    navigate("/profile");
-  };
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const displayName = userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : 'Admin';
 
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-6">
       <h1 className="text-xl text-black font-semibold">Dashboard</h1>
 
-      <div
-        className="cursor-pointer bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition"
-        onClick={goToProfile}
-        title="View Admin Profile"
-      >
-        <Users size={24} className="text-gray-700" />
+      <div className="flex items-center space-x-4">
+        <div className="text-right">
+          <p className="text-sm font-medium text-gray-900">{displayName}</p>
+          <p className="text-xs text-gray-500">Administrator</p>
+        </div>
       </div>
     </header>
   );

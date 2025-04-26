@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Package, Trash2, Search, Filter } from 'lucide-react';
+import { Package, Trash2, Search, Filter, Clock, CheckCircle } from 'lucide-react';
 import { getAllOrders, updateOrderStatus, deleteOrder } from '../../api/orderAPI.js';
 import { toast, Toaster } from 'react-hot-toast';
 
@@ -9,7 +9,8 @@ const AdminOrdersPage = () => {
     allOrders: [],
     filtered: [],
     loading: true,
-    statusFilter: ''
+    statusFilter: '',
+    activeTab: 'pending' // 'pending' or 'completed'
   });
 
   // Keep search term in a ref to avoid re-renders
@@ -32,7 +33,7 @@ const AdminOrdersPage = () => {
         setOrdersState(prev => ({
           ...prev,
           allOrders: response.data,
-          filtered: response.data,
+          filtered: filterOrders(response.data, searchTermRef.current, prev.statusFilter, prev.activeTab),
           loading: false
         }));
       } else {
@@ -59,7 +60,7 @@ const AdminOrdersPage = () => {
         return {
           ...prev,
           allOrders: updatedAllOrders,
-          filtered: filterOrders(updatedAllOrders, searchTermRef.current, prev.statusFilter)
+          filtered: filterOrders(updatedAllOrders, searchTermRef.current, prev.statusFilter, prev.activeTab)
         };
       });
       
@@ -80,7 +81,7 @@ const AdminOrdersPage = () => {
           return {
             ...prev,
             allOrders: updatedAllOrders,
-            filtered: filterOrders(updatedAllOrders, searchTermRef.current, prev.statusFilter)
+            filtered: filterOrders(updatedAllOrders, searchTermRef.current, prev.statusFilter, prev.activeTab)
           };
         });
         
@@ -133,7 +134,7 @@ const AdminOrdersPage = () => {
   };
 
   // Filter function that doesn't use React state directly
-  const filterOrders = (orders, searchTerm, statusFilter) => {
+  const filterOrders = (orders, searchTerm, statusFilter, activeTab) => {
     if (!Array.isArray(orders)) return [];
     
     return orders.filter(order => {
@@ -151,8 +152,12 @@ const AdminOrdersPage = () => {
       
       const matchesStatus = !statusFilter || statusFilter === '' || 
         (order.deliveryStatus && order.deliveryStatus.toLowerCase() === statusFilter.toLowerCase());
+
+      // Filter based on active tab
+      const isCompleted = order.deliveryStatus?.toLowerCase() === 'delivered';
+      const matchesTab = activeTab === 'completed' ? isCompleted : !isCompleted;
       
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesStatus && matchesTab;
     });
   };
 
@@ -161,7 +166,7 @@ const AdminOrdersPage = () => {
     const value = e.target.value;
     searchTermRef.current = value;
     
-    const filtered = filterOrders(ordersState.allOrders, value, ordersState.statusFilter);
+    const filtered = filterOrders(ordersState.allOrders, value, ordersState.statusFilter, ordersState.activeTab);
     
     setOrdersState(prev => ({
       ...prev,
@@ -173,7 +178,7 @@ const AdminOrdersPage = () => {
   const handleStatusFilter = (e) => {
     const value = e.target.value;
     
-    const filtered = filterOrders(ordersState.allOrders, searchTermRef.current, value);
+    const filtered = filterOrders(ordersState.allOrders, searchTermRef.current, value, ordersState.activeTab);
     
     setOrdersState(prev => ({
       ...prev,
@@ -182,7 +187,14 @@ const AdminOrdersPage = () => {
     }));
   };
 
-  console.log("Current orders state:", ordersState);
+  // Handle tab change
+  const handleTabChange = (tab) => {
+    setOrdersState(prev => ({
+      ...prev,
+      activeTab: tab,
+      filtered: filterOrders(prev.allOrders, searchTermRef.current, prev.statusFilter, tab)
+    }));
+  };
 
   return (
     <>
@@ -190,6 +202,36 @@ const AdminOrdersPage = () => {
       <div className="w-full">
         <h1 className="text-2xl font-bold mb-6 mt-10">Order Management</h1>
         
+        {/* Tabs */}
+        <div className="mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8">
+              <button
+                onClick={() => handleTabChange('pending')}
+                className={`${
+                  ordersState.activeTab === 'pending'
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+              >
+                <Clock className="mr-2" size={20} />
+                Pending Orders
+              </button>
+              <button
+                onClick={() => handleTabChange('completed')}
+                className={`${
+                  ordersState.activeTab === 'completed'
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
+              >
+                <CheckCircle className="mr-2" size={20} />
+                Completed Orders
+              </button>
+            </nav>
+          </div>
+        </div>
+
         <div className="bg-white rounded-lg shadow mb-6">
           <div className="p-4 border-b flex flex-col sm:flex-row gap-4">
             <div className="relative flex-grow">
@@ -212,10 +254,15 @@ const AdminOrdersPage = () => {
                 className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none"
               >
                 <option value="">All Statuses</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
+                {ordersState.activeTab === 'pending' ? (
+                  <>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                  </>
+                ) : (
+                  <option value="delivered">Delivered</option>
+                )}
                 <option value="cancelled">Cancelled</option>
               </select>
               <Filter size={20} className="absolute left-3 top-3.5 text-gray-400" />
@@ -281,7 +328,16 @@ const AdminOrdersPage = () => {
                             {formatDate(order.createdAt)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">Customer ID: {order.user || 'N/A'}</div>
+                            <div className="text-sm text-gray-900">
+                              {order.user ? (
+                                <>
+                                  <div>Name: {order.user.firstName} {order.user.lastName}</div>
+                                  <div>Email: {order.user.email}</div>
+                                </>
+                              ) : (
+                                'N/A'
+                              )}
+                            </div>
                             <div className="text-sm text-gray-500">{order.mobileNo || 'N/A'}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -363,8 +419,14 @@ const AdminOrdersPage = () => {
                   <h3 className="text-gray-500 font-medium mb-2">Customer Information</h3>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="mb-3">
-                      <p className="text-gray-500 text-sm">Customer ID</p>
-                      <p className="text-gray-900">{orderDetails.user || 'N/A'}</p>
+                      <p className="text-gray-500 text-sm">Customer Name</p>
+                      <p className="text-gray-900">
+                        {orderDetails.user ? `${orderDetails.user.firstName} ${orderDetails.user.lastName}` : 'N/A'}
+                      </p>
+                    </div>
+                    <div className="mb-3">
+                      <p className="text-gray-500 text-sm">Email</p>
+                      <p className="text-gray-900">{orderDetails.user?.email || 'N/A'}</p>
                     </div>
                     <div className="mb-3">
                       <p className="text-gray-500 text-sm">Contact</p>

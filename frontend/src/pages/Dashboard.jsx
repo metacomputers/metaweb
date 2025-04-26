@@ -1,4 +1,4 @@
-// src/pages/Dashboard.jsx
+/* src/pages/Dashboard.jsx
 import React from "react";
 import Header from "../components/Common/header";
 import Footer from "../components/Common/footer";
@@ -26,4 +26,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard;*/

@@ -33,6 +33,8 @@ const Header = () => {
     }
   };
 
+  const displayName = user ? (user.firstName || user.username || user.email) : "";
+
   return (
     <header className="bg-gray-900 text-white shadow-md">
       <div className="container mx-auto px-4 py-3">
@@ -89,7 +91,7 @@ const Header = () => {
                   className="text-white hover:text-purple-400 transition duration-300 flex items-center"
                 >
                   <FaUser className="mr-2" />
-                  <span>{user.firstName}</span>
+                  <span>{displayName}</span>
                 </Link>
                 <button
                   onClick={logoutHandler}
@@ -155,7 +157,7 @@ const Header = () => {
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <FaUser className="mr-2" />
-                      <span>{user.firstName}</span>
+                      <span>{displayName}</span>
                     </Link>
                     <button
                       onClick={() => {
