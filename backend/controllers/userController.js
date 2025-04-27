@@ -5,22 +5,41 @@ import generateToken from "../utils/createToken.js";
 
 //read - all users
 const fetchUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
+  try {
+    // Check if user is admin
+    if (req.user.role.toLowerCase() !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to access all users'
+      });
+    }
 
-  if (!users.length) return res.status(404).json({ message: "No users found" });
+    const users = await User.find({});
 
-  res.status(200).json(
-    users.map((user) => ({
-      _id: user._id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      createdAt : user.createdAt,
-      updatedAt : user.updatedAt,
-    }))
-  );
+    if (!users.length) return res.status(404).json({ message: "No users found" });
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users.map((user) => ({
+        _id: user._id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }))
+    });
+  } catch (error) {
+    console.error('Error in fetchUsers:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Server Error',
+      message: error.message
+    });
+  }
 });
 
 const createUser = asyncHandler(async (req, res) => {
@@ -132,41 +151,43 @@ const deleteUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
-
-  if (existingUser) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-
-    if (isPasswordValid) {
-      // Call createToken function here
-      generateToken(res, existingUser._id);
-
-      // console.log("User data to be sent:", {
-      //   _id: existingUser._id,
-      //   username: existingUser.username,
-      //   firstName: existingUser.firstName, // Include firstName
-      //   lastName: existingUser.lastName,
-      //   email: existingUser.email,
-      //   role: existingUser.role,
-      // });
-
-      res.status(200).json({
-        _id: existingUser._id,
-        username: existingUser.username,
-        firstName: existingUser.firstName, // Include firstName
-        lastName: existingUser.lastName,
-        email: existingUser.email,
-        role: existingUser.role,
-      });
-
-      return; // Exit after sending the response
-    }
+  // Validate input
+  if (!email || !password) {
+    return res.status(400).json({ 
+      message: "Please provide both email and password" 
+    });
   }
 
-  res.status(400).json({ message: "Invalid email or password" });
+  // Find user by email
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    return res.status(401).json({ 
+      message: "Invalid email or password" 
+    });
+  }
+
+  // Verify password
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ 
+      message: "Invalid email or password" 
+    });
+  }
+
+  // Generate JWT token
+  generateToken(res, existingUser._id);
+
+  // Send user data (excluding sensitive information)
+  res.status(200).json({
+    _id: existingUser._id,
+    username: existingUser.username,
+    firstName: existingUser.firstName,
+    lastName: existingUser.lastName,
+    email: existingUser.email,
+    role: existingUser.role,
+  });
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
