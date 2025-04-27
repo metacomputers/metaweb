@@ -4,11 +4,11 @@ const API_URL = "http://localhost:5000/api/users";
 
 export const addUser = async (newUser) => {
   try {
-    const response = await axios.post(`${API_URL}`, newUser);
+    const response = await axios.post(`${API_URL}/register`, newUser);
     return response.data;
   } catch (error) {
     console.error("Error adding user:", error);
-    return null;
+    throw error.response?.data?.message || "Failed to create account";
   }
 };
 
@@ -42,7 +42,9 @@ export const updateUser = async (id, updatedUser) => {
 
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete(`${API_URL}/${id}`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {

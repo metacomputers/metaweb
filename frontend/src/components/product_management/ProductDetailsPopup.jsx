@@ -26,6 +26,8 @@ const ProductDetailsPopup = ({ product, onClose, onAddToCart }) => {
         try {
             await addToCart(product._id, quantity);
             toast.success(`${product.name} added to cart!`);
+            // Dispatch custom event to notify header
+            window.dispatchEvent(new CustomEvent('cartUpdated'));
             onClose(); // Close the popup after adding to cart
             // Optionally navigate to cart
             // navigate('/cart');

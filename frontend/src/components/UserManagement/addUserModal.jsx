@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { addUser } from "../../api/apiUsers";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const navigate = useNavigate();
+
   const onFormSubmit = async (evt) => {
     try {
       evt.preventDefault();
+      setIsLoading(true);
+      setFormErrors({});
+
       const firstName = evt.target.firstName.value;
       const lastName = evt.target.lastName.value;
       const username = evt.target.username.value;
@@ -22,12 +31,28 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
       };
 
       await addUser(newUser);
-      await loadUsers();
-      onClose();
+      
+      if (isAdmin) {
+        await loadUsers();
+        onClose();
+      } else {
+        toast.success("Account created successfully! Please log in.");
+        navigate("/login");
+      }
 
       evt.target.reset();
     } catch (error) {
-      console.error(`Error registering user`, error.message);
+      console.error(`Error registering user:`, error);
+      // Set form errors based on the error message
+      if (error.message.includes("email already exists")) {
+        setFormErrors({ email: "This email is already registered" });
+      } else if (error.message.includes("username already exists")) {
+        setFormErrors({ username: "This username is already taken" });
+      } else {
+        toast.error(error.message || "Failed to create account. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -39,24 +64,24 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)", // 50% transparent black
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backdropFilter: "blur(4px)", // Adds blur effect
-        zIndex: 50, // Ensures it's on top
+        backdropFilter: "blur(4px)",
+        zIndex: 50,
       }}
     >
       <form
         onSubmit={onFormSubmit}
-        className="flex flex-col justify-center items-center bg-white gap-6 shadow-xl rounded-md p-6 w-full max-w-md "
+        className="flex flex-col justify-center items-center bg-gray-800 gap-6 shadow-xl rounded-xl p-8 w-full max-w-md border border-gray-700"
       >
-        <h3 className="text-xl font-semibold">
+        <h3 className="text-2xl font-semibold text-white">
           {isAdmin ? "Create User" : "Create an Account"}
         </h3>
 
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             First Name
           </label>
           <input
@@ -64,12 +89,17 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             required
             type="text"
             placeholder="Enter your first name"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.firstName ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
           />
+          {formErrors.firstName && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.firstName}</p>
+          )}
         </div>
 
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Last Name
           </label>
           <input
@@ -77,12 +107,17 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             required
             type="text"
             placeholder="Enter your last name"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.lastName ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
           />
+          {formErrors.lastName && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.lastName}</p>
+          )}
         </div>
 
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Email
           </label>
           <input
@@ -90,16 +125,23 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             required
             type="email"
             placeholder="Enter your email"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.email ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
           />
+          {formErrors.email && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+          )}
         </div>
 
         {isAdmin && (
           <div className="w-full">
-            <label className="block text-sm font-medium">Role</label>
+            <label className="block text-sm font-medium text-gray-300">Role</label>
             <select
               name="role"
-              className={"w-full border rounded p-2 bg-white"}
+              className={`w-full p-3 bg-gray-700 text-white border ${
+                formErrors.role ? "border-red-500" : "border-gray-600"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
               required
             >
               <option value="">Select Role</option>
@@ -107,11 +149,14 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
               <option value="Customer">Customer</option>
               <option value="Technician">Technician</option>
             </select>
+            {formErrors.role && (
+              <p className="text-red-500 text-sm mt-1">{formErrors.role}</p>
+            )}
           </div>
         )}
 
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Username
           </label>
           <input
@@ -119,12 +164,17 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             required
             type="text"
             placeholder="Enter your username"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.username ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
           />
+          {formErrors.username && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
+          )}
         </div>
 
         <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Password
           </label>
           <input
@@ -132,32 +182,39 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             required
             type="password"
             placeholder="Enter a secure password"
-            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.password ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
           />
+          {formErrors.password && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
+          )}
         </div>
 
         {isAdmin ? (
           <div className="flex space-x-2">
             <button
               type="button"
-              className="bg-green-400 text-white py-2 px-4 rounded-md hover:bg-gray-500 transition duration-200 w-full ml-2"
+              className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 w-full"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 w-1/2 whitespace-nowrap"
+              disabled={isLoading}
+              className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 w-1/2 whitespace-nowrap disabled:opacity-50"
             >
-              Create
+              {isLoading ? "Creating..." : "Create"}
             </button>
           </div>
         ) : (
           <button
             type="submit"
-            className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 w-1/2 whitespace-nowrap"
+            disabled={isLoading}
+            className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50"
           >
-            Register
+            {isLoading ? "Creating Account..." : "Create Account"}
           </button>
         )}
       </form>

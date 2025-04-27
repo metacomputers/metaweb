@@ -3,7 +3,7 @@ import { fetchAllProducts } from "../../api/productApi";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import AdminLayout from "../common/AdminPanel";
+import AdminLayout from "../Common/adminPanel.jsx";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);

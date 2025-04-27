@@ -1,11 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { getCartItems } from "../../api/cartApi";
+import { toast } from "react-hot-toast";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const navigate = useNavigate();
+
+  const fetchCartItems = async () => {
+    try {
+      const items = await getCartItems();
+      setCartItemsCount(items.length);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchCartItems();
+    }
+  }, [user]);
+
+  // Add event listener for cart updates
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      fetchCartItems();
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -30,6 +61,22 @@ const Header = () => {
       }
     } catch (error) {
       console.error("Logout error:", error);
+    }
+  };
+
+  const handleCartClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      toast.error("Please create an account to continue shopping", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: "#1F2937",
+          color: "#fff",
+          border: "1px solid #4B5563",
+        },
+      });
+      navigate("/login");
     }
   };
 
@@ -113,11 +160,12 @@ const Header = () => {
             )}
             <Link
               to="/cart"
+              onClick={handleCartClick}
               className="relative flex items-center text-white hover:text-purple-400 transition duration-300"
             >
               <FaShoppingCart className="text-xl" />
               <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
+                {cartItemsCount}
               </span>
             </Link>
           </div>
@@ -185,12 +233,12 @@ const Header = () => {
                 <div className="mt-4 flex justify-end">
                   <Link
                     to="/cart"
+                    onClick={handleCartClick}
                     className="relative flex items-center text-white hover:text-purple-400 transition duration-300"
-                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <FaShoppingCart className="text-xl" />
                     <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      0
+                      {cartItemsCount}
                     </span>
                   </Link>
                 </div>
