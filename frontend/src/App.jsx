@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
+import Header from './components/Common/header';
+import Footer from './components/Common/footer';
 import HomePage from './pages/Landing/HomePage';
 import CartPage from './pages/Cart/CartPage';
-import UserOrdersPage from './pages/Orders/UserOrdersPage';
 import ProductList from "./components/product_management/ProductList.jsx";
 import AddProduct from "./components/product_management/AddProduct.jsx";
 import UpdateProduct from "./components/product_management/UpdateProduct.jsx";
@@ -14,7 +13,9 @@ import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
 import AdminOnlyRoute from './components/AdminOnlyRoute';
 import UserList from './components/UserManagement/userList.jsx';
-import AdminFinancials from './components/adminComponents/adminFinancials.jsx'
+import AdminFinancials from './components/adminComponents/adminFinancials.jsx';
+import Profile from './components/UserManagement/userProfile.jsx';
+
 // Layout component for non-admin routes
 const MainLayout = ({ children }) => {
   return (
@@ -48,9 +49,9 @@ function App() {
             <ProductPage />
           </MainLayout>
         } />
-        <Route path="/user/orders" element={
+        <Route path="/profile" element={
           <MainLayout>
-            <UserOrdersPage />
+            <Profile />
           </MainLayout>
         } />
         <Route path="/login" element={<Login />} />

@@ -1,143 +1,165 @@
 import React, { useState } from "react";
+import { FaTimes } from "react-icons/fa";
 
 const EditUserModal = ({ user, onUpdate, onClose }) => {
   const [formData, setFormData] = useState({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    role: user.role,
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
+    contact: user.contact || "",
+    billingAddress: user.billingAddress || "",
+    shippingAddress: user.shippingAddress || "",
   });
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
 
-      // Validate input dynamically
-      let newErrors = { ...errors };
+    // Validate input dynamically
+    let newErrors = { ...errors };
 
-      if (name === "firstName" || name === "lastName") {
-          newErrors[name] = value.length < 2 ? "Must be at least 2 characters" : "";
-      } else if (name === "email") {
-          newErrors[name] = /\S+@\S+\.\S+/.test(value) ? "" : "Enter a valid email";
-      } else if (name === "role") {
-          newErrors[name] = value ? "" : "Please select a role";
-      }
-  
-      setErrors(newErrors);
+    if (name === "firstName" || name === "lastName") {
+      newErrors[name] = value.length < 2 ? "Must be at least 2 characters" : "";
+    } else if (name === "email") {
+      newErrors[name] = /\S+@\S+\.\S+/.test(value) ? "" : "Enter a valid email";
+    } else if (name === "contact") {
+      newErrors[name] = /^\d{10}$/.test(value) ? "" : "Enter a valid 10-digit phone number";
+    }
+
+    setErrors(newErrors);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated User Data:", formData);
+    
+    // Check if there are any errors
+    const hasErrors = Object.values(errors).some(error => error !== "");
+    if (hasErrors) {
+      return;
+    }
 
-    const updatedUser = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      role: formData.role,
-    };
-
-    onUpdate(user._id, updatedUser);
-
-    onClose();
+    onUpdate(user._id, formData);
   };
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)", // 50% transparent black
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backdropFilter: "blur(4px)", // Adds blur effect
-      zIndex: 50, // Ensures it's on top
-    }}
-    >
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Edit User</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-gray-900 p-6 rounded-xl shadow-xl w-full max-w-md mx-4">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            <FaTimes size={24} />
+          </button>
+        </div>
 
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* First Name */}
-          <div className="mb-3">
-            <label className="block text-sm font-medium">First Name</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">First Name</label>
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className={`w-full border rounded p-2 ${errors.firstName ? "border-red-500" : ""}`}
+              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
+                errors.firstName ? "border-red-500" : "border-gray-700"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
-            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+            {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
           </div>
           
           {/* Last Name */}          
-          <div className="mb-3">
-            <label className="block text-sm font-medium">Last Name</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Last Name</label>
             <input
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className={`w-full border rounded p-2 ${errors.lastName ? "border-red-500" : ""}`}
+              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
+                errors.lastName ? "border-red-500" : "border-gray-700"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
-            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+            {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
           </div>
 
           {/* Email */}      
-          <div className="mb-3">
-            <label className="block text-sm font-medium">Email</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full border rounded p-2 ${errors.email ? "border-red-500" : ""}`}
+              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
+                errors.email ? "border-red-500" : "border-gray-700"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
-          {/* Role Selection Dropdown */}
-          <div className="mb-3">
-            <label className="block text-sm font-medium">Role</label>
-            <select
-              name="role"
-              value={formData.role}
+          {/* Contact */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Contact Number</label>
+            <input
+              type="tel"
+              name="contact"
+              value={formData.contact}
               onChange={handleChange}
-              className={`w-full border rounded p-2 bg-white ${errors.role ? "border-red-500" : ""}`}
+              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
+                errors.contact ? "border-red-500" : "border-gray-700"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
-            >
-              {!formData.role && <option value="">Select Role</option>}
-              <option value="Admin">Admin</option>
-              <option value="Customer">Customer</option>
-              <option value="Technician">Technician</option>
-            </select>
-            {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
+            />
+            {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact}</p>}
           </div>
 
-          <div className="flex justify-end space-x-3">
+          {/* Billing Address */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Billing Address</label>
+            <textarea
+              name="billingAddress"
+              value={formData.billingAddress}
+              onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              rows="2"
+            />
+          </div>
+
+          {/* Shipping Address */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Shipping Address</label>
+            <textarea
+              name="shippingAddress"
+              value={formData.shippingAddress}
+              onChange={handleChange}
+              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              rows="2"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
-              className="bg-green-400 text-white px-4 py-2 rounded"
               onClick={onClose}
+              className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
             >
-              Save
+              Save Changes
             </button>
           </div>
         </form>

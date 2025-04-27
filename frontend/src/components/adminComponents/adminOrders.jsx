@@ -296,6 +296,7 @@ const AdminOrdersPage = () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Method</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       </tr>
                     </thead>
@@ -342,6 +343,9 @@ const AdminOrdersPage = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {order.totalPaid ? `Rs.${order.totalPaid.toLocaleString()}` : 'N/A'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {order.deliveryMethod || 'N/A'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <select
@@ -410,6 +414,10 @@ const AdminOrdersPage = () => {
                           <span className={`${getStatusColor(orderDetails.deliveryStatus)} w-3 h-3 rounded-full mr-2`}></span>
                           <span className="text-gray-900 capitalize">{orderDetails.deliveryStatus || 'N/A'}</span>
                         </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-500 text-sm">Delivery Method</p>
+                        <p className="text-gray-900">{orderDetails.deliveryMethod || 'N/A'}</p>
                       </div>
                     </div>
                   </div>

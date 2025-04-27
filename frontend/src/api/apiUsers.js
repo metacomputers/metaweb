@@ -42,7 +42,9 @@ export const updateUser = async (id, updatedUser) => {
 
 export const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const response = await axios.delete(`${API_URL}/${id}`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {
