@@ -8,13 +8,13 @@ import ProductList from "./components/product_management/ProductList.jsx";
 import AddProduct from "./components/product_management/AddProduct.jsx";
 import UpdateProduct from "./components/product_management/UpdateProduct.jsx";
 import ProductPage from "./pages/products/productCatalogue.jsx";
-import AdminLayout from "./components/common/adminPanel.jsx";
+import AdminLayout from "./components/Common/adminPanel.jsx";
 import AdminOrdersPage from './components/adminComponents/adminOrders.jsx';
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
 import AdminOnlyRoute from './components/AdminOnlyRoute';
 import UserList from './components/UserManagement/userList.jsx';
-
+import AdminFinancials from './components/adminComponents/adminFinancials.jsx'
 // Layout component for non-admin routes
 const MainLayout = ({ children }) => {
   return (
@@ -67,6 +67,7 @@ function App() {
           <Route path="add-product" element={<AddProduct />} />
           <Route path="updateproduct/:id" element={<UpdateProduct />} />
           <Route path="users" element={<UserList />} />
+          <Route path="financials" element={<AdminFinancials />} />
         </Route>
       </Routes>
     </Router>
