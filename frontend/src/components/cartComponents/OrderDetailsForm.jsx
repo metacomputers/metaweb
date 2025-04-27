@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -10,6 +10,7 @@ import {
   FaTimes,
   FaCheck
 } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 
 const OrderDetailsForm = ({
   showOrderForm,
@@ -38,8 +39,89 @@ const OrderDetailsForm = ({
   setCvv,
   handleConfirmOrderDetails
 }) => {
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    // Get user data from localStorage
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo) {
+      // Set full name and email from user data
+      setFullName(`${userInfo.firstName} ${userInfo.lastName}`);
+      setEmail(userInfo.email);
+    }
+  }, []);
+
   if (!showOrderForm) return null;
-  
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Phone validation
+    if (!mobileNo.trim()) {
+      newErrors.mobileNo = "Phone number is required";
+    } else if (!/^[0-9]{10}$/.test(mobileNo.replace(/\D/g, ''))) {
+      newErrors.mobileNo = "Please enter a valid 10-digit phone number";
+    }
+
+    // Address validation
+    if (!deliveryAddress.trim()) {
+      newErrors.deliveryAddress = "Delivery address is required";
+    } else if (deliveryAddress.length < 10) {
+      newErrors.deliveryAddress = "Please enter a complete address";
+    }
+
+    // District validation
+    if (!district) {
+      newErrors.district = "Please select a district";
+    }
+
+    // Delivery method validation
+    if (!deliveryMethod) {
+      newErrors.deliveryMethod = "Please select a delivery method";
+    }
+
+    // Payment method validation
+    if (!paymentMethod) {
+      newErrors.paymentMethod = "Please select a payment method";
+    }
+
+    // Credit card validation (only if credit card is selected)
+    if (paymentMethod === "Credit/Debit Card") {
+      if (!cardNumber.replace(/\s/g, '')) {
+        newErrors.cardNumber = "Card number is required";
+      } else if (!/^[0-9]{16}$/.test(cardNumber.replace(/\s/g, ''))) {
+        newErrors.cardNumber = "Please enter a valid 16-digit card number";
+      }
+
+      if (!nameOnCard.trim()) {
+        newErrors.nameOnCard = "Name on card is required";
+      }
+
+      if (!expiryDate) {
+        newErrors.expiryDate = "Expiry date is required";
+      } else if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiryDate)) {
+        newErrors.expiryDate = "Please enter a valid expiry date (MM/YY)";
+      }
+
+      if (!cvv) {
+        newErrors.cvv = "CVV is required";
+      } else if (!/^[0-9]{3}$/.test(cvv)) {
+        newErrors.cvv = "Please enter a valid 3-digit CVV";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      handleConfirmOrderDetails();
+    } else {
+      toast.error("Please fix the errors in the form");
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-2xl border border-gray-700 animate-fadeIn">
@@ -61,8 +143,8 @@ const OrderDetailsForm = ({
                 type="text"
                 placeholder="Full Name *"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                readOnly
+                className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-not-allowed"
               />
               <FaUser className="absolute top-3.5 left-4 text-gray-400" />
             </div>
@@ -72,8 +154,8 @@ const OrderDetailsForm = ({
                 type="email"
                 placeholder="Email *"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                readOnly
+                className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-not-allowed"
               />
               <FaEnvelope className="absolute top-3.5 left-4 text-gray-400" />
             </div>
@@ -84,10 +166,20 @@ const OrderDetailsForm = ({
               type="tel"
               placeholder="Phone No. *"
               value={mobileNo}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 10) {
+                  setPhone(value);
+                }
+              }}
+              className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                errors.mobileNo ? 'border-red-500' : 'border-gray-600'
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
             />
             <FaPhone className="absolute top-3.5 left-4 text-gray-400" />
+            {errors.mobileNo && (
+              <p className="text-red-500 text-sm mt-1">{errors.mobileNo}</p>
+            )}
           </div>
 
           {/* Delivery Information Section */}
@@ -97,14 +189,21 @@ const OrderDetailsForm = ({
               placeholder="Delivery Address *"
               value={deliveryAddress}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                errors.deliveryAddress ? 'border-red-500' : 'border-gray-600'
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
             />
             <FaAddressCard className="absolute top-3.5 left-4 text-gray-400" />
+            {errors.deliveryAddress && (
+              <p className="text-red-500 text-sm mt-1">{errors.deliveryAddress}</p>
+            )}
           </div>
 
           <div className="relative">
             <select
-              className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition appearance-none"
+              className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                errors.district ? 'border-red-500' : 'border-gray-600'
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition appearance-none`}
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
             >
@@ -136,14 +235,12 @@ const OrderDetailsForm = ({
               <option value="Vavuniya">Vavuniya</option>
             </select>
             <FaMapMarkerAlt className="absolute top-3.5 left-4 text-gray-400" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
-            </div>
+            {errors.district && (
+              <p className="text-red-500 text-sm mt-1">{errors.district}</p>
+            )}
           </div>
 
-          {/* Delivery Method - Selectable Tiles */}
+          {/* Delivery Method */}
           <div className="space-y-2">
             <label className="block text-gray-300 text-sm font-medium mb-1">
               Delivery Method *
@@ -189,9 +286,12 @@ const OrderDetailsForm = ({
                 </div>
               </div>
             </div>
+            {errors.deliveryMethod && (
+              <p className="text-red-500 text-sm mt-1">{errors.deliveryMethod}</p>
+            )}
           </div>
 
-          {/* Payment Method - Selectable Tiles */}
+          {/* Payment Method */}
           <div className="space-y-2">
             <label className="block text-gray-300 text-sm font-medium mb-1">
               Payment Method *
@@ -237,9 +337,12 @@ const OrderDetailsForm = ({
                 </div>
               </div>
             </div>
+            {errors.paymentMethod && (
+              <p className="text-red-500 text-sm mt-1">{errors.paymentMethod}</p>
+            )}
           </div>
 
-          {/* Credit Card Fields - Only shown when Credit/Debit Card is selected */}
+          {/* Credit Card Fields */}
           {paymentMethod === "Credit/Debit Card" && (
             <div className="space-y-4 mt-4 pt-4 border-t border-gray-700 animate-fadeIn">
               <h4 className="font-medium text-white">Card Details</h4>
@@ -249,16 +352,20 @@ const OrderDetailsForm = ({
                   type="text"
                   placeholder="Card Number *"
                   value={cardNumber}
-                  className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                  className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                    errors.cardNumber ? 'border-red-500' : 'border-gray-600'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
                   maxLength={19}
                   onChange={(e) => {
-                    // Format card number with spaces after every 4 digits
                     const value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
                     const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
                     setCardNumber(formattedValue);
                   }}
                 />
                 <FaCreditCard className="absolute top-3.5 left-4 text-gray-400" />
+                {errors.cardNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>
+                )}
               </div>
 
               <div className="relative">
@@ -267,9 +374,14 @@ const OrderDetailsForm = ({
                   placeholder="Name on Card *"
                   value={nameOnCard}
                   onChange={(e) => setNameOnCard(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                  className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                    errors.nameOnCard ? 'border-red-500' : 'border-gray-600'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
                 />
                 <FaUser className="absolute top-3.5 left-4 text-gray-400" />
+                {errors.nameOnCard && (
+                  <p className="text-red-500 text-sm mt-1">{errors.nameOnCard}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -278,10 +390,11 @@ const OrderDetailsForm = ({
                     type="text"
                     placeholder="Expiry Date (MM/YY) *"
                     value={expiryDate}
-                    className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                      errors.expiryDate ? 'border-red-500' : 'border-gray-600'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
                     maxLength={5}
                     onChange={(e) => {
-                      // Format expiry date as MM/YY
                       let value = e.target.value.replace(/\D/g, '');
                       if (value.length > 2) {
                         value = value.slice(0, 2) + '/' + value.slice(2);
@@ -292,6 +405,9 @@ const OrderDetailsForm = ({
                   <span className="absolute top-3.5 left-4 text-gray-400 text-sm">
                     MM/YY
                   </span>
+                  {errors.expiryDate && (
+                    <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>
+                  )}
                 </div>
                 
                 <div className="relative">
@@ -299,10 +415,11 @@ const OrderDetailsForm = ({
                     type="text"
                     placeholder="CVC/CVV *"
                     value={cvv}
-                    className="w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                      errors.cvv ? 'border-red-500' : 'border-gray-600'
+                    } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
                     maxLength={3}
                     onChange={(e) => {
-                      // Only allow numbers for CVC/CVV
                       const value = e.target.value.replace(/\D/g, '');
                       setCvv(value);
                     }}
@@ -310,6 +427,9 @@ const OrderDetailsForm = ({
                   <span className="absolute top-3.5 left-4 text-gray-400 text-sm">
                     CVC
                   </span>
+                  {errors.cvv && (
+                    <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -317,7 +437,7 @@ const OrderDetailsForm = ({
         </div>
 
         <button
-          onClick={handleConfirmOrderDetails}
+          onClick={handleSubmit}
           className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white text-lg font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center"
         >
           <FaCheck className="mr-2" />

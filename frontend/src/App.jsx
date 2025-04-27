@@ -8,7 +8,7 @@ import ProductList from "./components/product_management/ProductList.jsx";
 import AddProduct from "./components/product_management/AddProduct.jsx";
 import UpdateProduct from "./components/product_management/UpdateProduct.jsx";
 import ProductPage from "./pages/products/productCatalogue.jsx";
-import AdminLayout from "./components/common/AdminPanel.jsx";
+import AdminLayout from "./components/common/adminPanel.jsx";
 import AdminOrdersPage from './components/adminComponents/adminOrders.jsx';
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";

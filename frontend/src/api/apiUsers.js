@@ -4,11 +4,11 @@ const API_URL = "http://localhost:5000/api/users";
 
 export const addUser = async (newUser) => {
   try {
-    const response = await axios.post(`${API_URL}`, newUser);
+    const response = await axios.post(`${API_URL}/register`, newUser);
     return response.data;
   } catch (error) {
     console.error("Error adding user:", error);
-    return null;
+    throw error.response?.data?.message || "Failed to create account";
   }
 };
 

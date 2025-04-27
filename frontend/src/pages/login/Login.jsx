@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2, User, Lock } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -47,51 +47,57 @@ const Login = () => {
   };
 
   return (
-    <main className="flex flex-col justify-center items-center gap-10 min-h-screen p-5 bg-gray-50">
+    <main className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 flex flex-col justify-center items-center p-5">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Please sign in to your account</p>
+          <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-gray-400">Please sign in to your account</p>
         </div>
 
         <form
           onSubmit={onFormSubmit}
-          className="bg-white shadow-xl rounded-lg p-8 space-y-6"
+          className="bg-gray-800 shadow-2xl rounded-xl p-8 space-y-6 border border-gray-700"
         >
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-300">
               Email Address
             </label>
-            <input
-              name="email"
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-            />
+            <div className="relative">
+              <input
+                name="email"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full p-3 pl-12 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              />
+              <User className="absolute top-3.5 left-4 text-gray-400" size={20} />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-300">
               Password
             </label>
-            <input
-              name="password"
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-            />
+            <div className="relative">
+              <input
+                name="password"
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full p-3 pl-12 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              />
+              <Lock className="absolute top-3.5 left-4 text-gray-400" size={20} />
+            </div>
           </div>
 
           <div className="flex items-center justify-between">
@@ -100,38 +106,43 @@ const Login = () => {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-purple-600 focus:ring-purple-500"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
                 Remember me
               </label>
             </div>
-            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
-              Forgot password?
-            </Link>
+
+            <div className="text-sm">
+              <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors">
+                Forgot your password?
+              </a>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center items-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center font-medium"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="animate-spin mr-2" size={20} />
                 Signing in...
               </>
             ) : (
-              "Sign in"
+              "Sign In"
             )}
           </button>
 
-          <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 hover:text-blue-500 font-medium">
-              Sign up
-            </Link>
-          </p>
+          <div className="text-center mt-6">
+            <p className="text-gray-400">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
+                Register here
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </main>

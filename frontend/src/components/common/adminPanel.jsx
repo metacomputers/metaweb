@@ -10,7 +10,7 @@ import {
   MessageSquare,
   Users,
   ShoppingCart,
-  Truck,
+  BarChart,
   LogOut,
   Package,
 } from "lucide-react";
@@ -39,7 +39,7 @@ const Sidebar = () => {
     { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
     { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
     { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
-    { name: "Delivery", icon: <Truck size={20} />, path: "/admin/delivery" },
+    { name: "Financial Insight", icon: <BarChart size={20} />, path: "/admin/financials" },
     { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/repairs" },
     { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/consultations" },
   ];
@@ -83,8 +83,21 @@ const Sidebar = () => {
 };
 
 const Header = () => {
+  const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const displayName = userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : 'Admin';
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      localStorage.removeItem("userInfo");
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout failed:", error);
+      localStorage.removeItem("userInfo");
+      navigate('/login');
+    }
+  };
 
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-6">
@@ -95,6 +108,13 @@ const Header = () => {
           <p className="text-sm font-medium text-gray-900">{displayName}</p>
           <p className="text-xs text-gray-500">Administrator</p>
         </div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer transition"
+        >
+          <LogOut size={20} />
+          <span>Logout</span>
+        </button>
       </div>
     </header>
   );

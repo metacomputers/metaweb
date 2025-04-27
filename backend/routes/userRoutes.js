@@ -12,11 +12,16 @@ import { authorizeAdmin, authenticate } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-// {baseUrl}/api/v1/users
+// Public routes
+router.post("/register", createUser); // Public registration
+router.post("/auth", loginUser);
+router.post('/logout', logoutUser);
+
+// Protected routes
 router
   .route("/")
   .get(authenticate, authorizeAdmin, fetchUsers) // Get users (admin only)
-  .post(authenticate, authorizeAdmin, createUser); // Create single user (admin only)
+  .post(authenticate, authorizeAdmin, createUser);
 
 // {baseUrl}/api/v1/users/{username}
 router
@@ -24,9 +29,6 @@ router
   .get(authenticate, fetchUser) // Get single user
   .put(authenticate, authorizeAdmin, updateUser) // Update single user (admin only)
   .delete(authenticate, authorizeAdmin, deleteUser); // Delete single user (admin only)
-
-router.post("/auth", loginUser); //login
-router.post('/logout', logoutUser);
 
 // router
 //   .route("/profile")
