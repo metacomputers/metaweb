@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/users";
+const API_URL = "http://localhost:5000/api/users";
 
 export const addUser = async (newUser) => {
   try {
@@ -17,7 +17,10 @@ export const fetchUsers = async () => {
     const response = await axios.get(`${API_URL}`, {
       withCredentials: true,
     });
-    return response.data;
+    if (response.data && response.data.data && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+    return [];
   } catch (error) {
     console.error("Error fetching users:", error);
     return [];

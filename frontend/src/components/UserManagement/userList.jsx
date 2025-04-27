@@ -7,7 +7,7 @@ import ConfirmationModal from "../Common/confirmationModal";
 import { Pencil, Trash2 } from "lucide-react";
 import { FaDownload } from "react-icons/fa";
 import UserReportPopup from "./UserReportModal";
-import AdminLayout from "../Common/adminPanel";
+
 
 const UserList = () => {
   const [users, setUsers] = useState([]);

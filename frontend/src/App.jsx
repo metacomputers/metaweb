@@ -13,6 +13,7 @@ import AdminOrdersPage from './components/adminComponents/adminOrders.jsx';
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
 import AdminOnlyRoute from './components/AdminOnlyRoute';
+import UserList from './components/UserManagement/userList.jsx';
 
 // Layout component for non-admin routes
 const MainLayout = ({ children }) => {
@@ -65,6 +66,7 @@ function App() {
           <Route path="products" element={<ProductList />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="updateproduct/:id" element={<UpdateProduct />} />
+          <Route path="users" element={<UserList />} />
         </Route>
       </Routes>
     </Router>
