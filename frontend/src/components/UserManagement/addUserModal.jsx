@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { addUser } from "../../api/apiUsers";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 
 const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +36,9 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
       if (isAdmin) {
         await loadUsers();
         onClose();
+        toast.success("User created successfully!");
       } else {
-        toast.success("Account created successfully! Please log in.");
+        toast.success("Registration successful! Please log in to continue.");
         navigate("/login");
       }
 
@@ -46,8 +48,10 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
       // Set form errors based on the error message
       if (error.message.includes("email already exists")) {
         setFormErrors({ email: "This email is already registered" });
+        toast.error("This email is already registered");
       } else if (error.message.includes("username already exists")) {
         setFormErrors({ username: "This username is already taken" });
+        toast.error("This username is already taken");
       } else {
         toast.error(error.message || "Failed to create account. Please try again.");
       }
@@ -74,8 +78,17 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
     >
       <form
         onSubmit={onFormSubmit}
-        className="flex flex-col justify-center items-center bg-gray-800 gap-6 shadow-xl rounded-xl p-8 w-full max-w-md border border-gray-700"
+        className="flex flex-col justify-center items-center bg-gray-800 gap-6 shadow-xl rounded-xl p-8 w-full max-w-md border border-gray-700 relative"
       >
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute -top-4 -right-4 bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-colors duration-200"
+        >
+          <X size={24} />
+        </button>
+
         <h3 className="text-2xl font-semibold text-white">
           {isAdmin ? "Create User" : "Create an Account"}
         </h3>
