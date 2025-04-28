@@ -93,6 +93,18 @@ const updateCartItem = async (req, res) => {
       );
   
       if (!productInCart) return res.status(404).json({ message: "Product not in cart" });
+
+      // Get the product to check available quantity
+      const product = await Product.findById(productId._id);
+      if (!product) return res.status(404).json({ message: "Product not found" });
+
+      // Check if requested quantity is available
+      if (qty > product.quantity) {
+        return res.status(400).json({ 
+          message: `Only ${product.quantity} items available in stock`,
+          availableQuantity: product.quantity
+        });
+      }
   
       if (qty > 0) {
         productInCart.qty = qty;
@@ -143,9 +155,28 @@ const updateCartItem = async (req, res) => {
       if (!cart || cart.cartItems.length === 0)
         return res.status(400).json({ message: "Cart is empty" });
 
-      //calculate total using reduce method to loop through the cart items array
+      // Calculate total using reduce method to loop through the cart items array
       const totalPaid = cart.cartItems.reduce((total, item) => total + item.price, 0);
-  
+
+      // Update product quantities
+      for (const item of cart.cartItems) {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          return res.status(404).json({ message: `Product ${item.name} not found` });
+        }
+
+        // Check if enough quantity is available
+        if (product.quantity < item.qty) {
+          return res.status(400).json({ 
+            message: `Not enough stock for ${item.name}. Only ${product.quantity} items available.`
+          });
+        }
+
+        // Reduce product quantity
+        product.quantity -= item.qty;
+        await product.save();
+      }
+
       const newOrder = new Order({
         user: userId,
         orderItems: cart.cartItems,
@@ -161,17 +192,10 @@ const updateCartItem = async (req, res) => {
         paidAt: new Date(),
       });
   
-      
-      
       await newOrder.save();
       cart.cartItems = []; // Clear cart after checkout
       await cart.save();
 
-
-
-      //await Cart.deleteOne({ user: userId }); // Clear cart after checkout
-     // await Cart.deleteOne();
-  
       res.json({ message: "Order placed successfully", order: newOrder });
   
     } catch (error) {

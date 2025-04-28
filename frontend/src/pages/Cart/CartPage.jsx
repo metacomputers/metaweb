@@ -5,6 +5,7 @@ import {
   removeFromCart,
   checkoutCart,
 } from "../../api/cartApi";
+import { useNavigate } from "react-router-dom";
 
 import { Toaster, toast } from "react-hot-toast";
 import {
@@ -24,6 +25,7 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -77,7 +79,20 @@ const CartPage = () => {
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
-      toast.error("Could not update item quantity.");
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+        // If we got the available quantity, update the cart item to the maximum available
+        if (error.response.data.availableQuantity) {
+          const maxQty = error.response.data.availableQuantity;
+          setCartItems((prev) =>
+            prev.map((item) =>
+              item.product === productId ? { ...item, qty: maxQty } : item
+            )
+          );
+        }
+      } else {
+        toast.error("Could not update item quantity.");
+      }
     }
   };
 
@@ -189,7 +204,10 @@ const CartPage = () => {
             <p className="text-center text-xl text-gray-400">
               Your cart is currently empty.
             </p>
-            <button className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-300 transform hover:scale-105">
+            <button 
+              onClick={() => navigate('/products')}
+              className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-300 transform hover:scale-105"
+            >
               Continue Shopping
             </button>
           </div>

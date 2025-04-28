@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Loader2, User, Lock } from "lucide-react";
+import { Loader2, User, Lock, X } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,6 +31,9 @@ const Login = () => {
       // Save user info in localStorage
       localStorage.setItem("userInfo", JSON.stringify(response.data));
 
+      // Show success message
+      toast.success("Login successful! Welcome back!");
+
       // Redirect based on role
       const userRole = response.data.role?.toLowerCase();
       if (userRole === "admin") {
@@ -41,6 +45,7 @@ const Login = () => {
       console.error("Login error:", error);
       const errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +53,15 @@ const Login = () => {
 
   return (
     <main className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 flex flex-col justify-center items-center p-5">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative">
+        {/* Close Button */}
+        <button
+          onClick={() => navigate("/")}
+          className="absolute -top-4 -right-4 bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-full shadow-lg transition-colors duration-200"
+        >
+          <X size={24} />
+        </button>
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-gray-400">Please sign in to your account</p>

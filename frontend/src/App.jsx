@@ -15,6 +15,9 @@ import AdminOnlyRoute from './components/AdminOnlyRoute';
 import UserList from './components/UserManagement/userList.jsx';
 import AdminFinancials from './components/adminComponents/adminFinancials.jsx';
 import Profile from './components/UserManagement/userProfile.jsx';
+import AboutPage from './pages/About/AboutPage';
+import DashboardAdmin from './components/Common/DashboardAdmin.jsx';
+import { Toaster } from 'react-hot-toast';
 
 // Layout component for non-admin routes
 const MainLayout = ({ children }) => {
@@ -32,6 +35,27 @@ const MainLayout = ({ children }) => {
 function App() {
   return (
     <Router>
+      <Toaster 
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#1F2937',
+            color: '#fff',
+            border: '1px solid #4B5563',
+          },
+          success: {
+            style: {
+              background: '#059669',
+            },
+          },
+          error: {
+            style: {
+              background: '#DC2626',
+            },
+          },
+        }}
+      />
       <Routes>
         {/* Public routes with header and footer */}
         <Route path="/" element={
@@ -54,6 +78,11 @@ function App() {
             <Profile />
           </MainLayout>
         } />
+        <Route path="/about" element={
+          <MainLayout>
+            <AboutPage />
+          </MainLayout>
+        } />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registration />} />
         
@@ -63,6 +92,7 @@ function App() {
             <AdminLayout />
           </AdminOnlyRoute>
         }>
+          <Route index element={<DashboardAdmin />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="products" element={<ProductList />} />
           <Route path="add-product" element={<AddProduct />} />

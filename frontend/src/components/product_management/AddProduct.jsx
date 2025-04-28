@@ -13,6 +13,7 @@ const AddProduct = () => {
       const formData = new FormData(evt.target);
       const file = formData.get("image");
 
+      // First upload the image
       const imageData = new FormData();
       imageData.append("image", file);
 
@@ -21,12 +22,26 @@ const AddProduct = () => {
         body: imageData,
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
       const result = await response.json();
       const fileName = result.image.substring(result.image.indexOf("image"));
 
+      // Add the image name to the form data
       formData.append("imageName", fileName);
 
-      await axios({
+      // Add all other form fields
+      formData.append("name", formData.get("name"));
+      formData.append("description", formData.get("description"));
+      formData.append("price", formData.get("price"));
+      formData.append("category", formData.get("category"));
+      formData.append("quantity", formData.get("quantity"));
+      formData.append("brand", formData.get("brand"));
+
+      // Send the product data
+      const productResponse = await axios({
         method: "POST",
         url: "http://localhost:5000/api/products",
         headers: {
@@ -35,69 +50,91 @@ const AddProduct = () => {
         data: formData,
       });
 
-      evt.target.reset();
-      navigate("/");
+      if (productResponse.status === 200) {
+        alert("Product added successfully!");
+        evt.target.reset();
+        navigate("/admin/products");
+      }
     } catch (error) {
       console.error(`Error while adding a product`, error);
+      if (error.response?.data?.error) {
+        alert(error.response.data.error);
+      } else {
+        alert("Failed to add product. Please try again.");
+      }
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <header className="bg-black shadow p-4 flex justify-between items-center">
-        <button
-          onClick={() => navigate("/")}
-          className="text-amber-50 hover:text-blue-400 transition"
-        >
-          <IoMdArrowBack />
-        </button>
-        <h1 className="text-xl font-semibold text-white">Add New Product</h1>
-        <div></div>
-      </header>
-      <div className="container mx-auto p-4">
-        <div className="bg-white rounded-lg shadow p-6 max-w-lg mx-auto mt-8">
-          <form onSubmit={onFormSubmit} className="space-y-6">
+    <div className="max-w-10xl mx-auto p-6 bg-white rounded-lg shadow-sm">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Add New Product</h1>
+        <p className="text-gray-600">Create a new product listing for your store</p>
+      </div>
+
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <form onSubmit={onFormSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Product Name
               </label>
               <input
                 type="text"
                 name="name"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                placeholder="Enter product name"
               />
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-gray-700">
-                Description
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Brand
               </label>
-              <textarea
-                name="description"
+              <input
+                type="text"
+                name="brand"
                 required
-                rows={4}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
-              ></textarea>
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                placeholder="Enter brand name"
+              />
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Price
               </label>
               <input
                 type="number"
                 name="price"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                placeholder="Enter price"
               />
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Quantity
+              </label>
+              <input
+                type="number"
+                name="quantity"
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                placeholder="Enter quantity"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Category
               </label>
               <select
                 name="category"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
               >
                 <option value="">Select Category</option>
                 <option value="Laptop-Gaming">Laptop-Gaming</option>
@@ -108,49 +145,49 @@ const AddProduct = () => {
                 <option value="Software">Software</option>
               </select>
             </div>
+
             <div>
-              <label className="block text-sm font-semibold text-gray-700">
-                Quantity Adding To Stock
-              </label>
-              <input
-                type="number"
-                name="quantity"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700">
-                Brand
-              </label>
-              <input
-                type="text"
-                name="brand"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700">
-                Image
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Image
               </label>
               <input
                 type="file"
                 name="image"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-3"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
               />
             </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full py-3 px-4 rounded-md shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" // added py-3, shadow-md, changed bg color and focus color.
-              >
-                Add Product
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              required
+              rows={4}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+              placeholder="Enter product description"
+            ></textarea>
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate("/admin/products")}
+              className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            >
+              Add Product
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

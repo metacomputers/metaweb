@@ -23,13 +23,13 @@ const Sidebar = () => {
       await logoutUser();
       localStorage.removeItem("userInfo");
       
-      // For admin panel, you might want to redirect to login page
-      navigate('/login');
+      // Redirect to home page instead of login
+      navigate('/');
     } catch (error) {
       console.error("Logout failed:", error);
       // Still clear localStorage even if the API call fails
       localStorage.removeItem("userInfo");
-      navigate('/login');
+      navigate('/');
     }
   };
 
@@ -91,11 +91,11 @@ const Header = () => {
     try {
       await logoutUser();
       localStorage.removeItem("userInfo");
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error("Logout failed:", error);
       localStorage.removeItem("userInfo");
-      navigate('/login');
+      navigate('/');
     }
   };
 

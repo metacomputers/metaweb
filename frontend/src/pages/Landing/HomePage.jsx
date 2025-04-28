@@ -10,7 +10,7 @@ const HomePage = () => {
       description: "Discover our range of high-performance computers and components designed for professionals and gamers alike.",
       image: "../../../public/backgrounds/h1.jpg",
       cta: "Shop Now",
-      link: "#"
+      link: "/products"
     },
     {
       title: "Gaming Like Never Before",
@@ -18,7 +18,7 @@ const HomePage = () => {
       description: "From powerful gaming rigs to precision peripherals, we have everything you need to dominate the competition.",
       image: "../../../public/backgrounds/h2.jpg",
       cta: "View Gaming Products",
-      link: "#"
+      link: "/products"
     },
     {
       title: "Feel the power of future",
@@ -26,7 +26,7 @@ const HomePage = () => {
       description: "From powerful gaming rigs to precision peripherals, we have everything you need to dominate the competition.",
       image: "../../../public/backgrounds/h3.jpg",
       cta: "View Gaming Products",
-      link: "#"
+      link: "/products"
     }
   ];
   
@@ -86,7 +86,7 @@ const HomePage = () => {
                     {slide.description}
                   </p>
                   <a 
-                    href={slide.link}
+                    href="/products"
                     className="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:translate-y-px hover:shadow-lg"
                   >
                     {slide.cta}
@@ -190,7 +190,7 @@ const HomePage = () => {
                   <h3 className="text-xl font-semibold mb-2 text-white">{category.name}</h3>
                   <p className="text-gray-400 mb-4">{category.description}</p>
                   <a 
-                    href="#"
+                    href="/products"
                     className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors"
                   >
                     Browse Products
@@ -222,13 +222,13 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a 
-                href="#"
+                href="/products"
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:translate-y-px text-center"
               >
                 Shop Now
               </a>
               <a 
-                href="#"
+                href="/products"
                 className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:translate-y-px text-center"
               >
                 Contact Us
@@ -257,7 +257,7 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a 
-                href="#"
+                href="/products"
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:translate-y-px text-center"
               >
                 Make an Appointment
