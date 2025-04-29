@@ -42,14 +42,33 @@ const OrderDetailsForm = ({
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo) {
-      // Set full name and email from user data
-      setFullName(`${userInfo.firstName} ${userInfo.lastName}`);
-      setEmail(userInfo.email);
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      if (userInfo) {
+        // Set full name if firstName and lastName exist
+        if (userInfo.firstName && userInfo.lastName) {
+          setFullName(`${userInfo.firstName} ${userInfo.lastName}`);
+        }
+        
+        // Set email if it exists
+        if (userInfo.email) {
+          setEmail(userInfo.email);
+        }
+        
+        // Set mobile number if it exists and is valid
+        if (userInfo.mobileNo && /^[0-9]{10}$/.test(userInfo.mobileNo.replace(/\D/g, ''))) {
+          setPhone(userInfo.mobileNo);
+        }
+        
+        // Set address if it exists and is not empty
+        if (userInfo.address && userInfo.address.trim()) {
+          setAddress(userInfo.address);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
     }
-  }, []);
+  }, [setFullName, setEmail, setPhone, setAddress]);
 
   if (!showOrderForm) return null;
 
@@ -306,7 +325,7 @@ const OrderDetailsForm = ({
                 onClick={() => setPaymentMethod("Cash on Delivery")}
               >
                 <div className="flex flex-col items-center text-center">
-                  <FaCreditCard className={`text-xl mb-2 ${
+                  <FaShippingFast className={`text-xl mb-2 ${
                     paymentMethod === "Cash on Delivery" ? "text-white" : "text-gray-400"
                   }`} />
                   <span className={`font-medium ${
@@ -342,25 +361,18 @@ const OrderDetailsForm = ({
             )}
           </div>
 
-          {/* Credit Card Fields */}
+          {/* Credit Card Information */}
           {paymentMethod === "Credit/Debit Card" && (
-            <div className="space-y-4 mt-4 pt-4 border-t border-gray-700 animate-fadeIn">
-              <h4 className="font-medium text-white">Card Details</h4>
-              
+            <>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Card Number *"
                   value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
                   className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
                     errors.cardNumber ? 'border-red-500' : 'border-gray-600'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-                  maxLength={19}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                    const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-                    setCardNumber(formattedValue);
-                  }}
                 />
                 <FaCreditCard className="absolute top-3.5 left-4 text-gray-400" />
                 {errors.cardNumber && (
@@ -378,71 +390,55 @@ const OrderDetailsForm = ({
                     errors.nameOnCard ? 'border-red-500' : 'border-gray-600'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
                 />
-                <FaUser className="absolute top-3.5 left-4 text-gray-400" />
+                <FaCreditCard className="absolute top-3.5 left-4 text-gray-400" />
                 {errors.nameOnCard && (
                   <p className="text-red-500 text-sm mt-1">{errors.nameOnCard}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Expiry Date (MM/YY) *"
-                    value={expiryDate}
-                    className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
-                      errors.expiryDate ? 'border-red-500' : 'border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-                    maxLength={5}
-                    onChange={(e) => {
-                      let value = e.target.value.replace(/\D/g, '');
-                      if (value.length > 2) {
-                        value = value.slice(0, 2) + '/' + value.slice(2);
-                      }
-                      setExpiryDate(value);
-                    }}
-                  />
-                  <span className="absolute top-3.5 left-4 text-gray-400 text-sm">
-                    MM/YY
-                  </span>
-                  {errors.expiryDate && (
-                    <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>
-                  )}
-                </div>
-                
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="CVC/CVV *"
-                    value={cvv}
-                    className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
-                      errors.cvv ? 'border-red-500' : 'border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-                    maxLength={3}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '');
-                      setCvv(value);
-                    }}
-                  />
-                  <span className="absolute top-3.5 left-4 text-gray-400 text-sm">
-                    CVC
-                  </span>
-                  {errors.cvv && (
-                    <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
-                  )}
-                </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Expiry Date *"
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
+                  className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                    errors.expiryDate ? 'border-red-500' : 'border-gray-600'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+                />
+                <FaCreditCard className="absolute top-3.5 left-4 text-gray-400" />
+                {errors.expiryDate && (
+                  <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>
+                )}
               </div>
-            </div>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="CVV *"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value)}
+                  className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
+                    errors.cvv ? 'border-red-500' : 'border-gray-600'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+                />
+                <FaCreditCard className="absolute top-3.5 left-4 text-gray-400" />
+                {errors.cvv && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
+                )}
+              </div>
+            </>
           )}
         </div>
 
-        <button
-          onClick={handleSubmit}
-          className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white text-lg font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center"
-        >
-          <FaCheck className="mr-2" />
-          Confirm Details
-        </button>
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={handleSubmit}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Confirm Order
+          </button>
+        </div>
       </div>
     </div>
   );

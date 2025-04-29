@@ -1,4 +1,3 @@
-//how the user should look like and what are the requirements which the user shoould have
 
 import mongoose  from "mongoose";
 
@@ -24,6 +23,16 @@ const userSchema = mongoose.Schema({
         type : String,
         required : true,
         unique : true,
+    },
+
+    mobileNo : {
+        type : String,
+        required : true,
+    },
+
+    address : {
+        type : String,
+        required : true,
     },
 
     role : {

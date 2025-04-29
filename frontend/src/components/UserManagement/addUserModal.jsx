@@ -20,7 +20,18 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
       const username = evt.target.username.value;
       const email = evt.target.email.value;
       const password = evt.target.password.value;
+      const confirmPassword = evt.target.confirmPassword.value;
+      const mobileNo = evt.target.mobileNo.value;
+      const address = evt.target.address.value;
       const role = isAdmin ? evt.target.role.value : "Customer";
+
+      // Validate password match
+      if (password !== confirmPassword) {
+        setFormErrors({ confirmPassword: "Passwords do not match" });
+        toast.error("Passwords do not match");
+        setIsLoading(false);
+        return;
+      }
 
       const newUser = {
         firstName,
@@ -28,6 +39,8 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
         username,
         email,
         password,
+        mobileNo,
+        address,
         role: role,
       };
 
@@ -147,6 +160,42 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
           )}
         </div>
 
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-300">
+            Mobile Number
+          </label>
+          <input
+            name="mobileNo"
+            required
+            type="tel"
+            placeholder="Enter your mobile number"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.mobileNo ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+          />
+          {formErrors.mobileNo && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.mobileNo}</p>
+          )}
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-300">
+            Address
+          </label>
+          <textarea
+            name="address"
+            required
+            placeholder="Enter your address"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.address ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+            rows="3"
+          />
+          {formErrors.address && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.address}</p>
+          )}
+        </div>
+
         {isAdmin && (
           <div className="w-full">
             <label className="block text-sm font-medium text-gray-300">Role</label>
@@ -201,6 +250,24 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
           />
           {formErrors.password && (
             <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
+          )}
+        </div>
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-300">
+            Confirm Password
+          </label>
+          <input
+            name="confirmPassword"
+            required
+            type="password"
+            placeholder="Confirm your password"
+            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+              formErrors.confirmPassword ? "border-red-500" : "border-gray-600"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+          />
+          {formErrors.confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">{formErrors.confirmPassword}</p>
           )}
         </div>
 

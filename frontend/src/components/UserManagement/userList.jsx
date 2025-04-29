@@ -7,6 +7,7 @@ import ConfirmationModal from "../Common/confirmationModal";
 import { Pencil, Trash2 } from "lucide-react";
 import { FaDownload } from "react-icons/fa";
 import UserReportPopup from "./UserReportModal";
+import { toast } from "react-hot-toast";
 
 
 const UserList = () => {
@@ -48,8 +49,26 @@ const UserList = () => {
   }
 
   const openEditModal = async (user) => {
-    setSelectedUser(user);
-    setIsEditModalOpen(true);
+    try {
+      // Fetch complete user data
+      const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setSelectedUser(userData);
+        setIsEditModalOpen(true);
+      } else {
+        toast.error('Failed to fetch user details');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      toast.error('Failed to fetch user details');
+    }
   };
 
   const openDeleteModal = (user) => {
@@ -65,35 +84,56 @@ const UserList = () => {
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      await updateUser(id, updatedData);
+      const response = await fetch(`http://localhost:5000/api/users/admin/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(updatedData),
+        credentials: 'include'
+      });
 
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user._id === id ? { ...user, ...updatedData } : user
-        )
-      );
-
-      setIsEditModalOpen(false);
-    } catch {
-      alert("Failed to update user");
+      if (response.ok) {
+        const data = await response.json();
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === id ? { ...user, ...data } : user
+          )
+        );
+        setIsEditModalOpen(false);
+        toast.success('User updated successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to update user');
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Failed to update user');
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      console.log(`Attempting to delete user with ID: ${id}`);
+      const response = await fetch(`http://localhost:5000/api/users/admin/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        credentials: 'include'
+      });
 
-      await deleteUser(id);
-
-      console.log(`User ${id} deleted successfully`);
-
-      setUsers(users.filter((user) => user._id !== id));
-      closeDeleteModal();
+      if (response.ok) {
+        setUsers(users.filter((user) => user._id !== id));
+        closeDeleteModal();
+        toast.success('User deleted successfully');
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to delete user');
+      }
     } catch (error) {
-      console.log(`Delete operation failed: ${error.message}`);
-
-      alert(error.message);
-      closeDeleteModal();
+      console.error('Error deleting user:', error);
+      toast.error('Failed to delete user');
     }
   };
 
@@ -197,8 +237,9 @@ const UserList = () => {
 
       {showUserReport && (
         <UserReportPopup
-          user={selectedUser}
-          onClose={() => setShowUserReport(false)}
+          showReport={showUserReport}
+          setShowReport={setShowUserReport}
+          userDetails={selectedUser}
         />
       )}
     </div>
