@@ -14,9 +14,11 @@ import orderRoutes from "./routes/orderRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import repairRoutes from "./routes/repairRoutes.js"
+import consultsRoute from "./routes/consultRoutes.js"
 
 dotenv.config();
-const port =  5000;
+const port =  8080;
 
 //DB Connection
 connectDB();
@@ -42,7 +44,8 @@ app.get('/api/test-cookie', (req, res) => {
     console.log(req.cookies); // see if "jwt" appears here
     res.send('Cookies checked!');
   });
-
+app.use("/api/maintenance/repairs",repairRoutes)
+app.use("/api/mainenance/consults",consultsRoute)
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);
