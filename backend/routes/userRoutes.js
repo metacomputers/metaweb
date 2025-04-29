@@ -17,18 +17,23 @@ router.post("/register", createUser); // Public registration
 router.post("/auth", loginUser);
 router.post('/logout', logoutUser);
 
-// Protected routes
+// Admin routes
 router
   .route("/")
   .get(authenticate, authorizeAdmin, fetchUsers) // Get users (admin only)
   .post(authenticate, authorizeAdmin, createUser);
 
-// {baseUrl}/api/v1/users/{username}
+// Admin user management routes
+router
+  .route("/admin/:id")
+  .put(authenticate, authorizeAdmin, updateUser)
+  .delete(authenticate, authorizeAdmin, deleteUser);
+
+// User profile routes
 router
   .route("/:id")
   .get(authenticate, fetchUser) // Get single user
-  .put(authenticate, authorizeAdmin, updateUser) // Update single user (admin only)
-  .delete(authenticate, authorizeAdmin, deleteUser); // Delete single user (admin only)
+  .put(authenticate, updateUser); // Update single user (admin only)
 
 // router
 //   .route("/profile")

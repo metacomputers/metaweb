@@ -6,9 +6,8 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     email: user.email || "",
-    contact: user.contact || "",
-    billingAddress: user.billingAddress || "",
-    shippingAddress: user.shippingAddress || "",
+    mobileNo: user.mobileNo || "",
+    address: user.address || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -24,10 +23,10 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
 
     if (name === "firstName" || name === "lastName") {
       newErrors[name] = value.length < 2 ? "Must be at least 2 characters" : "";
-    } else if (name === "email") {
-      newErrors[name] = /\S+@\S+\.\S+/.test(value) ? "" : "Enter a valid email";
-    } else if (name === "contact") {
+    } else if (name === "mobileNo") {
       newErrors[name] = /^\d{10}$/.test(value) ? "" : "Enter a valid 10-digit phone number";
+    } else if (name === "address") {
+      newErrors[name] = value.length < 5 ? "Address must be at least 5 characters" : "";
     }
 
     setErrors(newErrors);
@@ -47,12 +46,12 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-gray-900 p-6 rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md mx-4">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Edit User</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 hover:text-gray-700 transition-colors"
           >
             <FaTimes size={24} />
           </button>
@@ -61,14 +60,14 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* First Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">First Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
             <input
               type="text"
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
-                errors.firstName ? "border-red-500" : "border-gray-700"
+              className={`w-full px-4 py-2 rounded-lg border ${
+                errors.firstName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
@@ -77,81 +76,70 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
           
           {/* Last Name */}          
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Last Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
             <input
               type="text"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
-                errors.lastName ? "border-red-500" : "border-gray-700"
+              className={`w-full px-4 py-2 rounded-lg border ${
+                errors.lastName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
             {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
           </div>
 
-          {/* Email */}      
+          {/* Email (Read-only) */}      
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
-                errors.email ? "border-red-500" : "border-gray-700"
-              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-              required
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-not-allowed bg-gray-50"
+              readOnly
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            <p className="text-gray-500 text-sm mt-1">Email cannot be changed</p>
           </div>
 
-          {/* Contact */}
+          {/* Mobile Number */}
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Contact Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
             <input
               type="tel"
-              name="contact"
-              value={formData.contact}
+              name="mobileNo"
+              value={formData.mobileNo}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg bg-gray-800 text-white border ${
-                errors.contact ? "border-red-500" : "border-gray-700"
+              className={`w-full px-4 py-2 rounded-lg border ${
+                errors.mobileNo ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
             />
-            {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact}</p>}
+            {errors.mobileNo && <p className="text-red-500 text-sm mt-1">{errors.mobileNo}</p>}
           </div>
 
-          {/* Billing Address */}
+          {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Billing Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
             <textarea
-              name="billingAddress"
-              value={formData.billingAddress}
+              name="address"
+              value={formData.address}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows="2"
+              className={`w-full px-4 py-2 rounded-lg border ${
+                errors.address ? "border-red-500" : "border-gray-300"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+              rows="3"
+              required
             />
-          </div>
-
-          {/* Shipping Address */}
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Shipping Address</label>
-            <textarea
-              name="shippingAddress"
-              value={formData.shippingAddress}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              rows="2"
-            />
+            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
             >
               Cancel
             </button>

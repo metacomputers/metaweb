@@ -43,10 +43,10 @@ const fetchUsers = asyncHandler(async (req, res) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const { username, firstName, lastName, email, role, password } = req.body;
+  const { username, firstName, lastName, email, role, password, mobileNo, address } = req.body;
 
   // Validate all required fields
-  if (!username || !firstName || !lastName || !email || !role || !password) {
+  if (!username || !firstName || !lastName || !email || !role || !password || !mobileNo || !address) {
     return res
       .status(400)
       .json({ message: "All required fields must be filled" });
@@ -71,6 +71,8 @@ const createUser = asyncHandler(async (req, res) => {
     email,
     role,
     password: hashedPassword,
+    mobileNo,
+    address,
   });
 
   try {
@@ -82,6 +84,8 @@ const createUser = asyncHandler(async (req, res) => {
       lastName: newUser.lastName,
       email: newUser.email,
       role: newUser.role,
+      mobileNo: newUser.mobileNo,
+      address: newUser.address,
     });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
@@ -95,42 +99,62 @@ const fetchUser = asyncHandler(async (req, res) => {
   if (!user) return res.status(404).json({ message: "User not found." });
 
   res.json({
+    _id: user._id,
     username: user.username,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     role: user.role,
+    mobileNo: user.mobileNo,
+    address: user.address,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
   });
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  try {
+    const user = await User.findById(req.params.id);
 
-  if (!user) return res.status(404).json({ message: "User not found." });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
-  const { firstName, lastName, email, role, password } = req.body;
+    const { firstName, lastName, email, role, password, mobileNo, address } = req.body;
 
-  user.firstName = firstName || user.firstName;
-  user.lastName = lastName || user.lastName;
-  user.email = email || user.email;
-  user.role = role || user.role;
+    // Update user fields
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.email = email || user.email;
+    user.role = role || user.role;
+    user.mobileNo = mobileNo || user.mobileNo;
+    user.address = address || user.address;
 
-  if (password) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    user.password = hashedPassword;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      mobileNo: updatedUser.mobileNo,
+      address: updatedUser.address,
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ 
+      message: "Error updating user",
+      error: error.message 
+    });
   }
-
-  const updateUser = await user.save();
-
-  res.json({
-    _id: updateUser._id,
-    username: updateUser.username,
-    firstName: updateUser.firstName,
-    lastName: updateUser.lastName,
-    email: updateUser.email,
-    role: updateUser.role,
-  });
 });
 
 //deleting a single user
@@ -187,6 +211,8 @@ const loginUser = asyncHandler(async (req, res) => {
     lastName: existingUser.lastName,
     email: existingUser.email,
     role: existingUser.role,
+    mobileNo: existingUser.mobileNo,
+    address: existingUser.address,
   });
 });
 
