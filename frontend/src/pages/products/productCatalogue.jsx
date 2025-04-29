@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchAllProducts } from "../../api/productApi";
 
 import ProductDetailsPopup from "../../components/product_management/ProductDetailsPopup";
-import Header from "../../components/common/Header"
-import Footer from "../../components/common/Footer";
+
 
 const ProductPage = () => {
     const [products, setProducts] = useState([]);
@@ -59,22 +58,20 @@ const ProductPage = () => {
         setShowPopup(false);
     };
 
-    const handleAddToCart = async (product) => {
-        // Add to cart logic here
-        console.log("Adding to cart:", product);
-        // You can implement your add to cart API call here
+    const handleAddToCart = async (product, quantity) => {
         try {
-            // Example: await addToCart(product._id, 1);
-            alert(`${product.name} added to cart!`);
+            await addToCart(product._id, quantity);
+            toast.success(`${product.name} added to cart!`);
+            setShowPopup(false);
         } catch (error) {
             console.error("Error adding to cart:", error);
-            alert("Failed to add product to cart");
+            toast.error("Failed to add product to cart");
         }
     };
 
     return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
-            <Header />
+       
             <div className="container mx-auto px-4 py-8">
 
                 {/* Search Bar */}
@@ -302,7 +299,7 @@ const ProductPage = () => {
                     onAddToCart={handleAddToCart}
                 />
             )}
-            <Footer />
+            
         </div>
     );
 };

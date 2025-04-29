@@ -3,8 +3,7 @@ import { fetchAllProducts } from "../../api/productApi";
 import { useNavigate } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import AdminLayout from "../common/AdminPanel";
-import StockPDF from "./StockPDF";
+import AdminLayout from "../Common/adminPanel.jsx";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -103,7 +102,7 @@ const ProductList = () => {
                     </button>
                     <button
                       className="text-green-500 hover:text-green-600 transition-colors"
-                      onClick={() => navigate(`/updateproduct/${product._id}`)}
+                      onClick={() => navigate(`/admin/updateproduct/${product._id}`)}
                     >
                       <FaEdit className="text-2xl" />
                     </button>
