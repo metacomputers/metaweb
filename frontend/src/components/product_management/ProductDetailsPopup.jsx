@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { addToCart } from '../../api/cartApi'; 
+import { addToCart } from '../../api/cartApi';
+import { addQuotation } from '../../api/quotationApi';
 import { toast } from 'react-hot-toast';
 
-const ProductDetailsPopup = ({ product, onClose, onAddToCart }) => {
-    const navigate = useNavigate();
+const ProductDetailsPopup = ({ product, onClose }) => {
+    
     const [quantity, setQuantity] = useState(1);
 
     if (!product) return null;
@@ -35,6 +35,19 @@ const ProductDetailsPopup = ({ product, onClose, onAddToCart }) => {
             toast.error('Failed to add product to cart');
         }
     };
+    
+    const handleGetQuote = async () => {
+        try {
+            await addQuotation(product._id, quantity);
+            toast.success(`${product.name} added to quotation!`);
+            onClose(); // Close the popup after adding to quotation
+            
+        } catch (error) {
+            console.error('Error adding to quotation:', error);
+            toast.error('Failed to add product to quotation');
+        }
+    };
+    
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
             <div className="relative bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
@@ -118,51 +131,61 @@ const ProductDetailsPopup = ({ product, onClose, onAddToCart }) => {
                             </div>
                         </div>
 
-            {/* Quantity Selector - Update to use the state and handlers */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-2">Quantity</h3>
-                <div className="flex items-center">
-                    <button 
-                        onClick={decreaseQty}
-                        disabled={quantity <= 1}
-                        className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center disabled:opacity-50"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-                    <input
-                        type="number"
-                        min="1"
-                        max={product.quantity}
-                        value={quantity}
-                        onChange={(e) => setQuantity(Math.min(Number(e.target.value), product.quantity))}
-                        className="bg-gray-700 border-none text-center text-white w-16 h-10 focus:outline-none"
-                    />
-                    <button 
-                        onClick={increaseQty}
-                        disabled={quantity >= product.quantity}
-                        className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center disabled:opacity-50"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+                        {/* Quantity Selector - Update to use the state and handlers */}
+                        <div className="mb-6">
+                            <h3 className="text-lg font-semibold text-white mb-2">Quantity</h3>
+                            <div className="flex items-center">
+                                <button 
+                                    onClick={decreaseQty}
+                                    disabled={quantity <= 1}
+                                    className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center disabled:opacity-50"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max={product.quantity}
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(Math.min(Number(e.target.value), product.quantity))}
+                                    className="bg-gray-700 border-none text-center text-white w-16 h-10 focus:outline-none"
+                                />
+                                <button 
+                                    onClick={increaseQty}
+                                    disabled={quantity >= product.quantity}
+                                    className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center disabled:opacity-50"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
 
-            {/* Add to cart button - Update to use the handleAddToCart function */}
-            <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                    onClick={handleAddToCart}
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition duration-300 flex items-center justify-center"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    Add to Cart
-                </button>
-            </div>
+                        {/* Action Buttons - Added Get Quote button */}
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                                onClick={handleAddToCart}
+                                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition duration-300 flex items-center justify-center"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Add to Cart
+                            </button>
+                            
+                            <button
+                                onClick={handleGetQuote}
+                                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition duration-300 flex items-center justify-center"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Get Quote
+                            </button>
+                        </div>
 
                         {/* Delivery Info */}
                         <div className="mt-6 bg-gray-700 rounded-lg p-4">

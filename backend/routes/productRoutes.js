@@ -13,8 +13,6 @@ import {
   //addProductReview,
 
 } from "../controllers/productController.js";
-// import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js"
-import checkId from "../middlewares/checkId.js";
 
 router.route("/").get(fetchProducts).post(formidable(), addProduct); //Creating a product and fetch products
 router.route("/allproducts").get(fetchAllProducts); //Fetching all the products

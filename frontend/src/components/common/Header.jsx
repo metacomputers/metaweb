@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaTimes, FaUser, FaSignOutAlt, FaFileAlt } from "react-icons/fa";
 import { getCartItems } from "../../api/cartApi";
+import { getQuotationItems } from "../../api/quotationApi";
 import { toast } from "react-hot-toast";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [quotationItemsCount, setQuotationItemsCount] = useState(0);
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const navigate = useNavigate();
 
@@ -19,9 +21,19 @@ const Header = () => {
     }
   };
 
+  const fetchQuotationItems = async () => {
+    try {
+      const items = await getQuotationItems();
+      setQuotationItemsCount(items.length);
+    } catch (error) {
+      console.error("Error fetching quotation items:", error);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchCartItems();
+      fetchQuotationItems();
     }
   }, [user]);
 
@@ -35,6 +47,19 @@ const Header = () => {
 
     return () => {
       window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
+  }, []);
+
+  // Add event listener for quotation updates
+  useEffect(() => {
+    const handleQuotationUpdate = () => {
+      fetchQuotationItems();
+    };
+
+    window.addEventListener('quotationUpdated', handleQuotationUpdate);
+
+    return () => {
+      window.removeEventListener('quotationUpdated', handleQuotationUpdate);
     };
   }, []);
 
@@ -68,6 +93,22 @@ const Header = () => {
     if (!user) {
       e.preventDefault();
       toast.error("Please create an account to continue shopping", {
+        duration: 4000,
+        position: "top-center",
+        style: {
+          background: "#1F2937",
+          color: "#fff",
+          border: "1px solid #4B5563",
+        },
+      });
+      navigate("/login");
+    }
+  };
+
+  const handleQuotationClick = (e) => {
+    if (!user) {
+      e.preventDefault();
+      toast.error("Please create an account to request quotations", {
         duration: 4000,
         position: "top-center",
         style: {
@@ -158,6 +199,22 @@ const Header = () => {
                 </Link>
               </>
             )}
+            
+            {/* Quotation Button */}
+            <Link
+              to="/quotations"
+              onClick={handleQuotationClick}
+              className="relative flex items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
+            >
+              <FaFileAlt className="text-xl" />
+              {quotationItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  {quotationItemsCount}
+                </span>
+              )}
+            </Link>
+            
+            {/* Cart Button */}
             <Link
               to="/cart"
               onClick={handleCartClick}
@@ -229,6 +286,26 @@ const Header = () => {
                     Login / Register
                   </Link>
                 )}
+                
+                {/* Quotation Link */}
+                <Link
+                  to="/quotations"
+                  onClick={(e) => {
+                    handleQuotationClick(e);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center text-white hover:text-purple-400 transition duration-300 px-4 py-2 transform hover:scale-105"
+                >
+                  <FaFileAlt className="mr-2" />
+                  <span>Quotations</span>
+                  {quotationItemsCount > 0 && (
+                    <span className="ml-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {quotationItemsCount}
+                    </span>
+                  )}
+                </Link>
+                
+                {/* Cart Link */}
                 <Link
                   to="/cart"
                   onClick={(e) => {
