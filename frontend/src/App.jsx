@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./pages/login/Login.jsx";
 import Registration from "./pages/register/Registration.jsx";
 import AdminLayout from "./components/Common/adminPanel.jsx";
