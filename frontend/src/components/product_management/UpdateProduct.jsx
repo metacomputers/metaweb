@@ -20,7 +20,7 @@ const UpdateProduct = () => {
 
     const fetchProductById = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${id}`);
+            const response = await fetch(`http://localhost:8080/api/products/${id}`);
             const data = await response.json();
             setProduct(data);
         } catch (error) {
@@ -49,7 +49,7 @@ const UpdateProduct = () => {
         formData.append("quantity", product.quantity);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/products/${id}`, {
                 method: "PUT",
                 body: formData,
             });

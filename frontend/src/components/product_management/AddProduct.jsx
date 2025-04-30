@@ -17,7 +17,7 @@ const AddProduct = () => {
       const imageData = new FormData();
       imageData.append("image", file);
 
-      const response = await fetch("http://localhost:5000/api/upload", {
+      const response = await fetch("http://localhost:8080/api/upload", {
         method: "POST",
         body: imageData,
       });
@@ -43,7 +43,7 @@ const AddProduct = () => {
       // Send the product data
       const productResponse = await axios({
         method: "POST",
-        url: "http://localhost:5000/api/products",
+        url: "http://localhost:8080/api/products",
         headers: {
           "Content-Type": "multipart/form-data",
         },
