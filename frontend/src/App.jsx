@@ -17,6 +17,7 @@ import AdminFinancials from './components/adminComponents/adminFinancials.jsx';
 import Profile from './components/UserManagement/userProfile.jsx';
 import AboutPage from './pages/About/AboutPage';
 import DashboardAdmin from './components/Common/DashboardAdmin.jsx';
+import QuotationPage from './pages/products/quotationPage.jsx';
 import { Toaster } from 'react-hot-toast';
 
 // Layout component for non-admin routes
@@ -76,6 +77,11 @@ function App() {
         <Route path="/profile" element={
           <MainLayout>
             <Profile />
+          </MainLayout>
+        } />
+        <Route path="/quotation" element={
+          <MainLayout>
+            <QuotationPage />
           </MainLayout>
         } />
         <Route path="/about" element={
