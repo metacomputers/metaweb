@@ -4,7 +4,6 @@ import { addQuotation } from '../../api/quotationApi';
 import { toast } from 'react-hot-toast';
 
 const ProductDetailsPopup = ({ product, onClose }) => {
-    
     const [quantity, setQuantity] = useState(1);
 
     if (!product) return null;
@@ -35,19 +34,19 @@ const ProductDetailsPopup = ({ product, onClose }) => {
             toast.error('Failed to add product to cart');
         }
     };
-    
+
     const handleGetQuote = async () => {
         try {
             await addQuotation(product._id, quantity);
             toast.success(`${product.name} added to quotation!`);
             onClose(); // Close the popup after adding to quotation
-            
+
         } catch (error) {
             console.error('Error adding to quotation:', error);
             toast.error('Failed to add product to quotation');
         }
     };
-    
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
             <div className="relative bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
@@ -135,7 +134,7 @@ const ProductDetailsPopup = ({ product, onClose }) => {
                         <div className="mb-6">
                             <h3 className="text-lg font-semibold text-white mb-2">Quantity</h3>
                             <div className="flex items-center">
-                                <button 
+                                <button
                                     onClick={decreaseQty}
                                     disabled={quantity <= 1}
                                     className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-l-lg flex items-center justify-center disabled:opacity-50"
@@ -152,7 +151,7 @@ const ProductDetailsPopup = ({ product, onClose }) => {
                                     onChange={(e) => setQuantity(Math.min(Number(e.target.value), product.quantity))}
                                     className="bg-gray-700 border-none text-center text-white w-16 h-10 focus:outline-none"
                                 />
-                                <button 
+                                <button
                                     onClick={increaseQty}
                                     disabled={quantity >= product.quantity}
                                     className="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-r-lg flex items-center justify-center disabled:opacity-50"
@@ -175,7 +174,7 @@ const ProductDetailsPopup = ({ product, onClose }) => {
                                 </svg>
                                 Add to Cart
                             </button>
-                            
+
                             <button
                                 onClick={handleGetQuote}
                                 className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-semibold transition duration-300 flex items-center justify-center"
