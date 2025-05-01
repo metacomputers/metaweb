@@ -116,7 +116,7 @@ const Header = () => {
               Products
             </Link>
             <Link
-              to="/repair-consultations"
+              to="/maintenance"
               className="text-white hover:text-purple-400 transition duration-300 font-medium px-3 py-2 transform hover:scale-105"
             >
               Repair & Consultations
