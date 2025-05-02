@@ -40,8 +40,8 @@ const Sidebar = () => {
     { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
     { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
     { name: "Financial Insight", icon: <BarChart size={20} />, path: "/admin/financials" },
-    { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/repairs" },
-    { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/consultations" },
+    { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/maintenance/repair" },
+    { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/maintenance/consult" },
   ];
 
   return (
