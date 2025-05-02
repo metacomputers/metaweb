@@ -3,13 +3,13 @@ import { FaUsers, FaLaptop, FaTools, FaStar } from 'react-icons/fa';
 
 const AboutPage = () => {
   return (
-    <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
+    <div className="pt-20 bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
       {/* Hero Section */}
       <div className="relative py-20">
         <div className="absolute inset-0 bg-black/50 z-10"></div>
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ 
+          style={{
             backgroundImage: "url('../../../public/backgrounds/h1.jpg')",
             filter: "blur(2px)"
           }}
@@ -27,9 +27,9 @@ const AboutPage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
             <p className="text-lg text-gray-300 mb-8">
-              Welcome to Meta Computers (Pvt) Ltd, your trusted partner in technology solutions for over 7 years. 
-              Established with a passion for excellence, we are proud to serve a growing customer base of over 4,000 
-              satisfied clients. Whether you're an avid gamer, a busy professional, or a creative content creator, 
+              Welcome to Meta Computers (Pvt) Ltd, your trusted partner in technology solutions for over 7 years.
+              Established with a passion for excellence, we are proud to serve a growing customer base of over 4,000
+              satisfied clients. Whether you're an avid gamer, a busy professional, or a creative content creator,
               we have the perfect tech solutions tailored just for you.
             </p>
 
@@ -40,8 +40,8 @@ const AboutPage = () => {
                   Our Products
                 </h3>
                 <p className="text-gray-300">
-                  Our comprehensive offerings include top-tier office laptops, gaming laptops, high-performance 
-                  gaming PCs, office PCs, and editing PCs. We also provide a wide range of laptop spare parts, 
+                  Our comprehensive offerings include top-tier office laptops, gaming laptops, high-performance
+                  gaming PCs, office PCs, and editing PCs. We also provide a wide range of laptop spare parts,
                   desktop components, and accessories to meet all your tech needs.
                 </p>
               </div>
@@ -52,8 +52,8 @@ const AboutPage = () => {
                   Our Services
                 </h3>
                 <p className="text-gray-300">
-                  At Meta Computers, we go beyond just sales. Our expert technicians specialize in fast, reliable 
-                  repairs for laptops and PCs, ensuring minimal downtime and maximum efficiency. Our commitment 
+                  At Meta Computers, we go beyond just sales. Our expert technicians specialize in fast, reliable
+                  repairs for laptops and PCs, ensuring minimal downtime and maximum efficiency. Our commitment
                   to customer satisfaction drives us to deliver exceptional service, every time.
                 </p>
               </div>
@@ -65,7 +65,7 @@ const AboutPage = () => {
                 Our Commitment
               </h3>
               <p className="text-gray-300">
-                Experience cutting-edge technology, personalized support, and unwavering reliability with Meta Computers. 
+                Experience cutting-edge technology, personalized support, and unwavering reliability with Meta Computers.
                 Let us power your digital journey with trust and innovation!
               </p>
             </div>

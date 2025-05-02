@@ -68,7 +68,7 @@ const AddProduct = () => {
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-lg shadow-md my-10">
       <div className="mb-10 border-b pb-6">
-        <h1 className="text-3xl font-light text-gray-800 mb-2">Add New Product</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Add New Product</h1>
         <p className="text-gray-500 text-sm">Complete the form below to add a product to your inventory</p>
       </div>
 

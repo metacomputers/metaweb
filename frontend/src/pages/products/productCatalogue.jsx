@@ -14,6 +14,10 @@ const ProductPage = () => {
     const [loading, setLoading] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 12; // Fixed at 12 products per page
 
     useEffect(() => {
         const getProducts = async () => {
@@ -42,11 +46,38 @@ const ProductPage = () => {
         return brandMatch && priceMatch && categoryMatch && searchMatch;
     });
 
+    // Pagination logic
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Scroll to top when changing page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     const clearFilters = () => {
         setBrandFilter("");
         setCategoryFilter("");
         setPriceFilter({ min: 0, max: Infinity });
         setSearchTerm("");
+        setCurrentPage(1); // Reset to first page when clearing filters
     };
 
     const handleViewDetails = (product) => {
@@ -73,123 +104,121 @@ const ProductPage = () => {
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
             <div className="container mx-auto px-4 py-8 pt-32">
 
-                {/* Search Bar */}
-                <div className="mb-6 relative">
-                    <input
-                        type="text"
-                        placeholder="Search for products..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-4 pl-12 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-                    />
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 absolute top-4 left-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
+                {/* Combined Filter Card with Search Bar */}
+                <div className="mb-8 bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-700">
+                    <div className="flex flex-wrap items-center justify-between">
+                        {/* Filters */}
+                        <div className="flex flex-wrap items-center space-x-3 flex-grow mr-4">
+                            {/* Brand Filter */}
+                            <div className="min-w-[120px] mb-2 md:mb-0">
+                                <select
+                                    id="brand-filter"
+                                    value={brandFilter}
+                                    onChange={(e) => setBrandFilter(e.target.value)}
+                                    className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="">All Brands</option>
+                                    <option value="Asus">Asus</option>
+                                    <option value="HP">HP</option>
+                                    <option value="Dell">Dell</option>
+                                    <option value="MSI">MSI</option>
+                                    <option value="Apple">Apple</option>
+                                </select>
+                            </div>
 
-                {/* Filters */}
-                <div className="mb-8 bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700">
-                    <h2 className="text-xl font-semibold mb-4 text-purple-400">Filter Products</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {/* Brand Filter */}
-                        <div>
-                            <label htmlFor="brand-filter" className="block text-sm text-gray-400 mb-2">Brand</label>
-                            <select
-                                id="brand-filter"
-                                value={brandFilter}
-                                onChange={(e) => setBrandFilter(e.target.value)}
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                                <option value="">All Brands</option>
-                                <option value="Asus">Asus</option>
-                                <option value="HP">HP</option>
-                                <option value="Dell">Dell</option>
-                                <option value="MSI">MSI</option>
-                                <option value="Apple">Apple</option>
-                            </select>
+                            {/* Category Filter */}
+                            <div className="min-w-[120px] mb-2 md:mb-0">
+                                <select
+                                    id="category-filter"
+                                    value={categoryFilter}
+                                    onChange={(e) => setCategoryFilter(e.target.value)}
+                                    className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="">All Categories</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Laptop-Gaming">Gaming Laptop</option>
+                                    <option value="Monitor">Monitor</option>
+                                    <option value="Accessories">Accessories</option>
+                                    <option value="Software">Software</option>
+                                    <option value="Hardware">Hardware</option>
+                                </select>
+                            </div>
+
+                            {/* Price Filter */}
+                            <div className="min-w-[120px] mb-2 md:mb-0">
+                                <select
+                                    id="price-filter"
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        switch (val) {
+                                            case "0-10000":
+                                                setPriceFilter({ min: 0, max: 10000 });
+                                                break;
+                                            case "10000-25000":
+                                                setPriceFilter({ min: 10000, max: 25000 });
+                                                break;
+                                            case "25000-50000":
+                                                setPriceFilter({ min: 25000, max: 50000 });
+                                                break;
+                                            case "50000-100000":
+                                                setPriceFilter({ min: 50000, max: 100000 });
+                                                break;
+                                            case "100000-200000":
+                                                setPriceFilter({ min: 100000, max: 200000 });
+                                                break;
+                                            case "200000-300000":
+                                                setPriceFilter({ min: 200000, max: 300000 });
+                                                break;
+                                            case "300000-500000":
+                                                setPriceFilter({ min: 300000, max: 500000 });
+                                                break;
+                                            case "500000+":
+                                                setPriceFilter({ min: 500000, max: Infinity });
+                                                break;
+                                            default:
+                                                setPriceFilter({ min: 0, max: Infinity });
+                                        }
+                                    }}
+                                    className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="">All Prices</option>
+                                    <option value="0-10000">Under LKR 10,000</option>
+                                    <option value="10000-25000">LKR 10,000 - 25,000</option>
+                                    <option value="25000-50000">LKR 25,000 - 50,000</option>
+                                    <option value="50000-100000">LKR 50,000 - 100,000</option>
+                                    <option value="100000-200000">LKR 100,000 - 200,000</option>
+                                    <option value="200000-300000">LKR 200,000 - 300,000</option>
+                                    <option value="300000-500000">LKR 300,000 - 500,000</option>
+                                    <option value="500000+">Over LKR 500,000</option>
+                                </select>
+                            </div>
+
+                            {/* Clear Filters Button */}
+                            <div className="mb-2 md:mb-0">
+                                <button
+                                    onClick={clearFilters}
+                                    className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                                >
+                                    Clear Filters
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Category Filter */}
-                        <div>
-                            <label htmlFor="category-filter" className="block text-sm text-gray-400 mb-2">Category</label>
-                            <select
-                                id="category-filter"
-                                value={categoryFilter}
-                                onChange={(e) => setCategoryFilter(e.target.value)}
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                                <option value="">All Categories</option>
-                                <option value="Laptop">Laptop</option>
-                                <option value="Laptop-Gaming">Gaming Laptop</option>
-                                <option value="Monitor">Monitor</option>
-                                <option value="Accessories">Accessories</option>
-                                <option value="Software">Software</option>
-                                <option value="Hardware">Hardware</option>
-                            </select>
-                        </div>
-
-                        {/* Price Filter */}
-                        <div>
-                            <label htmlFor="price-filter" className="block text-sm text-gray-400 mb-2">Price Range</label>
-                            <select
-                                id="price-filter"
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    switch (val) {
-                                        case "0-10000":
-                                            setPriceFilter({ min: 0, max: 10000 });
-                                            break;
-                                        case "10000-25000":
-                                            setPriceFilter({ min: 10000, max: 25000 });
-                                            break;
-                                        case "25000-50000":
-                                            setPriceFilter({ min: 25000, max: 50000 });
-                                            break;
-                                        case "50000-100000":
-                                            setPriceFilter({ min: 50000, max: 100000 });
-                                            break;
-                                        case "100000-200000":
-                                            setPriceFilter({ min: 100000, max: 200000 });
-                                            break;
-                                        case "200000-300000":
-                                            setPriceFilter({ min: 200000, max: 300000 });
-                                            break;
-                                        case "300000-500000":
-                                            setPriceFilter({ min: 300000, max: 500000 });
-                                            break;
-                                        case "500000+":
-                                            setPriceFilter({ min: 500000, max: Infinity });
-                                            break;
-                                        default:
-                                            setPriceFilter({ min: 0, max: Infinity });
-                                    }
-                                }}
-                                className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            >
-                                <option value="">All Prices</option>
-                                <option value="0-10000">Under LKR 10,000</option>
-                                <option value="10000-25000">LKR 10,000 - 25,000</option>
-                                <option value="25000-50000">LKR 25,000 - 50,000</option>
-                                <option value="50000-100000">LKR 50,000 - 100,000</option>
-                                <option value="100000-200000">LKR 100,000 - 200,000</option>
-                                <option value="200000-300000">LKR 200,000 - 300,000</option>
-                                <option value="300000-500000">LKR 300,000 - 500,000</option>
-                                <option value="500000+">Over LKR 500,000</option>
-                            </select>
-                        </div>
-
-                        {/* Clear Filters Button */}
-                        <div className="flex items-end">
-                            <button
-                                onClick={clearFilters}
-                                className="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-                            >
-                                Clear Filters
-                            </button>
+                        {/* Search Bar */}
+                        <div className="relative w-full md:w-auto md:min-w-[500px] flex-shrink-0">
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full p-2 pl-8 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                            />
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute top-2.5 left-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-
 
                 {/* Products Grid */}
                 {loading ? (
@@ -199,7 +228,7 @@ const ProductPage = () => {
                 ) : (
                     <>
                         <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-6">
-                            {filteredProducts.map((product) => (
+                            {currentProducts.map((product) => (
                                 <div
                                     key={product._id}
                                     className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-purple-500/10 transition duration-300"
@@ -217,19 +246,10 @@ const ProductPage = () => {
                                     <div className="p-5">
                                         <div className="flex justify-between items-center mb-2">
                                             <p className="text-sm text-gray-400">{product.brand}</p>
-                                            <div className="flex items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                                <span className="text-xs text-gray-400 ml-1">4.5</span>
-                                            </div>
                                         </div>
                                         <h3 className="text-lg font-semibold text-white mb-2">
                                             {product.name}
                                         </h3>
-                                        {/* <p className="text-sm text-gray-400 mb-4 h-12 overflow-hidden">
-                                            {product.description.slice(0, 50)}...
-                                        </p> */}
                                         <div className="flex justify-between items-center">
                                             <p className="text-lg font-bold text-purple-400">
                                                 LKR. {product.price.toLocaleString()}.00
@@ -243,12 +263,6 @@ const ProductPage = () => {
                                                 </svg>
                                             </button>
                                         </div>
-                                        {/* <button
-                                            className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition duration-300 transform hover:translate-y-px"
-                                            onClick={() => handleViewDetails(product)}
-                                        >
-                                            View Details
-                                        </button> */}
                                     </div>
                                 </div>
                             ))}
@@ -270,9 +284,89 @@ const ProductPage = () => {
                             </div>
                         )}
 
+                        {/* Pagination Controls - Bottom */}
+                        {!loading && filteredProducts.length > 0 && (
+                            <div className="mt-8 flex flex-col md:flex-row justify-center items-center">
+                                <div className="flex space-x-2 mb-4 md:mb-0">
+                                    <button
+                                        onClick={goToPreviousPage}
+                                        disabled={currentPage === 1}
+                                        className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
+                                            currentPage === 1 
+                                                ? 'bg-gray-700 border-gray-600 text-gray-500 cursor-not-allowed' 
+                                                : 'bg-gray-700 border-gray-600 hover:bg-gray-600 text-white cursor-pointer'
+                                        }`}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Previous
+                                    </button>
+                                    
+                                    {/* Page Numbers */}
+                                    <div className="hidden md:flex">
+                                        {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
+                                            // Logic to show correct page numbers depending on current page
+                                            let pageNum;
+                                            if (totalPages <= 5) {
+                                                pageNum = idx + 1;
+                                            } else if (currentPage <= 3) {
+                                                pageNum = idx + 1;
+                                            } else if (currentPage >= totalPages - 2) {
+                                                pageNum = totalPages - 4 + idx;
+                                            } else {
+                                                pageNum = currentPage - 2 + idx;
+                                            }
+                                            
+                                            // Only render if pageNum is valid
+                                            if (pageNum > 0 && pageNum <= totalPages) {
+                                                return (
+                                                    <button
+                                                        key={pageNum}
+                                                        onClick={() => paginate(pageNum)}
+                                                        className={`w-10 h-10 mx-1 flex items-center justify-center rounded-lg ${
+                                                            currentPage === pageNum
+                                                                ? 'bg-purple-600 text-white'
+                                                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                                        }`}
+                                                    >
+                                                        {pageNum}
+                                                    </button>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
+                                    
+                                    <button
+                                        onClick={goToNextPage}
+                                        disabled={currentPage === totalPages}
+                                        className={`flex items-center justify-center px-4 py-2 rounded-lg border ${
+                                            currentPage === totalPages 
+                                                ? 'bg-gray-700 border-gray-600 text-gray-500 cursor-not-allowed' 
+                                                : 'bg-gray-700 border-gray-600 hover:bg-gray-600 text-white cursor-pointer'
+                                        }`}
+                                    >
+                                        Next
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                {/* Current Page Indicator (Mobile) */}
+                                <div className="md:hidden text-gray-400 text-sm">
+                                    Page {currentPage} of {totalPages}
+                                </div>
+                                
+                                {/* Total pages indicator (Desktop) */}
+                                <div className="hidden md:flex items-center ml-6">
+                                    <span className="text-gray-400">Page {currentPage} of {totalPages}</span>
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
-
             </div>
 
             {/* Product Details Popup */}
@@ -283,7 +377,6 @@ const ProductPage = () => {
                     onAddToCart={handleAddToCart}
                 />
             )}
-
         </div>
     );
 };

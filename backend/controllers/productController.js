@@ -115,7 +115,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
 //Fetch all products for admin dashboard
 const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({}).limit(12).sort({ createdAt: -1 });
+    const products = await Product.find({}).sort({ createdAt: -1 });
 
     res.json(products);
   } catch (error) {
