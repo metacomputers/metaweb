@@ -26,6 +26,7 @@ import ManageRepair from "./components/adminComponents/ManageRepair.jsx";
 import ManageConsult from "./components/adminComponents/ManageConsult.jsx";
 import ServiceInvoice from "./pages/maintenance/components/ServiceInvoice";
 import ConsultInvoice from "./pages/maintenance/components/ConsultInvoice";
+import QuotationPage from './pages/products/quotationPage.jsx';
 
 // Layout component for non-admin routes
 const MainLayout = ({ children }) => {
@@ -144,6 +145,36 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path="/" element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        } />
+        <Route path="/cart" element={
+          <MainLayout>
+            <CartPage />
+          </MainLayout>
+        } />
+        <Route path="/products" element={
+          <MainLayout>
+            <ProductPage />
+          </MainLayout>
+        } />
+        <Route path="/profile" element={
+          <MainLayout>
+            <Profile />
+          </MainLayout>
+        } />
+        <Route path="/quotation" element={
+          <MainLayout>
+            <QuotationPage />
+          </MainLayout>
+        } />
+        <Route path="/about" element={
+          <MainLayout>
+            <AboutPage />
+          </MainLayout>
+        } />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registration />} />
 

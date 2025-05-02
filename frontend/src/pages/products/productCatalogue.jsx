@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllProducts } from "../../api/productApi";
-
+import toast from "react-hot-toast";
 import ProductDetailsPopup from "../../components/product_management/ProductDetailsPopup";
-
+import { addToCart } from "../../api/cartApi";
 
 const ProductPage = () => {
     const [products, setProducts] = useState([]);
@@ -71,7 +71,7 @@ const ProductPage = () => {
 
     return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
-       
+
             <div className="container mx-auto px-4 py-8">
 
                 {/* Search Bar */}
@@ -191,21 +191,6 @@ const ProductPage = () => {
                     </div>
                 </div>
 
-                {/* Results Stats
-                <div className="mb-6 flex justify-between items-center">
-                    <p className="text-gray-300">
-                        Showing <span className="text-white font-semibold">{filteredProducts.length}</span> products
-                    </p>
-                    <div className="text-gray-300">
-                        <span className="hidden sm:inline">Sort by: </span>
-                        <select className="bg-gray-700 border border-gray-600 rounded-lg text-white p-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <option>Featured</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
-                            <option>Newest</option>
-                        </select>
-                    </div>
-                </div> */}
 
                 {/* Products Grid */}
                 {loading ? (
@@ -299,7 +284,7 @@ const ProductPage = () => {
                     onAddToCart={handleAddToCart}
                 />
             )}
-            
+
         </div>
     );
 };

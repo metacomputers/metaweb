@@ -179,7 +179,7 @@ const Header = () => {
                   className="text-white hover:text-purple-400 transition duration-300 flex items-center px-4 py-2 transform hover:scale-105"
                 >
                   <FaUser className="mr-2" />
-                  <span className="font-medium">{displayName}</span>
+                  <span className="font-small">{displayName}</span>
                 </Link>
                 <button
                   onClick={logoutHandler}
@@ -195,14 +195,14 @@ const Header = () => {
                   to="/login"
                   className="text-white hover:text-purple-400 transition duration-300 px-4 py-2 font-medium transform hover:scale-105"
                 >
-                  <span>Login / Register</span>
+                  <span>Login</span>
                 </Link>
               </>
             )}
             
             {/* Quotation Button */}
             <Link
-              to="/quotations"
+              to="/quotation"
               onClick={handleQuotationClick}
               className="relative flex items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
             >
@@ -283,7 +283,7 @@ const Header = () => {
                     className="text-white hover:text-purple-400 transition duration-300 px-4 py-2 transform hover:scale-105 block"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Login / Register
+                    Login
                   </Link>
                 )}
                 

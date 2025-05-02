@@ -43,85 +43,81 @@ const ProductList = () => {
   );
 
   return (
-    
-    <div className="bg-gray-100 min-h-screen"> 
-      
+    <div className="mt-6 bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="container mx-auto px-4 py-4">
-      
-        {/* Search Bar*/}
-        <div className="mb-6">
-        <StockPDF allProducts = {products} />
-        <button
-            className="bg-blend-normal text-black py-2 px-4 rounded-md hover:bg-gray-700 transition"
-            onClick={() => navigate("/addproduct")}
-          >
-            + Add New Product
-          </button>
-          
-          <input
-            type="text"
-            name="brand"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
+        {/* Header with Search Bar */}
+        <div className="flex justify-between items-center mb-6">
+          <StockPDF allProducts={products} />
+          <div className="w-64">
+            <input
+              type="text"
+              name="brand"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                className="bg-white shadow-md rounded-lg overflow-hidden p-4 transition transform duration-300 hover:shadow-lg"
-              >
-                <img
-                  src={`/uploads/${product.imageName}`}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-md"
-                />
-                <div className="mt-3">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm mt-1">
-                    {product.description}
-                  </p>
-                  <p className="mt-2 font-bold text-blue-600 text-base">
-                    LKR.{product.price}.00
-                  </p>
-                  <p className="text-gray-500 text-xs">Brand: {product.brand}</p>
-                  <div className="mt-4 flex justify-between">
-                    <button
-                      className="text-red-500 hover:text-red-600 transition-colors"
-                      onClick={() => handleDelete(product._id)}
-                    >
-                      <MdDeleteForever className="text-2xl" />
-                    </button>
-                    <button
-                      className="text-green-500 hover:text-green-600 transition-colors"
-                      onClick={() => navigate(`/admin/updateproduct/${product._id}`)}
-                    >
-                      <FaEdit className="text-2xl" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-
-
-            ))
-          ) : (
-            <p className="text-center text-gray-600 col-span-3">
-              No products found
-            </p>
-          )}
+        {/* Product Table */}
+        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <table className="w-full table-auto">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Image</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Brand</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <tr key={product._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      <img
+                        src={`/uploads/${product.imageName}`}
+                        alt={product.name}
+                        className="h-12 w-12 object-cover rounded-md"
+                      />
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-800">{product.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-xs">{product.description.slice(0,30)}</td>
+                    <td className="px-4 py-3 text-sm font-bold text-blue-600">Rs.{product.price.toLocaleString()}.00</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">{product.brand}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex space-x-3">
+                        <button
+                          className="text-green-500 hover:text-green-600 transition-colors"
+                          onClick={() => navigate(`/admin/updateproduct/${product._id}`)}
+                        >
+                          <FaEdit className="text-xl" />
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-600 transition-colors"
+                          onClick={() => handleDelete(product._id)}
+                        >
+                          <MdDeleteForever className="text-xl" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="px-4 py-4 text-center text-gray-600">
+                    No products found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-
       </div>
-      
     </div>
   );
 };

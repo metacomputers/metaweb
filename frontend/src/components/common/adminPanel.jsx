@@ -67,7 +67,7 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      {/* Updated Logout Section */}
+      {/* Logout Section */}
       <div className="mt-8">
         <hr className="border-gray-700 my-4" />
         <div
@@ -108,13 +108,6 @@ const Header = () => {
           <p className="text-sm font-medium text-gray-900">{displayName}</p>
           <p className="text-xs text-gray-500">Administrator</p>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer transition"
-        >
-          <LogOut size={20} />
-          <span>Logout</span>
-        </button>
       </div>
     </header>
   );

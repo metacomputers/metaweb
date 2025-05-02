@@ -97,7 +97,7 @@ const StockPDF = ({ allProducts }) => {
                 pdf.text(product.brand || "N/A", 75, y);
                 pdf.text(product.category || "N/A", 105, y);
                 pdf.text(product.quantity?.toString() || "0", 135, y);
-                // pdf.text(product.price?.toLocaleString() || "0", 160, y);
+                pdf.text(product.price?.toLocaleString() || "0", 160, y);
 
                 y += 7;
             });

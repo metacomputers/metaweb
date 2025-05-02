@@ -30,13 +30,13 @@ export const addQuotation = async (productId, qty) => {
 // Fetch quotation items for the current user
 export const getQuotationItems = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getQuotationItems`, getAuthHeaders());
-    return response.data.quotation;
+    const response = await axios.get(`${API_BASE_URL}/getQuotation`, getAuthHeaders())
+    return response.data;
   } catch (error) {
-    console.error('Error fetching quotation items:', error);
+    console.error("Error fetching quotation items: ", error);
     throw error;
   }
-};
+}
 
 // Update quotation item quantity
 export const updateQuotationItem = async (productId, qty) => {
@@ -57,7 +57,7 @@ export const updateQuotationItem = async (productId, qty) => {
 export const removeFromQuotation = async (productId) => {
   try {
     const response = await axios.delete(
-      `${API_BASE_URL}/removeFromQuotation`,
+      `${API_BASE_URL}/removeQuotation`,
       {
         ...getAuthHeaders(),
         data: { productId: productId._id }
@@ -66,21 +66,6 @@ export const removeFromQuotation = async (productId) => {
     return response.data;
   } catch (error) {
     console.error('Error removing from quotation:', error);
-    throw error;
-  }
-};
-
-// Request official quotation (Similar to checkout)
-export const requestQuotation = async (contactInfo) => {
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/requestQuotation`,
-      contactInfo,
-      getAuthHeaders()
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error requesting official quotation:', error);
     throw error;
   }
 };
