@@ -66,7 +66,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg border ${
+              className={`w-full px-4 py-2 rounded-lg border text-gray-800 ${
                 errors.firstName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
@@ -82,7 +82,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg border ${
+              className={`w-full px-4 py-2 rounded-lg border text-gray-800 ${
                 errors.lastName ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
@@ -97,7 +97,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               type="email"
               name="email"
               value={formData.email}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-not-allowed bg-gray-50"
+              className="w-full text-gray-800 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-not-allowed bg-gray-50"
               readOnly
             />
             <p className="text-gray-500 text-sm mt-1">Email cannot be changed</p>
@@ -111,7 +111,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               name="mobileNo"
               value={formData.mobileNo}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg border ${
+              className={`w-full px-4 py-2 rounded-lg border text-gray-800 ${
                 errors.mobileNo ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               required
@@ -126,7 +126,7 @@ const EditUserModal = ({ user, onUpdate, onClose }) => {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded-lg border ${
+              className={`w-full text-gray-800 px-4 py-2 rounded-lg border ${
                 errors.address ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
               rows="3"

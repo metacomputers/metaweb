@@ -37,7 +37,7 @@ const Profile = () => {
         }
       } catch (err) {
         setError("Failed to load orders");
-        toast.error("Could not load your orders");
+        toast.error(err.message || "Could not load your orders");
       } finally {
         setLoading(false);
       }
