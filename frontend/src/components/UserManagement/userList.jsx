@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchUsers, deleteUser, updateUser } from "../../api/apiUsers";
+import { fetchUsers} from "../../api/apiUsers";
 import UserTools from "./userTools";
 import EditUserModal from "./userEditModal";
 import Loader from "../Common/loader";

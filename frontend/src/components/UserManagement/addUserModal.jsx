@@ -7,41 +7,146 @@ import { X } from "lucide-react";
 const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [formValues, setFormValues] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    mobileNo: "",
+    address: "",
+    role: ""
+  });
   const navigate = useNavigate();
+
+  const validateField = (name, value) => {
+    let error = "";
+    
+    switch (name) {
+      case "firstName":
+      case "lastName":
+        if (value.trim().length < 2) {
+          error = `${name === "firstName" ? "First" : "Last"} name must be at least 2 characters`;
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          error = "Only letters and spaces are allowed";
+        }
+        break;
+      
+      case "username":
+        if (value.trim().length < 3) {
+          error = "Username must be at least 3 characters";
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+          error = "Username can only contain letters, numbers, and underscores";
+        }
+        break;
+      
+      case "email":
+        if (!/^\S+@\S+\.\S+$/.test(value)) {
+          error = "Please enter a valid email address";
+        }
+        break;
+      
+      case "password":
+        if (value.length < 8) {
+          error = "Password must be at least 8 characters";
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+          error = "Password must contain at least one uppercase letter, one lowercase letter, and one number";
+        }
+        break;
+      
+      case "confirmPassword":
+        if (value !== formValues.password) {
+          error = "Passwords do not match";
+        }
+        break;
+      
+      case "mobileNo":
+        if (!/^\d{10,15}$/.test(value.replace(/[-()\s]/g, ''))) {
+          error = "Please enter a valid mobile number (10-15 digits)";
+        }
+        break;
+      
+      case "address":
+        if (value.trim().length < 5) {
+          error = "Address is too short";
+        }
+        break;
+      
+      case "role":
+        if (isAdmin && !value) {
+          error = "Please select a role";
+        }
+        break;
+      
+      default:
+        break;
+    }
+    
+    return error;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value
+    });
+    
+    const error = validateField(name, value);
+    setFormErrors({
+      ...formErrors,
+      [name]: error
+    });
+    
+    // Special case for confirmPassword to validate when password changes
+    if (name === "password" && formValues.confirmPassword) {
+      const confirmError = formValues.confirmPassword !== value ? "Passwords do not match" : "";
+      setFormErrors(prev => ({
+        ...prev,
+        confirmPassword: confirmError
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    let isValid = true;
+    
+    Object.keys(formValues).forEach(field => {
+      if (field === "role" && !isAdmin) return;
+      
+      const error = validateField(field, formValues[field]);
+      if (error) {
+        errors[field] = error;
+        isValid = false;
+      }
+    });
+    
+    setFormErrors(errors);
+    return isValid;
+  };
 
   const onFormSubmit = async (evt) => {
     try {
       evt.preventDefault();
-      setIsLoading(true);
-      setFormErrors({});
-
-      const firstName = evt.target.firstName.value;
-      const lastName = evt.target.lastName.value;
-      const username = evt.target.username.value;
-      const email = evt.target.email.value;
-      const password = evt.target.password.value;
-      const confirmPassword = evt.target.confirmPassword.value;
-      const mobileNo = evt.target.mobileNo.value;
-      const address = evt.target.address.value;
-      const role = isAdmin ? evt.target.role.value : "Customer";
-
-      // Validate password match
-      if (password !== confirmPassword) {
-        setFormErrors({ confirmPassword: "Passwords do not match" });
-        toast.error("Passwords do not match");
-        setIsLoading(false);
+      
+      if (!validateForm()) {
+        toast.error("Please fix the form errors before submitting");
         return;
       }
+      
+      setIsLoading(true);
 
       const newUser = {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-        mobileNo,
-        address,
-        role: role,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        username: formValues.username,
+        email: formValues.email,
+        password: formValues.password,
+        mobileNo: formValues.mobileNo,
+        address: formValues.address,
+        role: isAdmin ? formValues.role : "Customer",
       };
 
       await addUser(newUser);
@@ -55,15 +160,26 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
         navigate("/login");
       }
 
-      evt.target.reset();
+      setFormValues({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        mobileNo: "",
+        address: "",
+        role: ""
+      });
+      setFormErrors({});
     } catch (error) {
       console.error(`Error registering user:`, error);
       // Set form errors based on the error message
       if (error.message.includes("email already exists")) {
-        setFormErrors({ email: "This email is already registered" });
+        setFormErrors({ ...formErrors, email: "This email is already registered" });
         toast.error("This email is already registered");
       } else if (error.message.includes("username already exists")) {
-        setFormErrors({ username: "This username is already taken" });
+        setFormErrors({ ...formErrors, username: "This username is already taken" });
         toast.error("This username is already taken");
       } else {
         toast.error(error.message || "Failed to create account. Please try again.");
@@ -76,22 +192,23 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         top: 0,
         left: 0,
         width: "100%",
         height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "#1f2937", // Matching the form color (slightly darker for contrast)
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start", // Changed from center to flex-start
         justifyContent: "center",
-        backdropFilter: "blur(4px)",
         zIndex: 50,
+        overflow: "auto", // Make it scrollable
+        padding: "2rem 1rem" // Add padding all around
       }}
     >
       <form
         onSubmit={onFormSubmit}
-        className="flex flex-col justify-center items-center bg-gray-800 gap-6 shadow-xl rounded-xl p-8 w-full max-w-md border border-gray-700 relative"
+        className="flex flex-col justify-center items-center bg-gray-800 gap-6 shadow-xl rounded-xl p-8 w-full max-w-4xl border border-gray-700 relative my-8"
       >
         {/* Close Button */}
         <button
@@ -102,82 +219,182 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
           <X size={24} />
         </button>
 
-        <h3 className="text-2xl font-semibold text-white">
+        <h3 className="text-2xl font-semibold text-white mb-4">
           {isAdmin ? "Create User" : "Create an Account"}
         </h3>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            First Name
-          </label>
-          <input
-            name="firstName"
-            required
-            type="text"
-            placeholder="Enter your first name"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.firstName ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.firstName && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.firstName}</p>
-          )}
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                First Name
+              </label>
+              <input
+                name="firstName"
+                required
+                type="text"
+                value={formValues.firstName}
+                onChange={handleChange}
+                placeholder="Enter your first name"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.firstName ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.firstName && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.firstName}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Last Name
+              </label>
+              <input
+                name="lastName"
+                required
+                type="text"
+                value={formValues.lastName}
+                onChange={handleChange}
+                placeholder="Enter your last name"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.lastName ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.lastName && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.lastName}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Email
+              </label>
+              <input
+                name="email"
+                required
+                type="email"
+                value={formValues.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.email ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.email && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Mobile Number
+              </label>
+              <input
+                name="mobileNo"
+                required
+                type="tel"
+                value={formValues.mobileNo}
+                onChange={handleChange}
+                placeholder="Enter your mobile number"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.mobileNo ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.mobileNo && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.mobileNo}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Username
+              </label>
+              <input
+                name="username"
+                required
+                type="text"
+                value={formValues.username}
+                onChange={handleChange}
+                placeholder="Enter your username"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.username ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.username && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Password
+              </label>
+              <input
+                name="password"
+                required
+                type="password"
+                value={formValues.password}
+                onChange={handleChange}
+                placeholder="Enter a secure password"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.password ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.password && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300">
+                Confirm Password
+              </label>
+              <input
+                name="confirmPassword"
+                required
+                type="password"
+                value={formValues.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
+                  formErrors.confirmPassword ? "border-red-500" : "border-gray-600"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+              />
+              {formErrors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">{formErrors.confirmPassword}</p>
+              )}
+            </div>
+
+            {isAdmin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-300">Role</label>
+                <select
+                  name="role"
+                  value={formValues.role}
+                  onChange={handleChange}
+                  className={`w-full p-3 bg-gray-700 text-white border ${
+                    formErrors.role ? "border-red-500" : "border-gray-600"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
+                  required={isAdmin}
+                >
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Customer">Customer</option>
+                  <option value="Technician">Technician</option>
+                </select>
+                {formErrors.role && (
+                  <p className="text-red-500 text-sm mt-1">{formErrors.role}</p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Last Name
-          </label>
-          <input
-            name="lastName"
-            required
-            type="text"
-            placeholder="Enter your last name"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.lastName ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.lastName && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.lastName}</p>
-          )}
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Email
-          </label>
-          <input
-            name="email"
-            required
-            type="email"
-            placeholder="Enter your email"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.email ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.email && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
-          )}
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Mobile Number
-          </label>
-          <input
-            name="mobileNo"
-            required
-            type="tel"
-            placeholder="Enter your mobile number"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.mobileNo ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.mobileNo && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.mobileNo}</p>
-          )}
-        </div>
-
+        {/* Address field spanning both columns */}
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-300">
             Address
@@ -185,6 +402,8 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
           <textarea
             name="address"
             required
+            value={formValues.address}
+            onChange={handleChange}
             placeholder="Enter your address"
             className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
               formErrors.address ? "border-red-500" : "border-gray-600"
@@ -196,107 +415,35 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
           )}
         </div>
 
-        {isAdmin && (
-          <div className="w-full">
-            <label className="block text-sm font-medium text-gray-300">Role</label>
-            <select
-              name="role"
-              className={`w-full p-3 bg-gray-700 text-white border ${
-                formErrors.role ? "border-red-500" : "border-gray-600"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-              required
-            >
-              <option value="">Select Role</option>
-              <option value="Admin">Admin</option>
-              <option value="Customer">Customer</option>
-              <option value="Technician">Technician</option>
-            </select>
-            {formErrors.role && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.role}</p>
-            )}
-          </div>
-        )}
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Username
-          </label>
-          <input
-            name="username"
-            required
-            type="text"
-            placeholder="Enter your username"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.username ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.username && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
-          )}
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Password
-          </label>
-          <input
-            name="password"
-            required
-            type="password"
-            placeholder="Enter a secure password"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.password ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.password && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
-          )}
-        </div>
-
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-300">
-            Confirm Password
-          </label>
-          <input
-            name="confirmPassword"
-            required
-            type="password"
-            placeholder="Confirm your password"
-            className={`mt-1 w-full p-3 bg-gray-700 text-white border ${
-              formErrors.confirmPassword ? "border-red-500" : "border-gray-600"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
-          />
-          {formErrors.confirmPassword && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.confirmPassword}</p>
-          )}
-        </div>
-
-        {isAdmin ? (
-          <div className="flex space-x-2">
-            <button
-              type="button"
-              className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 w-full"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
+        {/* Buttons */}
+        <div className="flex space-x-2 w-full justify-end mt-4">
+          {isAdmin ? (
+            <>
+              <button
+                type="button"
+                className="bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading || Object.values(formErrors).some(error => error)}
+                className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 whitespace-nowrap disabled:opacity-50"
+              >
+                {isLoading ? "Creating..." : "Create"}
+              </button>
+            </>
+          ) : (
             <button
               type="submit"
-              disabled={isLoading}
-              className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 w-1/2 whitespace-nowrap disabled:opacity-50"
+              disabled={isLoading || Object.values(formErrors).some(error => error)}
+              className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50"
             >
-              {isLoading ? "Creating..." : "Create"}
+              {isLoading ? "Creating Account..." : "Create Account"}
             </button>
-          </div>
-        ) : (
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50"
-          >
-            {isLoading ? "Creating Account..." : "Create Account"}
-          </button>
-        )}
+          )}
+        </div>
       </form>
     </div>
   );

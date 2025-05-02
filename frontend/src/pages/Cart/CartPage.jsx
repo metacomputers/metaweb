@@ -20,12 +20,15 @@ import {
 import OrderSummary from "../../components/cartComponents/OrderSummary";
 import OrderDetailsForm from "../../components/cartComponents/OrderDetailsForm";
 import InvoicePopup from "../../components/cartComponents/InvoicePopup";
+import ConfirmationModal from "../../components/Common/confirmationModal";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState(null);
 
   const [fullName, setFullName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -97,14 +100,16 @@ const CartPage = () => {
   };
 
   const handleRemoveItem = async (productId) => {
-    const confirm = window.confirm("Are you sure you want to remove this item?");
-    if (!confirm) return;
+    setItemToRemove(productId);
+    setShowConfirmModal(true);
+  };
 
+  const confirmRemoveItem = async (id) => {
     try {
-      const response = await removeFromCart(productId);
+      const response = await removeFromCart(id);
       if (response.message === "Product removed from cart") {
         setCartItems((prev) =>
-          prev.filter((item) => item.product !== productId)
+          prev.filter((item) => item.product !== id)
         );
         toast.success("Item removed from cart");
       } else {
@@ -113,6 +118,9 @@ const CartPage = () => {
     } catch (error) {
       console.error("Error removing item:", error);
       toast.error("Could not remove item.");
+    } finally {
+      setShowConfirmModal(false);
+      setItemToRemove(null);
     }
   };
 
@@ -190,6 +198,19 @@ const CartPage = () => {
     <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen font-sans">
       <Toaster position="top-center" reverseOrder={false} />
       
+      {/* Add the ConfirmationModal */}
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        id={itemToRemove}
+        onClose={() => {
+          setShowConfirmModal(false);
+          setItemToRemove(null);
+        }}
+        onConfirm={confirmRemoveItem}
+        title="Remove Item"
+        description="Are you sure you want to remove this item from your cart?"
+      />
+
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex items-center justify-center mb-10">
           <FaShoppingCart className="text-3xl mr-3 text-purple-500 mt-25" />

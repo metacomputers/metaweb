@@ -14,6 +14,8 @@ import quotationRoutes from "./routes/quotationRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import repairRoutes from "./routes/repairRoutes.js"
+import consultsRoute from "./routes/consultRoutes.js"
 
 dotenv.config();
 const port =  5000;
@@ -43,6 +45,8 @@ app.get('/api/test-cookie', (req, res) => {
     res.send('Cookies checked!');
   });
 
+app.use("/api/maintenance/repairs",repairRoutes)
+app.use("/api/maintenance/consults",consultsRoute)
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/products", productRoutes);

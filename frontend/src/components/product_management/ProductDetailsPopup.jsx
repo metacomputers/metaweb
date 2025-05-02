@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 
 const ProductDetailsPopup = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
+    const user = JSON.parse(localStorage.getItem("userInfo"));
 
     if (!product) return null;
 
@@ -21,14 +22,25 @@ const ProductDetailsPopup = ({ product, onClose }) => {
     };
 
     const handleAddToCart = async () => {
+        if (!user) {
+            toast.error("Please create an account or login to continue shopping", {
+                duration: 4000,
+                position: "top-center",
+                style: {
+                    background: "#1F2937",
+                    color: "#fff",
+                    border: "1px solid #4B5563",
+                },
+            });
+            return;
+        }
+
         try {
             await addToCart(product._id, quantity);
             toast.success(`${product.name} added to cart!`);
             // Dispatch custom event to notify header
             window.dispatchEvent(new CustomEvent('cartUpdated'));
             onClose(); // Close the popup after adding to cart
-            // Optionally navigate to cart
-            // navigate('/cart');
         } catch (error) {
             console.error('Error adding to cart:', error);
             toast.error('Failed to add product to cart');

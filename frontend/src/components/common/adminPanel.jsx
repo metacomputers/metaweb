@@ -1,7 +1,7 @@
 // src/components/adminPanel.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom"; // ← Add this at the top with other imports
-import { logoutUser } from "../../api/apiUsers"
+import { logoutUser } from "../../api/apiUsers";
 import { Link, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -22,14 +22,14 @@ const Sidebar = () => {
     try {
       await logoutUser();
       localStorage.removeItem("userInfo");
-      
+
       // Redirect to home page instead of login
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
       // Still clear localStorage even if the API call fails
       localStorage.removeItem("userInfo");
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -37,11 +37,27 @@ const Sidebar = () => {
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin" },
     { name: "Users", icon: <Users size={20} />, path: "/admin/users" },
     { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
-    { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
+    {
+      name: "Add Product",
+      icon: <PlusSquare size={20} />,
+      path: "/admin/add-product",
+    },
     { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
-    { name: "Financial Insight", icon: <BarChart size={20} />, path: "/admin/financials" },
-    { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/repairs" },
-    { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/consultations" },
+    {
+      name: "Financial Insight",
+      icon: <BarChart size={20} />,
+      path: "/admin/financials",
+    },
+    {
+      name: "Repairs",
+      icon: <Wrench size={20} />,
+      path: "/admin/maintenance/repair",
+    },
+    {
+      name: "Consultations",
+      icon: <MessageSquare size={20} />,
+      path: "/admin/maintenance/consult",
+    },
   ];
 
   return (
@@ -85,17 +101,17 @@ const Sidebar = () => {
 const Header = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const displayName = userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : 'Admin';
+  const displayName = userInfo ? `${userInfo.firstName}` : "Admin";
 
   const handleLogout = async () => {
     try {
       await logoutUser();
       localStorage.removeItem("userInfo");
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
       localStorage.removeItem("userInfo");
-      navigate('/');
+      navigate("/");
     }
   };
 
