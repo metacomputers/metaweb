@@ -112,7 +112,7 @@ const InvoicePopup = ({
       pdf.setFontSize(10);
       pdf.setTextColor(100, 100, 100);
       pdf.text(`Method: ${invoiceData.paymentMethod}`, 20, 85);
-      pdf.text("Status: Paid", 20, 90);
+      pdf.text(`Status: ${invoiceData.paymentMethod === "Credit/Debit Card" ? "Paid" : "Pending"}`, 20, 90);
       
       // Table header
       let y = 105;
@@ -250,13 +250,20 @@ const InvoicePopup = ({
           </div>
           
           {/* Payment Information */}
-          <div className="mb-8 bg-gray-700 bg-opacity-50 p-4 rounded-lg">
-            <h3 className="text-gray-300 text-sm font-semibold uppercase mb-3">Payment Details</h3>
-            <p className="text-white font-medium">Payment Method: {paymentMethod}</p>
-            {paymentMethod === "Credit/Debit Card" && cardNumber && (
-              <p className="text-gray-400">Card: •••• •••• •••• {cardNumber.slice(-4)}</p>
-            )}
-            <p className="text-gray-400">Status: <span className="text-green-400 font-medium">Paid</span></p>
+          <div className="bg-gray-700 bg-opacity-50 p-4 rounded-lg mb-8">
+            <h3 className="text-gray-300 text-sm font-semibold uppercase mb-3">Payment Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-400 text-sm">Payment Method</p>
+                <p className="text-white">{paymentMethod}</p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">Payment Status</p>
+                <p className={`${paymentMethod === "Credit/Debit Card" ? "text-green-500" : "text-yellow-500"}`}>
+                  {paymentMethod === "Credit/Debit Card" ? "Paid" : "Pending"}
+                </p>
+              </div>
+            </div>
           </div>
           
           {/* Order Items */}

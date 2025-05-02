@@ -10,13 +10,17 @@ import {
 import { fetchAllProducts } from '../../api/productApi';
 import { getAllOrders } from '../../api/orderAPI';
 import { fetchUsers } from '../../api/apiUsers';
+import { getAllRepairs } from '../../api/repairApi';
+import { getAllConsultations } from '../../api/consultApi';
 
 const DashboardAdmin = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     products: 0,
     orders: 0,
-    users: 0
+    users: 0,
+    repairs: 0,
+    consults: 0
   });
 
   useEffect(() => {
@@ -34,10 +38,18 @@ const DashboardAdmin = () => {
         const usersData = await fetchUsers();
         const totalUsers = Array.isArray(usersData) ? usersData.length : 0;
 
+        // Fetch repairs and consultations
+        const [repairsData, consultsData] = await Promise.all([
+          getAllRepairs(),
+          getAllConsultations()
+        ]);
+
         setStats({
           products: totalProducts,
           orders: totalOrders,
-          users: totalUsers
+          users: totalUsers,
+          repairs: repairsData?.data?.length || 0,
+          consults: consultsData?.data?.length || 0
         });
       } catch (error) {
         console.error('Error fetching stats:', error);
@@ -68,13 +80,13 @@ const DashboardAdmin = () => {
     },
     {
       title: 'Total Repairs',
-      value: '45',
+      value: stats.repairs,
       color: 'text-red-500',
       icon: <FaWrench className="text-2xl" />
     },
     {
       title: 'Consultation Requests',
-      value: '28',
+      value: stats.consults,
       color: 'text-yellow-500',
       icon: <FaComments className="text-2xl" />
     }

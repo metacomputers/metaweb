@@ -123,6 +123,7 @@ const Profile = () => {
         setUser(data);
         localStorage.setItem('userInfo', JSON.stringify(data));
         toast.success('Profile updated successfully');
+        setIsModalOpen(false);
       } else {
         console.error('Update failed:', data);
         toast.error(data.message || 'Failed to update profile');

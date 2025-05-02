@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Header from "./components/Common/header";
-import Footer from "./components/Common/footer";
+import Header from "./components/Common/Header";
+import Footer from "./components/Common/Footer";
 import HomePage from "./pages/Landing/HomePage";
 import CartPage from "./pages/Cart/CartPage";
 import ProductList from "./components/product_management/ProductList.jsx";

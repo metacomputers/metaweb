@@ -71,8 +71,7 @@ const ProductPage = () => {
 
     return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
-
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8 pt-32">
 
                 {/* Search Bar */}
                 <div className="mb-6 relative">
