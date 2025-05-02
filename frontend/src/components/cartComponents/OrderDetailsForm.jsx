@@ -367,9 +367,19 @@ const OrderDetailsForm = ({
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Card Number *"
+                  placeholder="Card Number (e.g., 1234 5678 9012 3456) *"
                   value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
+                  onChange={(e) => {
+                    // Remove all non-digit characters
+                    const value = e.target.value.replace(/\D/g, '');
+                    // Format the number in groups of 4 digits
+                    const formattedValue = value.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+                    // Limit to 16 digits
+                    if (value.length <= 16) {
+                      setCardNumber(formattedValue);
+                    }
+                  }}
+                  maxLength="19" // 16 digits + 3 spaces
                   className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
                     errors.cardNumber ? 'border-red-500' : 'border-gray-600'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
@@ -399,9 +409,19 @@ const OrderDetailsForm = ({
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Expiry Date *"
+                  placeholder="Expiry Date (MM/YY) *"
                   value={expiryDate}
-                  onChange={(e) => setExpiryDate(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    let formattedValue = value;
+                    if (value.length >= 2) {
+                      formattedValue = value.slice(0, 2) + '/' + value.slice(2, 4);
+                    }
+                    if (value.length <= 4) {
+                      setExpiryDate(formattedValue);
+                    }
+                  }}
+                  maxLength="5"
                   className={`w-full px-4 py-3 pl-12 rounded-lg bg-gray-700 text-white border ${
                     errors.expiryDate ? 'border-red-500' : 'border-gray-600'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition`}
