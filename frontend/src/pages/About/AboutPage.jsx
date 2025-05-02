@@ -3,7 +3,7 @@ import { FaUsers, FaLaptop, FaTools, FaStar } from 'react-icons/fa';
 
 const AboutPage = () => {
   return (
-    <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white">
+    <div className="bg-gradient-to-r from-gray-900 to-gray-800 min-h-screen text-white pt-20">
       {/* Hero Section */}
       <div className="relative py-20">
         <div className="absolute inset-0 bg-black/50 z-10"></div>
@@ -23,7 +23,7 @@ const AboutPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-16 ">
         <div className="max-w-4xl mx-auto">
           <div className="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
             <p className="text-lg text-gray-300 mb-8">
