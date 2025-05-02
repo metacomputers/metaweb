@@ -174,13 +174,27 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
       setFormErrors({});
     } catch (error) {
       console.error(`Error registering user:`, error);
-      // Set form errors based on the error message
-      if (error.message.includes("email already exists")) {
-        setFormErrors({ ...formErrors, email: "This email is already registered" });
-        toast.error("This email is already registered");
-      } else if (error.message.includes("username already exists")) {
-        setFormErrors({ ...formErrors, username: "This username is already taken" });
-        toast.error("This username is already taken");
+      
+      // Handle specific error messages from backend
+      if (error.message && error.message.toLowerCase().includes("email already exists")) {
+        setFormErrors(prev => ({ ...prev, email: "This email is already registered" }));
+        toast.error("This email is already registered. Please log in instead.");
+      } else if (error.message && error.message.toLowerCase().includes("username already exists")) {
+        setFormErrors(prev => ({ ...prev, username: "This username is already taken" }));
+        toast.error("This username is already taken. Please choose another one.");
+      } else if (error.message && error.message.toLowerCase().includes("user already exists") || 
+                error.message && error.message.toLowerCase().includes("already have an account")) {
+        toast.error("You already have an account. Please log in instead.", {
+          duration: 5000,
+          icon: '🔔',
+        });
+        
+        // Option to navigate to login page after a short delay
+        setTimeout(() => {
+          if (!isAdmin) {
+            navigate("/login");
+          }
+        }, 2000);
       } else {
         toast.error(error.message || "Failed to create account. Please try again.");
       }
@@ -414,6 +428,21 @@ const AddUserModal = ({ isAdmin = false, loadUsers, onClose }) => {
             <p className="text-red-500 text-sm mt-1">{formErrors.address}</p>
           )}
         </div>
+
+        {/* Login link for non-admin views */}
+        {!isAdmin && (
+          <div className="w-full text-center">
+            <p className="text-gray-300">
+              Already have an account?{" "}
+              <a 
+                href="/login" 
+                className="text-purple-400 hover:text-purple-300 hover:underline transition"
+              >
+                Log in here
+              </a>
+            </p>
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="flex space-x-2 w-full justify-end mt-4">
