@@ -257,7 +257,7 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a 
-                href="/products"
+                href="/maintenance"
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:translate-y-px text-center"
               >
                 Make an Appointment

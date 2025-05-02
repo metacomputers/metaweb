@@ -13,7 +13,7 @@ const addProduct = asyncHandler(async (req, res) => {
     if (!brand) return res.status(400).json({ error: "Brand is required" });
     if (!price || isNaN(price) || price <= 0)
       return res.status(400).json({ error: "Valid price is required" });
-    if (!description || description.length < 10)
+    if (!description || description.length < 1)
       return res
         .status(400)
         .json({ error: "Description must be at least 10 characters" });

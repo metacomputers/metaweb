@@ -172,6 +172,36 @@ const Header = () => {
 
           {/* Right side items - desktop */}
           <div className="hidden md:flex items-center space-x-6">
+            {/* Quotation Button */}
+            <Link
+              to="/quotation"
+              onClick={handleQuotationClick}
+              className="relative flex flex-col items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
+            >
+              <FaFileAlt className="text-xl" />
+              <span className="text-xs mt-1">View Quotation</span>
+              {quotationItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  {quotationItemsCount}
+                </span>
+              )}
+            </Link>
+            
+            {/* Cart Button */}
+            <Link
+              to="/cart"
+              onClick={handleCartClick}
+              className="relative flex flex-col items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
+            >
+              <FaShoppingCart className="text-xl" />
+              <span className="text-xs mt-1">Cart</span>
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Link>
+
             {user ? (
               <>
                 <Link
@@ -193,40 +223,13 @@ const Header = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-white hover:text-purple-400 transition duration-300 px-4 py-2 font-medium transform hover:scale-105"
+                  className="text-white hover:text-purple-400 transition duration-300 flex items-center px-4 py-2 font-medium transform hover:scale-105"
                 >
-                  <span>Login</span>
+                  <FaUser className="mr-2" />
+                  <span>Login/Register</span>
                 </Link>
               </>
             )}
-            
-            {/* Quotation Button */}
-            <Link
-              to="/quotation"
-              onClick={handleQuotationClick}
-              className="relative flex items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
-            >
-              <FaFileAlt className="text-xl" />
-              {quotationItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                  {quotationItemsCount}
-                </span>
-              )}
-            </Link>
-            
-            {/* Cart Button */}
-            <Link
-              to="/cart"
-              onClick={handleCartClick}
-              className="relative flex items-center text-white hover:text-purple-400 transition duration-300 p-2 transform hover:scale-105"
-            >
-              <FaShoppingCart className="text-xl" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
-                  {cartItemsCount}
-                </span>
-              )}
-            </Link>
           </div>
         </div>
 

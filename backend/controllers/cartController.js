@@ -188,8 +188,8 @@ const updateCartItem = async (req, res) => {
         paymentMethod,
         invoiceNumber,
         deliveryStatus: "pending",
-        isPaid: true,
-        paidAt: new Date(),
+        isPaid: paymentMethod === "Credit/Debit Card",
+        paidAt: paymentMethod === "Credit/Debit Card" ? new Date() : null,
       });
   
       await newOrder.save();

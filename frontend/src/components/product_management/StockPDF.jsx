@@ -56,7 +56,7 @@ const StockPDF = ({ allProducts }) => {
             pdf.text("Brand", 75, y + 5);
             pdf.text("Category", 105, y + 5);
             pdf.text("Quantity", 135, y + 5);
-            // pdf.text("Price (LKR)", 160, y + 5);
+            pdf.text("Unit Price (LKR)", 160, y + 5);
 
             //Table content
             y += 10;
@@ -75,7 +75,7 @@ const StockPDF = ({ allProducts }) => {
                     pdf.text("Brand", 75, y + 5);
                     pdf.text("Category", 105, y + 5);
                     pdf.text("Quantity", 135, y + 5);
-                    // pdf.text("Price (LKR)", 160, y + 5);
+                    pdf.text("Unit Price (LKR)", 160, y + 5);
 
                     y += 10;
                 }
@@ -140,13 +140,13 @@ const StockPDF = ({ allProducts }) => {
 
     return (
         <button 
-            className={`bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition flex items-center ${isGenerating ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition flex items-center ${isGenerating ? 'opacity-70 cursor-not-allowed' : ''}`}
             onClick = {generateProductPDF}
             disabled = {isGenerating}
         >
 
             <FaFileDownload className="mr-2"/>
-            {isGenerating ? 'Generating PDF...' : 'Download Product List'}
+            {isGenerating ? 'Generating PDF...' : 'Download Stock Report'}
         </button >
     );
 
