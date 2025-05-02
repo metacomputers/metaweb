@@ -16,7 +16,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
-// Import our new components
+// Import  new components
 import OrderSummary from "../../components/cartComponents/OrderSummary";
 import OrderDetailsForm from "../../components/cartComponents/OrderDetailsForm";
 import InvoicePopup from "../../components/cartComponents/InvoicePopup";
