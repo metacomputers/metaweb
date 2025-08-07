@@ -7,7 +7,7 @@ import generateToken from "../utils/createToken.js";
 const fetchUsers = asyncHandler(async (req, res) => {
   try {
     // Check if user is admin
-    if (req.user.role.toLowerCase() !== 'admin') {
+    if (req.user.role.toLowerCase() !== 'admin'&& req.user.role.toLowerCase() !== 'technician') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to access all users'

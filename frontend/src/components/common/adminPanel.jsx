@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const navigate = useNavigate(); // ← Needed for programmatic navigation
 
   const handleLogout = async () => {
@@ -33,16 +34,21 @@ const Sidebar = () => {
     }
   };
 
-  const navItems = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin" },
-    { name: "Users", icon: <Users size={20} />, path: "/admin/users" },
-    { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
-    { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
-    { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
-    { name: "Financial Insight", icon: <BarChart size={20} />, path: "/admin/financials" },
-    { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/maintenance/repair" },
-    { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/maintenance/consult" },
-  ];
+  const navItems = userInfo?.role?.toLowerCase() === "admin" 
+    ? [
+        { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin" },
+        { name: "Users", icon: <Users size={20} />, path: "/admin/users" },
+        { name: "Products", icon: <Package size={20} />, path: "/admin/products" },
+        { name: "Add Product", icon: <PlusSquare size={20} />, path: "/admin/add-product" },
+        { name: "Orders", icon: <ShoppingCart size={20} />, path: "/admin/orders" },
+        { name: "Financial Insight", icon: <BarChart size={20} />, path: "/admin/financials" },
+        { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/maintenance/repair" },
+        { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/maintenance/consult" },
+      ]
+    : [ // For technicians, only show Repairs and Consultations
+        { name: "Repairs", icon: <Wrench size={20} />, path: "/admin/maintenance/repair" },
+        { name: "Consultations", icon: <MessageSquare size={20} />, path: "/admin/maintenance/consult" },
+      ];
 
   return (
     <aside className="w-64 h-screen bg-gray-100 p-5 shadow-md flex flex-col justify-between">
@@ -85,7 +91,7 @@ const Sidebar = () => {
 const Header = () => {
   const navigate = useNavigate();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const displayName = userInfo ? `${userInfo.firstName} ${userInfo.lastName}` : 'Admin';
+  const displayName = userInfo ? `${userInfo.firstName}`: 'Admin';
 
   const handleLogout = async () => {
     try {
